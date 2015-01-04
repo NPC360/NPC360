@@ -3,7 +3,11 @@
 """
 NPC360 API
 
-https://github.com/NPC360/SMSIO/blob/master/endpoints.md
+API routes:
+https://github.com/NPC360/NPC360/blob/master/endpoints.md
+
+datastore schema:
+https://github.com/NPC360/NPC360/blob/master/schema.md
 
 """
 
@@ -20,7 +24,7 @@ app = Flask(__name__)
 
 
 """
-landing page / authorization routes
+landing page / HTML / authorization routes
 
 """
 @app.route("/")
