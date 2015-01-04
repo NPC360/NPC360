@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-NPC360 SMS IO controller
+NPC360 API
 
 https://github.com/NPC360/SMSIO/blob/master/endpoints.md
 
@@ -18,11 +18,20 @@ from os import environ
 
 app = Flask(__name__)
 
+
+"""
+landing page / authorization routes
+
+"""
 @app.route("/")
 def index():
     return render_template('index.html')
 
-@app.route("/smsin/", methods = ['GET','POST'])
+
+"""
+SMS IO controller
+"""
+@app.route("/smsin", methods = ['GET','POST'])
 def smsin():
     print "sms in"
 
@@ -39,10 +48,30 @@ def smsin():
     #update player game state (external datastore)
     #return new prompt to player via /smsout
 
-@app.route("/smsout/")
+@app.route("/smsout", methods =['POST'])
 def smsout():
     print "sms out"
+    if request.method == 'POST':
+        if request.headers['Content-Type'] == 'application/json':
+            d = request.get_json()
+            uid = d['id']
+            # get data for next game state (outgoing message, reset crap in )
+            #s = d['state']
 
+    u = requests.get(url_for('/user'), {'id':uid})
+    sendSMS(u,s,n) # user object, gamestate object (defines previous state, next state, and any other data), and npc object (number, name, gender(??) etc.)
+    log(u['id'], 'output', 'sms')
+
+def sendSMS(u,s,n):
+    sid = "ACXXXXXXXXXXXXXXXXX" # should be an env variable.
+    token = "YYYYYYYYYYYYYYYYYY" # should be an env variable.
+    c = TwilioRestClient(sid, token)
+    m = client.messages.create(to=u['phone'], from_=n['phone'],body=s['msg'])
+
+
+"""
+user API
+"""
 @app.route("/user", methods = ['GET', 'POST', 'PATCH'])
 def user():
     if request.method == 'GET':
@@ -74,10 +103,10 @@ def user():
             log(u['id'], 'mod user', 'api')
             return u
 
+
 """
 DATASTORE METHODS
 """
-
 # I/O Logging (time, userid, action taken, I/O medium -- what else??)
 def log(u,a,m):
     db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
