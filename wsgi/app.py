@@ -66,8 +66,10 @@ def sendSMS(u,s,n):
     sid = "ACXXXXXXXXXXXXXXXXX" # should be an env variable.
     token = "YYYYYYYYYYYYYYYYYY" # should be an env variable.
     c = TwilioRestClient(sid, token)
-    m = client.messages.create(to=u['phone'], from_=n['phone'],body=s['msg'])
-
+    if (s['media']): # if game state object has a media URL, we should send it via MMS!
+        m = client.messages.create(to=u['phone'], from_=n['phone'],body=s['msg'], media_url=s['media'])
+    else:
+        m = client.messages.create(to=u['phone'], from_=n['phone'],body=s['msg'])
 
 """
 user API
