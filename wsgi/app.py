@@ -14,7 +14,8 @@ https://github.com/NPC360/NPC360/blob/master/schema.md
 from flask import request, Flask, redirect, render_template, Response, jsonify, url_for
 import requests
 import json
-from twilio.rest import TwilioRestClient
+import twilio
+import twilio.rest
 import twilio.twiml
 from sqlalchemy import *
 
@@ -38,7 +39,7 @@ def index():
 @app.route("/signup", methods = ['GET','POST'])
 def signup():
     if request.method == 'POST':
-        # if auth code has been pass in, we need to process it.
+        # if auth code has been passed in, we need to process it.
         name = request.values.get('fname', None)
         tel = request.values.get('tel', None)
         tz = request.values.get('tz', None)
@@ -70,8 +71,10 @@ def signup():
                 uid = newAuth(auth)
                 print auth, uid
 
-                signupSMSauth(tel, auth)
-                return render_template('signup2.html', name=name, tel=tel, tz=tz, uid=uid)
+                if signupSMSauth(tel, auth):
+                    return render_template('signup2.html', name=name, tel=tel, tz=tz, uid=uid)
+                else:
+                    return render_template('signup1Error.html')
     # but, if no data POSTed at all, then we need to render the signup form!
     else:
         return render_template('signup1.html')
@@ -111,11 +114,14 @@ def smsout():
     log(u['id'], 'output', 'sms')
 
 def sendSMS(u,s,n):
-    c = TwilioRestClient(Tsid, Ttoken)
-    if (s['media']): # if game state object has a media URL, we should send it via MMS!
-        c.messages.create(to=u['phone'], from_=n['phone'],body=s['msg'], media_url=s['media'])
-    else:
-        c.messages.create(to=u['phone'], from_=n['phone'],body=s['msg'])
+    try:
+        c = twilio.rest.TwilioRestClient(Tsid, Ttoken)
+        if (s['media']): # if game state object has a media URL, we should send it via MMS!
+            c.messages.create(to=u['phone'], from_=n['phone'],body=s['msg'], media_url=s['media'])
+        else:
+            c.messages.create(to=u['phone'], from_=n['phone'],body=s['msg'])
+    except twilio.TwilioRestException as e:
+        print e
 
 def signupSMSauth(tel,auth):
     fromNum ="+17183959467" # should be env variable.
@@ -123,11 +129,12 @@ def signupSMSauth(tel,auth):
     print "signupSMSauth", tel, msg
 
     try:
-        c = TwilioRestClient(Tsid, Ttoken)
+        c = twilio.rest.TwilioRestClient(Tsid, Ttoken)
         c.messages.create(to=tel, from_=fromNum, body=msg)
+        return True
     except twilio.TwilioRestException as e:
         print e
-
+        return False
 
 """
 user API

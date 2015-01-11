@@ -1,0 +1,61 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Sign up | NPC360</title>
+  <meta name="description" content="Enter your name, phone number, and timezone to sign up for NPC360.">
+  <meta name="author" content="NPC 360">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href='http://fonts.googleapis.com/css?family=Roboto+Slab|Roboto:400,400italic,500|Roboto+Condensed' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="{{url_for('static', filename='css/signup.css') }}">
+  <link rel="stylesheet" href="{{url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{url_for('static', filename='css/intlTelInput.css') }}">
+
+  <!--<link rel="stylesheet" href="../static/css/style.css">-->
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+
+
+<div class="container">
+
+  <h2>Signup error</h2>
+
+  <p style="margin-bottom: 45px;">Your phone number didn't work, please try again.</p>
+
+  <form id="signupForm" class="signupForm" action="/signup" method="POST">
+
+    <div class="group">
+      <input id="fname" type="text" name="fname" required/>
+      <span class="highlight"></span>
+      <span class="bar"></span>
+      <label>First Name</label>
+    </div>
+
+    <div class="group">
+      <input id="tel" type="tel" name="tel" required/>
+      <span class="highlight"></span>
+      <span class="bar"></span>
+      <!--<label>Mobile phone number </label>-->
+    </div>
+
+    <!--Use JS to determine timezone or use a map based selector-->
+    <input id="tz" class="hiddeninput" type="text" name="tz" hidden/>
+
+    <input id="submit" type="submit" value="Continue">
+
+  </form>
+
+</div>
+
+  <!-- JaVAVAVAVAVa -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="{{url_for('static', filename='js/intlTelInput.min.js') }}"></script>
+  <script src="{{url_for('static', filename='js/signup1.js') }}"></script>
+</body>
+</html>
