@@ -1,0 +1,70 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Sign up | NPC360</title>
+  <meta name="description" content="Enter your name, phone number, and timezone to sign up for NPC360.">
+  <meta name="author" content="NPC 360">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href='http://fonts.googleapis.com/css?family=Roboto+Slab|Roboto:400,400italic,500|Roboto+Condensed' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="{{url_for('static', filename='css/signup.css') }}">
+  <link rel="stylesheet" href="{{url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="../static/css/style.css">
+  
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js"></script>
+
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+
+
+<div class="container">
+  
+  <h2>Step 2: Enter validation code and confirm details</h2>
+
+  <p style="margin-bottom: 45px;">Ok {{ name }}, we're going to text ({{ tel }} / GMT: {{ tz }}) you a link to an image with a 4 digit code. Please input the code below:</p>
+
+  <form method="POST" action="/signup3">
+    
+    <div class="group">      
+      <input id="auth" name="auth" type="number" required>
+      <span class="highlight"></span>
+      <span class="bar"></span>
+      <label>4 Digital Code</label>
+    </div>
+      
+    <input id="uid" class="hiddeninput" name="uid" type="text" value="{{uid}}" hidden>
+    <input id="fname" class="hiddeninput" name="fname" type="text" value="{{name}}" hidden>
+    <input id="tel" class="hiddeninput" name="tel" type="tel" value="{{tel}}" hidden>
+    <input id="tz" class="hiddeninput" name="tz" type="text" value="{{tz}}" hidden>
+
+    <input id="submit" type="submit">
+
+
+  </form>
+  
+</div>
+
+<script type="text/javascript">
+  $('#auth').on('keypress', function(ev) {
+      var keyCode = window.event ? ev.keyCode : ev.which;
+      //codes for 0-9
+      if (keyCode < 48 || keyCode > 57) {
+          //codes for backspace, delete, enter
+          if (keyCode != 0 && keyCode != 8 && keyCode != 13 && !ev.ctrlKey) {
+              ev.preventDefault();
+          }
+      }
+  });
+</script>
+  <!-- JaVAVAVAVAVa -->
+  <!--<script src="{{url_for('static', filename='js/signup2.js') }}"></script>-->
+
+  <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
+</body>
+</html>
