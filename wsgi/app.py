@@ -17,7 +17,6 @@ import json
 from twilio.rest import TwilioRestClient
 import twilio.twiml
 from sqlalchemy import *
-#from sqlalchemy import create_engine, MetaData, exc, Table
 
 import datetime
 import random
@@ -121,7 +120,7 @@ def sendSMS(u,s,n):
 
 def signupSMSauth(tel,auth):
     fromNum ="+17183959467" # should be env variable.
-    msg = "Your authorization code is: " + auth
+    msg = "your code: " + auth +" "+ u"\U0001F6A8"
     print "signupSMSauth", tel, msg
 
     try:
@@ -220,7 +219,11 @@ def newAuth(a):
     md = MetaData(bind=db)
     table = Table('tokenAuth', md, autoload=True)
     con = db.connect()
-    x = con.execute( table.insert(), auth=a)
+
+    now = datetime.datetime.now()
+    d = now.strftime('%Y-%m-%d %H:%M:%S')
+
+    x = con.execute( table.insert(), auth=a, date=d)
     uid = x.inserted_primary_key[0]
 
     return uid
