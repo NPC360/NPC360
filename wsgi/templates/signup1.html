@@ -10,7 +10,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href='http://fonts.googleapis.com/css?family=Roboto+Slab|Roboto:400,400italic,500|Roboto+Condensed' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="{{url_for('static', filename='css/signup.css') }}">
-
+  <link rel="stylesheet" href="../static/css/style.css">
+  
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js"></script>
   <!--[if lt IE 9]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
@@ -18,15 +20,35 @@
 
 <body>
 
-  <h2>Sign up for NPC 360</h2>
-  <form id="signupForm" class="signupForm" action="/signup2" method="POST">
 
-    Name: <input id="fname" type="text" name="fname" placeholder="Jenny" required/><br>
-    Cell: <input id="tel" type="tel" name="tel" placeholder="+1 555 867 5309" required/><br>
+<div class="container">
+  
+  <h2>Step 1: Sign up for NPC360</h2>
+
+  <form id="signupForm" class="signupForm" action="/signup2" method="POST">
+    
+    <div class="group">      
+      <input id="fname" type="text" name="fname" required/>
+      <span class="highlight"></span>
+      <span class="bar"></span>
+      <label>First Name</label>
+    </div>
+      
+    <div class="group">      
+      <input id="tel" type="tel" name="tel" required/>
+      <span class="highlight"></span>
+      <span class="bar"></span>
+      <label>Mobile phone number </label>
+    </div>    
+
     <!--Use JS to determine timezone or use a map based selector-->
-    <input id="tz" type="text" name="tz" hidden/>
-    <input type="submit"/>
+    <input id="tz" class="hiddeninput" type="text" name="tz" hidden/>  
+
+    <input id="submit" type="submit">
+
   </form>
+  
+</div>
 
   <!-- JaVAVAVAVAVa -->
   <script src="{{url_for('static', filename='js/signup1.js') }}"></script>

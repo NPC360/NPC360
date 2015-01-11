@@ -10,7 +10,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href='http://fonts.googleapis.com/css?family=Roboto+Slab|Roboto:400,400italic,500|Roboto+Condensed' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="{{url_for('static', filename='css/signup.css') }}">
-
+  <link rel="stylesheet" href="../static/css/style.css">
+  
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js"></script>
   <!--[if lt IE 9]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
@@ -18,22 +20,45 @@
 
 <body>
 
-  <h2>Sign up for NPC 360: ERROR</h2>
-  <p>{{ name }}, the code you entered wasn't correct, let's try this again:</p>
+<div class="container">
+
+  <h2>Something went wrong :(</h2>
+  <p style="margin-bottom: 45px;">{{ name }}, the 4 digit authentication code you entered wasn't correct, please try entering it again or <a href="/signup">request a new code</a>.</p>
 
   <form method="POST" action="/signup3">
-    <input id="auth" name="auth" type="number" placeholder="0000" required>
+    
+    <div class="group">      
+      <input id="auth" name="auth" type="number" required>      
+      <span class="highlight"></span>
+      <span class="bar"></span>
+      <label>Authentication Code</label>
+    </div>   
 
-    <input id="uid" name="uid" type="text" value="{{uid}}" hidden>
-    <input id="fname" name="fname" type="text" value="{{name}}" hidden>
-    <input id="tel" name="tel" type="tel" value="{{tel}}" hidden>
-    <input id="tz" name="tz" type="text" value="{{tz}}" hidden>
+
+
+    <input id="uid" class="hiddeninput" name="uid" type="text" value="{{uid}}" hidden>
+    <input id="fname" class="hiddeninput" name="fname" type="text" value="{{name}}" hidden>
+    <input id="tel" class="hiddeninput" name="tel" type="tel" value="{{tel}}" hidden>
+    <input id="tz" class="hiddeninput" name="tz" type="text" value="{{tz}}" hidden>
 
     <input id="submit" type="submit">
   </form>
 
   <p><a href="/signup">Need a new code?</a></p>
 
+</div>
+<script type="text/javascript">
+  $('#auth').on('keypress', function(ev) {
+      var keyCode = window.event ? ev.keyCode : ev.which;
+      //codes for 0-9
+      if (keyCode < 48 || keyCode > 57) {
+          //codes for backspace, delete, enter
+          if (keyCode != 0 && keyCode != 8 && keyCode != 13 && !ev.ctrlKey) {
+              ev.preventDefault();
+          }
+      }
+  });
+</script>
   <!-- JaVAVAVAVAVa -->
   <!--<script src="{{url_for('static', filename='js/signup2.js') }}"></script>-->
 
