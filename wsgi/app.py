@@ -55,13 +55,9 @@ def signup():
             #if auth is not correct, return to confirmation step.
             if str(auth) in str(tableAuth):
 
-                u = url_for('user', _external=True)
-                h = {'Content-type': 'application/json', 'Accept': 'text/plain'}
                 d = {'fname':name, 'tel':tel, 'tz':tz}
-                #print u,h,d
-                #r = requests.post(u, data=json.dumps(d), headers=h)
-                #print r.content
-                #print r.headers
+                uid = makeUser(d)
+                print "new uid", uid
                 return render_template('signupSuccess.html', name=name, tel=tel, tz=tz)
             else:
                 return render_template('signupError.html', name=name, tel=tel, tz=tz, uid=uid)
@@ -210,7 +206,7 @@ def makeUser(ud):
     d = now.strftime('%Y-%m-%d %H:%M:%S')
 
     con = db.connect()
-    x = con.execute( table.insert(), name=ud['fname'], tel=ud['tel'], tz=ud['tz'], cdate=d, gstart=d )
+    x = con.execute( table.insert(), name=ud['fname'], tel=ud['tel'], tz=ud['tz'], cdate=d, gstart=d, gstate=0 )
 
     uid = x.inserted_primary_key[0]
     print uid
