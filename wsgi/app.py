@@ -125,7 +125,7 @@ def sendSMS(u,s,n):
 
 def signupSMSauth(tel,auth):
     fromNum ="+17183959467" # should be env variable.
-    msg = "your code: " + auth +" "+ u"\U0001F6A8"
+    msg = "code: " + auth +" "+ u"\U0001F6A8"
     print "signupSMSauth", tel, msg
 
     try:
