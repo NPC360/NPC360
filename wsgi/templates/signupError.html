@@ -24,7 +24,7 @@
   <h2>Signup error</h2>
   <p style="margin-bottom: 45px;">{{ name }}, the 4 digit authentication code you entered wasn't correct, please try entering it again or <a href="/signup">request a new code</a>.</p>
 
-  <form method="POST" action="/signup3">
+  <form method="POST" action="/signup">
 
     <div class="group">
       <input id="auth" name="auth" type="number" min="1000" max="9999" oninput="maxLengthCheck(this)" maxlength="4" required>

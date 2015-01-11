@@ -35,54 +35,50 @@ landing page / HTML / authorization routes
 def index():
     return render_template('index.html')
 
-@app.route("/signup")
+@app.route("/signup", methods = ['GET','POST'])
 def signup():
-    return render_template('signup1.html')
-
-@app.route("/signup2", methods = ['POST'])
-def signup2():
     if request.method == 'POST':
+        # if auth code has been pass in, we need to process it.
         name = request.values.get('fname', None)
         tel = request.values.get('tel', None)
         tz = request.values.get('tz', None)
-        print name, tel, tz
 
-        if name and tel and tz:
-            auth = str(random.randint(1000, 9999))
+        if request.values.get('auth', None):
+            auth = request.values.get('auth', None)
+            uid = request.values.get('uid', None)
+            print auth, name, tel, tz, uid
 
-            # add data to MySQL table for lookup later on & get row id/token
-            uid = newAuth(auth)
-            print auth, uid
+            tableAuth = checkAuth(uid)
+            print "auth from table", tableAuth
 
-            signupSMSauth(tel, auth)
-            return render_template('signup2.html', name=name, tel=tel, tz=tz, uid=uid)
+            #if auth is correct, create new user in playerInfo table.
+            #if auth is not correct, return to confirmation step.
+            if str(auth) in str(tableAuth):
 
-@app.route("/signup3", methods = ['POST'])
-def signup3():
-    if request.method == 'POST':
-        auth = request.values.get('auth', None)
-        name = request.values.get('fname', None)
-        tel = request.values.get('tel', None)
-        tz = request.values.get('tz', None)
-        uid = request.values.get('uid', None)
-        print auth, name, tel, tz, uid
-
-        tableAuth = checkAuth(uid)
-        print "auth from table", tableAuth
-
-        #if auth is correct, render success
-        #if auth is not correct, render error & link back to step 1
-        if str(auth) in str(tableAuth):
-            u = url_for('user', _external=True)
-            h = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-            d = {'fname':name, 'tel':tel, 'tz':tz}
-            #print u,h,d
-            #r = requests.post(u, data=json.dumps(d), headers=h)
-            #print r.content
-            #print r.headers
-            return render_template('signupSuccess.html', name=name, tel=tel, tz=tz)
+                u = url_for('user', _external=True)
+                h = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+                d = {'fname':name, 'tel':tel, 'tz':tz}
+                #print u,h,d
+                #r = requests.post(u, data=json.dumps(d), headers=h)
+                #print r.content
+                #print r.headers
+                return render_template('signupSuccess.html', name=name, tel=tel, tz=tz)
+            else:
+                return render_template('signupError.html', name=name, tel=tel, tz=tz, uid=uid)
+        # if no auth code passed in, we need to ask for it!
         else:
-            return render_template('signupError.html', name=name, tel=tel, tz=tz, uid=uid)
+            print name, tel, tz
+            if name and tel and tz:
+                auth = str(random.randint(1000, 9999))
+                # add data to MySQL table for lookup later on & get row id/token
+                uid = newAuth(auth)
+                print auth, uid
+
+                signupSMSauth(tel, auth)
+                return render_template('signup2.html', name=name, tel=tel, tz=tz, uid=uid)
+    # but, if no data POSTed at all, then we need to render the signup form!
+    else:
+        return render_template('signup1.html')
 
 """
 SMS IO controller
