@@ -4,17 +4,14 @@
 <head>
   <meta charset="utf-8">
 
-  <title>Sign up Auth Error | NPC360</title>
+  <title>Sign up error | NPC360</title>
   <meta name="description" content="Enter your name, phone number, and timezone to sign up for NPC360.">
   <meta name="author" content="NPC 360">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href='http://fonts.googleapis.com/css?family=Roboto+Slab|Roboto:400,400italic,500|Roboto+Condensed' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="{{url_for('static', filename='css/signup.css') }}">
   <link rel="stylesheet" href="{{url_for('static', filename='css/style.css') }}">
-
-  <link rel="stylesheet" href="../static/css/style.css">
-  
-  <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js"></script>
+  <!--<link rel="stylesheet" href="../static/css/style.css">-->
   <!--[if lt IE 9]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
@@ -24,17 +21,17 @@
 
 <div class="container">
 
-  <h2>Something went wrong :(</h2>
+  <h2>Signup error(</h2>
   <p style="margin-bottom: 45px;">{{ name }}, the 4 digit authentication code you entered wasn't correct, please try entering it again or <a href="/signup">request a new code</a>.</p>
 
   <form method="POST" action="/signup3">
-    
-    <div class="group">      
-      <input id="auth" name="auth" type="number" required>      
+
+    <div class="group">
+      <input id="auth" name="auth" type="number" required>
       <span class="highlight"></span>
       <span class="bar"></span>
       <label>Authentication Code</label>
-    </div>   
+    </div>
 
 
 
@@ -46,24 +43,22 @@
     <input id="submit" type="submit">
   </form>
 
-  <p><a href="/signup">Need a new code?</a></p>
-
 </div>
-<script type="text/javascript">
-  $('#auth').on('keypress', function(ev) {
-      var keyCode = window.event ? ev.keyCode : ev.which;
-      //codes for 0-9
-      if (keyCode < 48 || keyCode > 57) {
-          //codes for backspace, delete, enter
-          if (keyCode != 0 && keyCode != 8 && keyCode != 13 && !ev.ctrlKey) {
-              ev.preventDefault();
-          }
-      }
-  });
-</script>
+
   <!-- JaVAVAVAVAVa -->
   <!--<script src="{{url_for('static', filename='js/signup2.js') }}"></script>-->
-
-  <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
+  <script type="text/javascript">
+  $('#auth').on('keypress', function(ev) {
+    var keyCode = window.event ? ev.keyCode : ev.which;
+    //codes for 0-9
+    if (keyCode < 48 || keyCode > 57) {
+      //codes for backspace, delete, enter
+      if (keyCode != 0 && keyCode != 8 && keyCode != 13 && !ev.ctrlKey) {
+        ev.preventDefault();
+      }
+    }
+  });
+  </script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 </body>
 </html>
