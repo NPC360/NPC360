@@ -1,0 +1,140 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   '-g',
+1 verbose cli   'tmpdir-tab' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.33
+4 verbose cache add [ 'tmpdir-tab', null ]
+5 verbose cache add name=undefined spec="tmpdir-tab" args=["tmpdir-tab",null]
+6 verbose parsed url { protocol: null,
+6 verbose parsed url   slashes: null,
+6 verbose parsed url   auth: null,
+6 verbose parsed url   host: null,
+6 verbose parsed url   port: null,
+6 verbose parsed url   hostname: null,
+6 verbose parsed url   hash: null,
+6 verbose parsed url   search: null,
+6 verbose parsed url   query: null,
+6 verbose parsed url   pathname: 'tmpdir-tab',
+6 verbose parsed url   path: 'tmpdir-tab',
+6 verbose parsed url   href: 'tmpdir-tab' }
+7 silly lockFile fe735d6a-tmpdir-tab tmpdir-tab
+8 verbose lock tmpdir-tab /Users/neal/.npm/fe735d6a-tmpdir-tab.lock
+9 silly lockFile fe735d6a-tmpdir-tab tmpdir-tab
+10 silly lockFile fe735d6a-tmpdir-tab tmpdir-tab
+11 verbose addNamed [ 'tmpdir-tab', '' ]
+12 verbose addNamed [ null, '*' ]
+13 silly lockFile f4081a31-tmpdir-tab tmpdir-tab@
+14 verbose lock tmpdir-tab@ /Users/neal/.npm/f4081a31-tmpdir-tab.lock
+15 silly addNameRange { name: 'tmpdir-tab', range: '*', hasData: false }
+16 verbose request where is /tmpdir-tab
+17 verbose request registry https://registry.npmjs.org/
+18 verbose request id 59749c093b8949d8
+19 verbose url raw /tmpdir-tab
+20 verbose url resolving [ 'https://registry.npmjs.org/', './tmpdir-tab' ]
+21 verbose url resolved https://registry.npmjs.org/tmpdir-tab
+22 verbose request where is https://registry.npmjs.org/tmpdir-tab
+23 info trying registry request attempt 1 at 23:46:46
+24 http GET https://registry.npmjs.org/tmpdir-tab
+25 http 200 https://registry.npmjs.org/tmpdir-tab
+26 silly registry.get cb [ 200,
+26 silly registry.get   { date: 'Sun, 04 Jan 2015 04:46:50 GMT',
+26 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+26 silly registry.get     etag: '"34TBF9ER1OANG0T0W6PTJ93OE"',
+26 silly registry.get     'content-type': 'application/json',
+26 silly registry.get     'cache-control': 'max-age=60',
+26 silly registry.get     'content-length': '4367',
+26 silly registry.get     'accept-ranges': 'bytes',
+26 silly registry.get     via: '1.1 varnish',
+26 silly registry.get     age: '0',
+26 silly registry.get     'x-served-by': 'cache-atl6228-ATL',
+26 silly registry.get     'x-cache': 'MISS',
+26 silly registry.get     'x-cache-hits': '0',
+26 silly registry.get     'x-timer': 'S1420346810.462733,VS0,VE109',
+26 silly registry.get     vary: 'Accept',
+26 silly registry.get     'keep-alive': 'timeout=10, max=50',
+26 silly registry.get     connection: 'Keep-Alive' } ]
+27 silly addNameRange number 2 { name: 'tmpdir-tab', range: '*', hasData: true }
+28 silly addNameRange versions [ 'tmpdir-tab', [ '1.0.0', '1.0.1', '1.0.2' ] ]
+29 verbose addNamed [ 'tmpdir-tab', '1.0.2' ]
+30 verbose addNamed [ '1.0.2', '1.0.2' ]
+31 silly lockFile 3c07150e-tmpdir-tab-1-0-2 tmpdir-tab@1.0.2
+32 verbose lock tmpdir-tab@1.0.2 /Users/neal/.npm/3c07150e-tmpdir-tab-1-0-2.lock
+33 silly lockFile 42ceed31--tmpdir-tab-tmpdir-tab-1-0-2-tgz https://registry.npmjs.org/tmpdir-tab/-/tmpdir-tab-1.0.2.tgz
+34 verbose lock https://registry.npmjs.org/tmpdir-tab/-/tmpdir-tab-1.0.2.tgz /Users/neal/.npm/42ceed31--tmpdir-tab-tmpdir-tab-1-0-2-tgz.lock
+35 verbose addRemoteTarball [ 'https://registry.npmjs.org/tmpdir-tab/-/tmpdir-tab-1.0.2.tgz',
+35 verbose addRemoteTarball   'ef9fb16cc0fc0867e3c98ae315836b41a4913629' ]
+36 info retry fetch attempt 1 at 23:46:51
+37 verbose fetch to= /var/folders/vh/811mz0f92n509gqzd9f2mn_w0000gn/T/npm-33595-cGtUT3Hc/registry.npmjs.org/tmpdir-tab/-/tmpdir-tab-1.0.2.tgz
+38 http GET https://registry.npmjs.org/tmpdir-tab/-/tmpdir-tab-1.0.2.tgz
+39 http 200 https://registry.npmjs.org/tmpdir-tab/-/tmpdir-tab-1.0.2.tgz
+40 silly lockFile 42ceed31--tmpdir-tab-tmpdir-tab-1-0-2-tgz https://registry.npmjs.org/tmpdir-tab/-/tmpdir-tab-1.0.2.tgz
+41 silly lockFile 42ceed31--tmpdir-tab-tmpdir-tab-1-0-2-tgz https://registry.npmjs.org/tmpdir-tab/-/tmpdir-tab-1.0.2.tgz
+42 silly lockFile 3c07150e-tmpdir-tab-1-0-2 tmpdir-tab@1.0.2
+43 silly lockFile 3c07150e-tmpdir-tab-1-0-2 tmpdir-tab@1.0.2
+44 silly lockFile f4081a31-tmpdir-tab tmpdir-tab@
+45 silly lockFile f4081a31-tmpdir-tab tmpdir-tab@
+46 silly resolved [ { name: 'tmpdir-tab',
+46 silly resolved     description: 'Bash helper that gives you a tmpdir per terminal tab and cleans it up when you exit',
+46 silly resolved     version: '1.0.2',
+46 silly resolved     main: 'tmpdir-tab',
+46 silly resolved     bin: { 'tmpdir-tab': './tmpdir.sh' },
+46 silly resolved     repository: { type: 'git', url: 'https://github.com/mafintosh/tmpdir-tab' },
+46 silly resolved     keywords: [ 'bash', 'tmp', 'tab', 'bash_profile', 'bashrc' ],
+46 silly resolved     author: { name: 'Mathias Buus', url: '@mafintosh' },
+46 silly resolved     license: 'MIT',
+46 silly resolved     bugs: { url: 'https://github.com/mafintosh/tmpdir-tab/issues' },
+46 silly resolved     homepage: 'https://github.com/mafintosh/tmpdir-tab',
+46 silly resolved     gitHead: '47aa24dc6fc335c6a30675a191f12150d955c51c',
+46 silly resolved     _id: 'tmpdir-tab@1.0.2',
+46 silly resolved     scripts: {},
+46 silly resolved     _shasum: 'ef9fb16cc0fc0867e3c98ae315836b41a4913629',
+46 silly resolved     _from: 'tmpdir-tab@',
+46 silly resolved     _npmVersion: '1.4.28',
+46 silly resolved     _npmUser: { name: 'mafintosh', email: 'mathiasbuus@gmail.com' },
+46 silly resolved     maintainers: [ [Object] ],
+46 silly resolved     dist:
+46 silly resolved      { shasum: 'ef9fb16cc0fc0867e3c98ae315836b41a4913629',
+46 silly resolved        tarball: 'http://registry.npmjs.org/tmpdir-tab/-/tmpdir-tab-1.0.2.tgz' },
+46 silly resolved     directories: {},
+46 silly resolved     _resolved: 'https://registry.npmjs.org/tmpdir-tab/-/tmpdir-tab-1.0.2.tgz' } ]
+47 info install tmpdir-tab@1.0.2 into /usr/local/lib
+48 info installOne tmpdir-tab@1.0.2
+49 verbose lib/node_modules/tmpdir-tab unbuild
+50 verbose tar unpack /Users/neal/.npm/tmpdir-tab/1.0.2/package.tgz
+51 silly lockFile 6fa609d9-ocal-lib-node-modules-tmpdir-tab tar:///usr/local/lib/node_modules/tmpdir-tab
+52 verbose lock tar:///usr/local/lib/node_modules/tmpdir-tab /Users/neal/.npm/6fa609d9-ocal-lib-node-modules-tmpdir-tab.lock
+53 silly lockFile 23fa247e-npm-tmpdir-tab-1-0-2-package-tgz tar:///Users/neal/.npm/tmpdir-tab/1.0.2/package.tgz
+54 verbose lock tar:///Users/neal/.npm/tmpdir-tab/1.0.2/package.tgz /Users/neal/.npm/23fa247e-npm-tmpdir-tab-1-0-2-package-tgz.lock
+55 silly gunzTarPerm modes [ '755', '644' ]
+56 error Error: EACCES, mkdir '/usr/local/lib/node_modules/tmpdir-tab'
+56 error  { [Error: EACCES, mkdir '/usr/local/lib/node_modules/tmpdir-tab']
+56 error   errno: 3,
+56 error   code: 'EACCES',
+56 error   path: '/usr/local/lib/node_modules/tmpdir-tab',
+56 error   fstream_type: 'Directory',
+56 error   fstream_path: '/usr/local/lib/node_modules/tmpdir-tab',
+56 error   fstream_class: 'DirWriter',
+56 error   fstream_stack:
+56 error    [ '/usr/local/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:36:23',
+56 error      '/usr/local/lib/node_modules/npm/node_modules/mkdirp/index.js:46:53',
+56 error      'Object.oncomplete (fs.js:107:15)' ] }
+57 error Please try running this command again as root/Administrator.
+58 error System Darwin 13.4.0
+59 error command "/usr/local/bin/node" "/usr/local/bin/npm" "install" "-g" "tmpdir-tab"
+60 error cwd /Users/neal/Sites/SMSIO
+61 error node -v v0.10.33
+62 error npm -v 1.4.28
+63 error path /usr/local/lib/node_modules/tmpdir-tab
+64 error fstream_path /usr/local/lib/node_modules/tmpdir-tab
+65 error fstream_type Directory
+66 error fstream_class DirWriter
+67 error code EACCES
+68 error errno 3
+69 error stack Error: EACCES, mkdir '/usr/local/lib/node_modules/tmpdir-tab'
+70 error fstream_stack /usr/local/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:36:23
+70 error fstream_stack /usr/local/lib/node_modules/npm/node_modules/mkdirp/index.js:46:53
+70 error fstream_stack Object.oncomplete (fs.js:107:15)
+71 verbose exit [ 3, true ]

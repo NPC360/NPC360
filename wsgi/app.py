@@ -16,12 +16,17 @@ import requests
 import json
 from twilio.rest import TwilioRestClient
 import twilio.twiml
-from sqlalchemy import create_engine, MetaData, exc, Table
+from sqlalchemy import *
+#from sqlalchemy import create_engine, MetaData, exc, Table
+
 import datetime
+import random
 from os import environ
 
 app = Flask(__name__)
 
+# API & DB credentials
+from Keys import *
 
 """
 landing page / HTML / authorization routes
@@ -31,6 +36,47 @@ landing page / HTML / authorization routes
 def index():
     return render_template('index.html')
 
+@app.route("/signup")
+def signup():
+    return render_template('signup1.html')
+
+@app.route("/signup2", methods = ['POST'])
+def signup2():
+    if request.method == 'POST':
+        name = request.values.get('fname', None)
+        tel = request.values.get('tel', None)
+        tz = request.values.get('tz', None)
+        print name, tel, tz
+
+        if name and tel and tz:
+            auth = str(random.randint(1000, 9999))
+
+            # add data to MySQL table for lookup later on & get row id/token
+            uid = newAuth(auth)
+            print auth, uid
+
+            signupSMSauth(tel, auth)
+            return render_template('signup2.html', name=name, tel=tel, tz=tz, uid=uid)
+
+@app.route("/signup3", methods = ['POST'])
+def signup3():
+    if request.method == 'POST':
+        auth = request.values.get('auth', None)
+        name = request.values.get('fname', None)
+        tel = request.values.get('tel', None)
+        tz = request.values.get('tz', None)
+        uid = request.values.get('uid', None)
+        print auth, name, tel, tz, uid
+
+        tableAuth = checkAuth(uid)
+        print "auth from table", tableAuth
+
+        #if auth is correct, render success
+        #if auth is not correct, render error & link back to step 1
+        if str(auth) in str(tableAuth):
+            return render_template('signupSuccess.html', name=name, tel=tel, tz=tz)
+        else:
+            return render_template('signupError.html', name=name, tel=tel, tz=tz, uid=uid)
 
 """
 SMS IO controller
@@ -67,13 +113,23 @@ def smsout():
     log(u['id'], 'output', 'sms')
 
 def sendSMS(u,s,n):
-    sid = "ACXXXXXXXXXXXXXXXXX" # should be an env variable.
-    token = "YYYYYYYYYYYYYYYYYY" # should be an env variable.
-    c = TwilioRestClient(sid, token)
+    c = TwilioRestClient(Tsid, Ttoken)
     if (s['media']): # if game state object has a media URL, we should send it via MMS!
-        m = client.messages.create(to=u['phone'], from_=n['phone'],body=s['msg'], media_url=s['media'])
+        c.messages.create(to=u['phone'], from_=n['phone'],body=s['msg'], media_url=s['media'])
     else:
-        m = client.messages.create(to=u['phone'], from_=n['phone'],body=s['msg'])
+        c.messages.create(to=u['phone'], from_=n['phone'],body=s['msg'])
+
+def signupSMSauth(tel,auth):
+    fromNum ="+17183959467" # should be env variable.
+    msg = "Your authorization code is: " + auth
+    print "signupSMSauth", tel, msg
+
+    try:
+        c = TwilioRestClient(Tsid, Ttoken)
+        c.messages.create(to=tel, from_=fromNum, body=msg)
+    except twilio.TwilioRestException as e:
+        print e
+
 
 """
 user API
@@ -128,7 +184,8 @@ def log(u,a,m):
 
 # lookup user from datastore using a provided 'id' - could be uid, phone / email / twitter handle, etc. (should be medium agnostic)
 def getUser(id):
-    db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
+    #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
+    db = create_engine(Mdb, convert_unicode=True, echo=True)
     md = MetaData(bind=db)
     table = Table('players', md, autoload=True)
     con = db.connect()
@@ -138,21 +195,46 @@ def getUser(id):
 
 # create new user using POST payload.
 def makeUser(userData):
-    db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
+    #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
+    db = create_engine(Mdb, convert_unicode=True, echo=True)
     md = MetaData(bind=db)
     table = Table('players', md, autoload=True)
     con = db.connect()
-    #con.execute( table.insert(), date=d, user=u, action=a, medium=m)
+    con.execute( table.insert(), date=d, user=u, action=a, medium=m)
     return u
 
 # update user data using POST payload.
 def updateUser(userData):
-    db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
+    #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
+    db = create_engine(Mdb, convert_unicode=True, echo=True)
     md = MetaData(bind=db)
     table = Table('players', md, autoload=True)
     con = db.connect()
     #con.execute( table.update(), date=d, user=u, action=a, medium=m)
     return u
+
+# SMS auth - store token
+def newAuth(a):
+    #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
+    db = create_engine(Mdb, convert_unicode=True, echo=True)
+    md = MetaData(bind=db)
+    table = Table('tokenAuth', md, autoload=True)
+    con = db.connect()
+    x = con.execute( table.insert(), auth=a)
+    uid = x.inserted_primary_key[0]
+
+    return uid
+
+# SMS auth - return auth based on token
+def checkAuth(uid):
+    #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
+    db = create_engine(Mdb, convert_unicode=True, echo=True)
+    md = MetaData(bind=db)
+    table = Table('tokenAuth', md, autoload=True)
+    con = db.connect()
+    x = con.execute( table.select(table.c.auth).where(table.c.uid == uid) )
+    a = x.fetchone()['auth']
+    return a
 
 if __name__ == "__main__":
     app.run()
