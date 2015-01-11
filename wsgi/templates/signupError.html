@@ -21,13 +21,13 @@
 
 <div class="container">
 
-  <h2>Signup error(</h2>
+  <h2>Signup error</h2>
   <p style="margin-bottom: 45px;">{{ name }}, the 4 digit authentication code you entered wasn't correct, please try entering it again or <a href="/signup">request a new code</a>.</p>
 
   <form method="POST" action="/signup3">
 
     <div class="group">
-      <input id="auth" name="auth" type="number" required>
+      <input id="auth" name="auth" type="number" min="1000" max="9999" oninput="maxLengthCheck(this)" maxlength="4" required>
       <span class="highlight"></span>
       <span class="bar"></span>
       <label>Authentication Code</label>
@@ -40,13 +40,14 @@
     <input id="tel" class="hiddeninput" name="tel" type="tel" value="{{tel}}" hidden>
     <input id="tz" class="hiddeninput" name="tz" type="text" value="{{tz}}" hidden>
 
-    <input id="submit" type="submit">
+    <input id="submit" type="submit" value="Complete signup">
   </form>
 
 </div>
 
   <!-- JaVAVAVAVAVa -->
   <!--<script src="{{url_for('static', filename='js/signup2.js') }}"></script>-->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script type="text/javascript">
   $('#auth').on('keypress', function(ev) {
     var keyCode = window.event ? ev.keyCode : ev.which;
@@ -59,6 +60,14 @@
     }
   });
   </script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+  <!-- additional max length of 4 check-->
+  <script>
+  function maxLengthCheck(object)
+  {
+    if (object.value.length > object.maxLength)
+      object.value = object.value.slice(0, object.maxLength)
+    }
+    </script>
 </body>
 </html>

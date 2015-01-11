@@ -11,7 +11,7 @@ https://github.com/NPC360/NPC360/blob/master/schema.md
 
 """
 
-from flask import request, Flask, redirect, render_template
+from flask import request, Flask, redirect, render_template, Response, jsonify, url_for
 import requests
 import json
 from twilio.rest import TwilioRestClient
@@ -73,6 +73,13 @@ def signup3():
         #if auth is correct, render success
         #if auth is not correct, render error & link back to step 1
         if str(auth) in str(tableAuth):
+            u = url_for('user', _external=True)
+            h = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+            d = {'fname':name, 'tel':tel, 'tz':tz}
+            #print u,h,d
+            #r = requests.post(u, data=json.dumps(d), headers=h)
+            #print r.content
+            #print r.headers
             return render_template('signupSuccess.html', name=name, tel=tel, tz=tz)
         else:
             return render_template('signupError.html', name=name, tel=tel, tz=tz, uid=uid)
@@ -88,7 +95,7 @@ def smsin():
     msg = request.values.get('Body', None)
     print uid, msg
 
-    u = requests.get(url_for('/user'), {'id':phone})
+    u = requests.get(url_for('user'), {'id':phone})
     print u
 
     log(u['id'], 'input', 'sms') # (what else do we need to log here?)
@@ -139,19 +146,23 @@ def user():
         if request.headers['Content-Type'] == 'application/json':
             d = request.get_json()
             u = getUser(d['id'])
-            print "player", u['id'], '(', u['fname'], u['lname'], ') :', u, "\n"
+            print "player", u['uid'], '(', u['fname'], u['lname'], ') :', u, "\n"
             return u
 
     if request.method == 'POST':
         if request.headers['Content-Type'] == 'application/json':
-            d = request.get_json()
-            print d
             #build user object data structure from payload
-            nu = "xxx"
-            print nu
-            u = makeUser(nu)
-            log(u['id'], 'new user', 'api')
-            return u
+            d = request.get_json()
+            udata = {'fname':d['fname'], 'tel':d['tel'], 'tz':d['tz']}
+            print udata
+            uid = makeUser(udata)
+            #log(uid, 'new user', 'api')
+
+            # let's return some data!!
+            udata.update({'uid':uid})
+            resp = Response(json.dumps(udata), status=201, mimetype='application/json')
+            resp.headers['Action'] = 'user created'
+            return resp
 
     elif request.method == 'PATCH':
         if request.headers['Content-Type'] == 'application/json':
@@ -161,7 +172,7 @@ def user():
             uu = "xxx"
             print uu
             u = updateUser(uu)
-            log(u['id'], 'mod user', 'api')
+            #log(u['uid'], 'mod user', 'api')
             return u
 
 
@@ -186,28 +197,35 @@ def getUser(id):
     #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
     db = create_engine(Mdb, convert_unicode=True, echo=True)
     md = MetaData(bind=db)
-    table = Table('players', md, autoload=True)
+    table = Table('playerInfo', md, autoload=True)
     con = db.connect()
     #u = con.execute( table.insert(), date=d, user=u, action=a, medium=m)
     print u
     return u
 
 # create new user using POST payload.
-def makeUser(userData):
+def makeUser(ud):
     #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
-    db = create_engine(Mdb, convert_unicode=True, echo=True)
+    db = create_engine(Mdb, convert_unicode=True, echo=False)
     md = MetaData(bind=db)
-    table = Table('players', md, autoload=True)
+    table = Table('playerInfo', md, autoload=True)
+
+    now = datetime.datetime.now()
+    d = now.strftime('%Y-%m-%d %H:%M:%S')
+
     con = db.connect()
-    con.execute( table.insert(), date=d, user=u, action=a, medium=m)
-    return u
+    x = con.execute( table.insert(), name=ud['fname'], tel=ud['tel'], tz=ud['tz'], cdate=d, gstart=d )
+
+    uid = x.inserted_primary_key[0]
+    print uid
+    return uid
 
 # update user data using POST payload.
 def updateUser(userData):
     #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
-    db = create_engine(Mdb, convert_unicode=True, echo=True)
+    db = create_engine(Mdb, convert_unicode=True, echo=False)
     md = MetaData(bind=db)
-    table = Table('players', md, autoload=True)
+    table = Table('playerInfo', md, autoload=True)
     con = db.connect()
     #con.execute( table.update(), date=d, user=u, action=a, medium=m)
     return u
@@ -215,7 +233,7 @@ def updateUser(userData):
 # SMS auth - store token
 def newAuth(a):
     #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
-    db = create_engine(Mdb, convert_unicode=True, echo=True)
+    db = create_engine(Mdb, convert_unicode=True, echo=False)
     md = MetaData(bind=db)
     table = Table('tokenAuth', md, autoload=True)
     con = db.connect()
@@ -231,7 +249,7 @@ def newAuth(a):
 # SMS auth - return auth based on token
 def checkAuth(uid):
     #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
-    db = create_engine(Mdb, convert_unicode=True, echo=True)
+    db = create_engine(Mdb, convert_unicode=True, echo=False)
     md = MetaData(bind=db)
     table = Table('tokenAuth', md, autoload=True)
     con = db.connect()
@@ -240,4 +258,4 @@ def checkAuth(uid):
     return a
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
