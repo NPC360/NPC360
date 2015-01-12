@@ -2,6 +2,7 @@ body{
   width:80%;margin:auto;
   font-family: 'Roboto', sans-serif;
   color: #111111;
+  background:url(../img/bg.png) center center;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -18,19 +19,16 @@ a:active, a:hover {color: #B10DC9;}
 
 * { box-sizing:border-box; }
 
-/* basic stylings ------------------------------------------ */
-body 				 { background:url(../img/bg.png) center center;}
-.container 		{ 
-  font-family:'Roboto';
+.container { 
   width:600px; 
   margin:30px auto 0; 
   display:block; 
   background:#FFF;
   padding:10px 50px 50px;
+  height: 400px;
 }
-h2 		 { 
+h2 { 
   text-align:center; 
-  margin-bottom:50px; 
 }
 h2 small { 
   font-weight:normal; 
@@ -40,112 +38,89 @@ h2 small {
 .footer 	{ text-align:center; }
 .footer a  { color:#53B2C8; }
 
-/* form starting stylings ------------------------------- */
-.group 			  { 
-  position:relative; 
-  margin-bottom:45px; 
-}
-input 				{
-  font-size:18px;
-  padding:10px 10px 10px 5px;
-  display:block;
-  width:300px;
-  border:none;
-  border-bottom:1px solid #757575;
-}
-input:focus 		{ outline:none; }
-
-/* LABEL ======================================= */
-label 				 {
-  color:#999; 
-  font-size:18px;
-  font-weight:normal;
-  position:absolute;
-  pointer-events:none;
-  left:5px;
-  top:10px;
-  transition:0.2s ease all; 
-  -moz-transition:0.2s ease all; 
-  -webkit-transition:0.2s ease all;
+label {
+font-size: 13px;
+color: #3c5170;
+font-weight: 600;
+text-transform: uppercase;
+display: inline-block;
+margin-top: 25px;
 }
 
-/* active state */
-input:focus ~ label, input:valid ~ label 		{
-  top:-20px;
-  font-size:14px;
-  color:#5264AE;
+#tel {
+  padding: 15px 0 14px 55px;
+  width: 431px;
+  height: 50px;
+  border: 1px solid #d3dce5;
+  border-radius: 3px 0 0 3px;
+  background: #fff;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  font-size: 14px;
+  color: #3b527b;
+  float: left;
+  margin-top: 10px !important; /* overriding plugin js */
 }
 
-/* BOTTOM BARS ================================= */
-.bar 	{ position:relative; display:block; width:300px; }
-.bar:before, .bar:after 	{
-  content:'';
-  height:2px; 
-  width:0;
-  bottom:1px; 
-  position:absolute;
-  background:#5264AE; 
-  transition:0.2s ease all; 
-  -moz-transition:0.2s ease all; 
-  -webkit-transition:0.2s ease all;
-}
-.bar:before {
-  left:50%;
-}
-.bar:after {
-  right:50%; 
+input {
+  padding: 15px 0 14px 0;
+  width: 431px;
+  height: 50px;
+  border: 1px solid #d3dce5;
+  border-radius: 3px 3px 3px 3px;
+  background: #fff;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  font-size: 14px;
+  color: #3b527b;
+  float: left;
+  margin-top: 10px;
+  font-family: 'Roboto', sans-serif;
 }
 
-/* active state */
-input:focus ~ .bar:before, input:focus ~ .bar:after {
-  width:50%;
+input {
+  padding-left: 5px;
 }
 
-/* HIGHLIGHTER ================================== */
-.highlight {
-  position:absolute;
-  height:60%; 
-  width:100px; 
-  top:25%; 
-  left:0;
-  pointer-events:none;
-  opacity:0.5;
+input#auth {
+  width: 155px;
 }
 
-/* active state */
-input:focus ~ .highlight {
-  -webkit-animation:inputHighlighter 0.3s ease;
-  -moz-animation:inputHighlighter 0.3s ease;
-  animation:inputHighlighter 0.3s ease;
+.btn-primary {
+  color: #ffffff;
+  background-color: #2196f3;
+  border-color: transparent;
 }
 
-/* ANIMATIONS ================ */
-@-webkit-keyframes inputHighlighter {
-	from { background:#5264AE; }
-  to 	{ width:0; background:transparent; }
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary.focus,
+.btn-primary:active,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary {
+  color: #ffffff;
+  background-color: #0c7cd5;
+  border-color: rgba(0, 0, 0, 0);
 }
-@-moz-keyframes inputHighlighter {
-	from { background:#5264AE; }
-  to 	{ width:0; background:transparent; }
-}
-@keyframes inputHighlighter {
-	from { background:#5264AE; }
-  to 	{ width:0; background:transparent; }
+.btn-primary:active,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary {
+  background-image: none;
 }
 
-#submit {
-  background-color: #4285f4;
-  color: #fff;       
-  display: inline-block;
-  position: relative;
-  width: 320px;
-  height: 45px;
-  line-height: 32px;
-  border-radius: 2px;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26); 
-  padding: 0px
-} 
-
-.hiddeninput {
-  display: none;
+.btn-primary .badge {
+  color: #2196f3;
+  background-color: #ffffff;
 }
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+
+
+

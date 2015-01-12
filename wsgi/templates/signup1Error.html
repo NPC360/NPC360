@@ -26,28 +26,25 @@
 
   <h2>Signup error</h2>
 
-  <p style="margin-bottom: 45px;">Your phone number didn't work, please try again.</p>
+  <p style="margin-bottom: 5px;">Your phone number didn't work, please try again.</p>
 
   <form id="signupForm" class="signupForm" action="/signup" method="POST">
 
-    <div class="group">
-      <input id="fname" type="text" name="fname" required/>
-      <span class="highlight"></span>
-      <span class="bar"></span>
+
+    <div>
       <label>First Name</label>
+      <input id="fname" type="text" name="fname" required/>
     </div>
 
-    <div class="group">
-      <input id="tel" type="tel" name="tel" required/>
-      <span class="highlight"></span>
-      <span class="bar"></span>
-      <!--<label>Mobile phone number </label>-->
+    <div>
+      <label>Mobile phone number</label>
+      <input id="tel" type="tel" name="tel" placeholder="Enter mobile number" required/>
     </div>
 
     <!--Use JS to determine timezone or use a map based selector-->
     <input id="tz" class="hiddeninput" type="text" name="tz" hidden/>
 
-    <input id="submit" type="submit" value="Continue">
+    <input id="submit" class="btn-primary" type="submit" value="Continue">
 
   </form>
 
