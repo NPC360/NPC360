@@ -148,19 +148,40 @@ def user():
         if request.headers['Content-Type'] == 'application/json':
             d = request.get_json()
             u = getUser(d['id'])
-            print "player", u['uid'], '(', u['fname'], u['lname'], ') :', u, "\n"
-            return u
+            print "player", u, "\n"
+
+            udata = {
+                'player id':u['id'],
+                'player created on':str(u['cdate']),
+                'name':u['name'],
+                'tel':u['tel'],
+                'email':u['email'],
+                'twitter':u['twitter'],
+                'timezone':u['tz'],
+                'game state':u['gstate'],
+                'game started on':str(u['gstart']),
+            }
+
+            # return data
+            resp = Response(json.dumps(udata), status=200, mimetype='application/json')
+            resp.headers['Action'] = 'user retrieved'
+            return resp
 
     if request.method == 'POST':
         if request.headers['Content-Type'] == 'application/json':
             #build user object data structure from payload
             d = request.get_json()
-            udata = {'fname':d['fname'], 'tel':d['tel'], 'tz':d['tz'], 'email':d['email']}
+            udata = {
+                'fname':d['fname'],
+                'tel':d['tel'],
+                'tz':d['tz'],
+                'email':d['email']
+            }
             print udata
             uid = makeUser(udata)
             #log(uid, 'new user', 'api')
 
-            # let's return some data!!
+            # return data
             udata.update({'uid':uid})
             resp = Response(json.dumps(udata), status=201, mimetype='application/json')
             resp.headers['Action'] = 'user created'
@@ -192,18 +213,22 @@ def log(u,a,m):
     table = Table('log', md, autoload=True)
     con = db.connect()
     con.execute( table.insert(), date=d, user=u, action=a, medium=m)
+    con.close()
     print d,u,a,m
 
 # lookup user from datastore using a provided 'id' - could be uid, phone / email / twitter handle, etc. (should be medium agnostic)
-def getUser(id):
+def getUser(uid):
     #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
-    db = create_engine(Mdb, convert_unicode=True, echo=True)
+    db = create_engine(Mdb, convert_unicode=True, echo=False)
     md = MetaData(bind=db)
     table = Table('playerInfo', md, autoload=True)
     con = db.connect()
-    #u = con.execute( table.insert(), date=d, user=u, action=a, medium=m)
-    print u
-    return u
+
+    x = con.execute( table.select().where(or_(table.c.id == uid, table.c.tel == uid, table.c.email == uid, table.c.twitter == uid)))
+
+    row = x.fetchone()
+    con.close()
+    return row
 
 # create new user using POST payload.
 def makeUser(ud):
@@ -222,6 +247,7 @@ def makeUser(ud):
     x = con.execute( table.insert(), name=ud['fname'], tel=normTel, tz=ud['tz'], email=ud['email'], cdate=d, gstart=d, gstate=0 )
 
     uid = x.inserted_primary_key[0]
+    con.close()
     print uid
     return uid
     #except IntegrityError as e:
@@ -236,6 +262,8 @@ def updateUser(userData):
     table = Table('playerInfo', md, autoload=True)
     con = db.connect()
     #con.execute( table.update(), date=d, user=u, action=a, medium=m)
+
+    #con.close()
     return u
 
 # SMS auth - store token
@@ -251,7 +279,7 @@ def newAuth(a):
 
     x = con.execute( table.insert(), auth=a, date=d)
     uid = x.inserted_primary_key[0]
-
+    con.close()
     return uid
 
 # SMS auth - return auth based on token
@@ -263,6 +291,7 @@ def checkAuth(uid):
     con = db.connect()
     x = con.execute( table.select(table.c.auth).where(table.c.uid == uid) )
     a = x.fetchone()['auth']
+    con.close()
     return a
 
 if __name__ == "__main__":
