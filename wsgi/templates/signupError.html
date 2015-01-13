@@ -9,7 +9,6 @@
   <meta name="author" content="NPC 360">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href='http://fonts.googleapis.com/css?family=Roboto+Slab|Roboto:400,400italic,500|Roboto+Condensed' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="{{url_for('static', filename='css/signup.css') }}">
   <link rel="stylesheet" href="{{url_for('static', filename='css/style.css') }}">
   <!--<link rel="stylesheet" href="../static/css/style.css">-->
   <!--[if lt IE 9]>
@@ -25,7 +24,7 @@
   <p style="margin-bottom: 45px;">{{ name }}, the 4 digit authentication code you entered wasn't correct, please try entering it again or <a href="/signup">request a new code</a>.</p>
 
   <form method="POST" action="/signup">
-    
+
     <label>Authentication Code</label>
 
     <div>
@@ -38,6 +37,7 @@
     <input id="fname" class="hiddeninput" name="fname" type="text" value="{{name}}" hidden>
     <input id="tel" class="hiddeninput" name="tel" type="tel" value="{{tel}}" hidden>
     <input id="tz" class="hiddeninput" name="tz" type="text" value="{{tz}}" hidden>
+    <input id="tel" class="hiddeninput" name="email" type="email" value="{{email}}" hidden>
 
     <input id="submit" class="btn-primary" type="submit" value="Complete signup">
   </form>

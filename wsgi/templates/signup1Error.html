@@ -9,7 +9,6 @@
   <meta name="author" content="NPC 360">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href='http://fonts.googleapis.com/css?family=Roboto+Slab|Roboto:400,400italic,500|Roboto+Condensed' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="{{url_for('static', filename='css/signup.css') }}">
   <link rel="stylesheet" href="{{url_for('static', filename='css/style.css') }}">
   <link rel="stylesheet" href="{{url_for('static', filename='css/intlTelInput.css') }}">
 
@@ -32,8 +31,13 @@
 
 
     <div>
-      <label>First Name</label>
-      <input id="fname" type="text" name="fname" required/>
+      <label>First name</label>
+      <input id="fname" type="text" name="fname" required value="{{name}}"/>
+    </div>
+
+    <div>
+      <label>Email address</label>
+      <input id="email" type="email" name="email" required value="{{email}}"/>
     </div>
 
     <div>

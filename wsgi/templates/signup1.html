@@ -9,7 +9,6 @@
   <meta name="author" content="NPC 360">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href='http://fonts.googleapis.com/css?family=Roboto+Slab|Roboto:400,400italic,500|Roboto+Condensed' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="{{url_for('static', filename='css/signup.css') }}">
   <link rel="stylesheet" href="{{url_for('static', filename='css/style.css') }}">
   <link rel="stylesheet" href="{{url_for('static', filename='css/intlTelInput.css') }}">
 
@@ -27,15 +26,22 @@
   <h2>Sign up for NPC360</h2>
 
   <form id="signupForm" class="signupForm" action="/signup" method="POST">
-      
+
       <div>
-        <label>First Name</label>
+        <label>First name</label>
         <input id="fname" type="text" name="fname" required/>
+      </div>
+
+      <div>
+        <label>Email address</label>
+        <input id="email" type="email" name="email" required/>
       </div>
 
       <div>
         <label>Mobile phone number</label>
         <input id="tel" type="tel" name="tel" placeholder="Enter mobile number" required/>
+        <span id="valid-msg" class="hide val">&#10003;</span>
+        <span id="error-msg" class="hide val">&#10007;</span>
       </div>
 
     <!--Use JS to determine timezone or use a map based selector-->

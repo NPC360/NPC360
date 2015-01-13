@@ -43,11 +43,12 @@ def signup():
         name = request.values.get('fname', None)
         tel = request.values.get('tel', None)
         tz = request.values.get('tz', None)
+        email = request.values.get('email', None)
 
         if request.values.get('auth', None):
             auth = request.values.get('auth', None)
             uid = request.values.get('uid', None)
-            print auth, name, tel, tz, uid
+            print auth, name, tel, tz, email, uid
 
             tableAuth = checkAuth(uid)
             print "auth from table", tableAuth
@@ -56,25 +57,25 @@ def signup():
             #if auth is not correct, return to confirmation step.
             if str(auth) in str(tableAuth):
 
-                d = {'fname':name, 'tel':tel, 'tz':tz}
+                d = {'fname':name, 'tel':tel, 'tz':tz, 'email':email}
                 uid = makeUser(d)
                 print "new uid", uid
-                return render_template('signupSuccess.html', name=name, tel=tel, tz=tz)
+                return render_template('signupSuccess.html', name=name, tel=tel, tz=tz, email=email)
             else:
-                return render_template('signupError.html', name=name, tel=tel, tz=tz, uid=uid)
+                return render_template('signupError.html', name=name, tel=tel, tz=tz, uid=uid, email=email)
         # if no auth code passed in, we need to ask for it!
         else:
-            print name, tel, tz
-            if name and tel and tz:
+            print name, tel, tz, email
+            if name and tel and tz and email:
                 auth = str(random.randint(1000, 9999))
                 # add data to MySQL table for lookup later on & get row id/token
                 uid = newAuth(auth)
                 print auth, uid
 
                 if signupSMSauth(tel, auth):
-                    return render_template('signup2.html', name=name, tel=tel, tz=tz, uid=uid)
+                    return render_template('signup2.html', name=name, tel=tel, tz=tz, uid=uid, email=email)
                 else:
-                    return render_template('signup1Error.html')
+                    return render_template('signup1Error.html', name=name, email=email)
     # but, if no data POSTed at all, then we need to render the signup form!
     else:
         return render_template('signup1.html')
@@ -152,7 +153,7 @@ def user():
         if request.headers['Content-Type'] == 'application/json':
             #build user object data structure from payload
             d = request.get_json()
-            udata = {'fname':d['fname'], 'tel':d['tel'], 'tz':d['tz']}
+            udata = {'fname':d['fname'], 'tel':d['tel'], 'tz':d['tz'], 'email':d['email']}
             print udata
             uid = makeUser(udata)
             #log(uid, 'new user', 'api')
@@ -213,7 +214,7 @@ def makeUser(ud):
     d = now.strftime('%Y-%m-%d %H:%M:%S')
 
     con = db.connect()
-    x = con.execute( table.insert(), name=ud['fname'], tel=ud['tel'], tz=ud['tz'], cdate=d, gstart=d, gstate=0 )
+    x = con.execute( table.insert(), name=ud['fname'], tel=ud['tel'], tz=ud['tz'], email=ud['email'], cdate=d, gstart=d, gstate=0 )
 
     uid = x.inserted_primary_key[0]
     print uid

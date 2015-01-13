@@ -19,21 +19,21 @@ a:active, a:hover {color: #B10DC9;}
 
 * { box-sizing:border-box; }
 
-.container { 
-  width:600px; 
-  margin:30px auto 0; 
-  display:block; 
+.container {
+  width:600px;
+  margin:30px auto 0;
+  display:block;
   background:#FFF;
   padding:10px 50px 50px;
   height: 400px;
 }
-h2 { 
-  text-align:center; 
+h2 {
+  text-align:center;
 }
-h2 small { 
-  font-weight:normal; 
-  color:#888; 
-  display:block; 
+h2 small {
+  font-weight:normal;
+  color:#888;
+  display:block;
 }
 .footer 	{ text-align:center; }
 .footer a  { color:#53B2C8; }
@@ -115,12 +115,42 @@ input#auth {
   background-color: #ffffff;
 }
 
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-  margin: 0; 
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
+/* styles for phone # validation in step 1*/
+.hide{
+  display:none;
+}
 
+#error-msg {
+  color: red;
+}
 
+#valid-msg {
+  color: #00C900;
+}
 
+input {
+  transition: background-color 100ms ease-out;
+}
+
+input.error {
+  border: 1px solid #FF7C7C;
+}
+
+input.flash {
+  transition: background-color 0;
+  background-color: #FFC7C7;
+}
+
+.val{
+  font-size: 1.5em;
+  -webkit-margin-before: 0.67em;
+  -webkit-margin-after: 0.67em;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px;
+}
