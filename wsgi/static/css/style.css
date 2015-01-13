@@ -21,11 +21,11 @@ a:active, a:hover {color: #B10DC9;}
 
 .container {
   width:600px;
-  margin:30px auto 0;
+  margin:30px;
   display:block;
   background:#FFF;
-  padding:10px 50px 50px;
-  height: 400px;
+  padding:50px;
+  /*height: 400px;*/
 }
 h2 {
   text-align:center;

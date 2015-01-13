@@ -1,0 +1,62 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Sign up | NPC360</title>
+  <meta name="description" content="Enter your name, phone number, and timezone to sign up for NPC360.">
+  <meta name="author" content="NPC 360">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href='http://fonts.googleapis.com/css?family=Roboto+Slab|Roboto:400,400italic,500|Roboto+Condensed' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="{{url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{url_for('static', filename='css/intlTelInput.css') }}">
+
+  <!--<link rel="stylesheet" href="../static/css/style.css">-->
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+
+
+<div class="container">
+
+  <h2>Signup error</h2>
+
+  <p style="margin-bottom: 5px;">Your phone number or email address is already registered to a different player.</p>
+
+  <form id="signupForm" class="signupForm" action="/signup" method="POST">
+
+
+    <div>
+      <label>First name</label>
+      <input id="fname" type="text" name="fname" required value="{{name}}"/>
+    </div>
+
+    <div>
+      <label>Email address</label>
+      <input id="email" type="email" name="email" required/>
+    </div>
+
+    <div>
+      <label>Mobile phone number</label>
+      <input id="tel" type="tel" name="tel" placeholder="Enter mobile number" required/>
+    </div>
+
+    <!--Use JS to determine timezone or use a map based selector-->
+    <input id="tz" class="hiddeninput" type="text" name="tz" hidden/>
+
+    <input id="submit" class="btn-primary" type="submit" value="Continue">
+
+  </form>
+
+</div>
+
+  <!-- JaVAVAVAVAVa -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="{{url_for('static', filename='js/intlTelInput.min.js') }}"></script>
+  <script src="{{url_for('static', filename='js/signup1.js') }}"></script>
+</body>
+</html>

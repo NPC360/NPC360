@@ -14,10 +14,12 @@ https://github.com/NPC360/NPC360/blob/master/schema.md
 from flask import request, Flask, redirect, render_template, Response, jsonify, url_for
 import requests
 import json
+import re
 import twilio
 import twilio.rest
 import twilio.twiml
 from sqlalchemy import *
+from sqlalchemy.exc import IntegrityError
 
 import datetime
 import random
@@ -56,7 +58,6 @@ def signup():
             #if auth is correct, create new user in playerInfo table.
             #if auth is not correct, return to confirmation step.
             if str(auth) in str(tableAuth):
-
                 d = {'fname':name, 'tel':tel, 'tz':tz, 'email':email}
                 uid = makeUser(d)
                 print "new uid", uid
@@ -64,6 +65,7 @@ def signup():
             else:
                 return render_template('signupError.html', name=name, tel=tel, tz=tz, uid=uid, email=email)
         # if no auth code passed in, we need to ask for it!
+        # oh, and ideally we should make sure the email/phone aren't already in the table.  (future?)
         else:
             print name, tel, tz, email
             if name and tel and tz and email:
@@ -206,19 +208,25 @@ def getUser(id):
 # create new user using POST payload.
 def makeUser(ud):
     #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
+    #try:
     db = create_engine(Mdb, convert_unicode=True, echo=False)
     md = MetaData(bind=db)
     table = Table('playerInfo', md, autoload=True)
 
+    #normalize phone # & get current datetime
+    normTel = re.sub(r'[^a-zA-Z0-9\+]','', ud['tel'])
     now = datetime.datetime.now()
     d = now.strftime('%Y-%m-%d %H:%M:%S')
 
     con = db.connect()
-    x = con.execute( table.insert(), name=ud['fname'], tel=ud['tel'], tz=ud['tz'], email=ud['email'], cdate=d, gstart=d, gstate=0 )
+    x = con.execute( table.insert(), name=ud['fname'], tel=normTel, tz=ud['tz'], email=ud['email'], cdate=d, gstart=d, gstate=0 )
 
     uid = x.inserted_primary_key[0]
     print uid
     return uid
+    #except IntegrityError as e:
+        #print e
+        #return render_template('signup1_EorP_Taken.html', name=ud['fname'])
 
 # update user data using POST payload.
 def updateUser(userData):
