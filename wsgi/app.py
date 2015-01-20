@@ -156,7 +156,7 @@ def user():
                 'name':u['name'],
                 'tel':u['tel'],
                 'email':u['email'],
-                'twitter':u['twitter'],
+                #'twitter':u['twitter'],
                 'timezone':u['tz'],
                 'game state':u['gstate'],
                 'game started on':str(u['gstart']),
@@ -224,7 +224,7 @@ def getUser(uid):
     table = Table('playerInfo', md, autoload=True)
     con = db.connect()
 
-    x = con.execute( table.select().where(or_(table.c.id == uid, table.c.tel == uid, table.c.email == uid, table.c.twitter == uid)))
+    x = con.execute( table.select().where(or_(table.c.id == uid, table.c.tel == uid, table.c.email == uid)))
 
     row = x.fetchone()
     con.close()
