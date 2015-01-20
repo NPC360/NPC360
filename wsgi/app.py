@@ -145,11 +145,23 @@ user API
 @app.route("/user", methods = ['GET', 'POST', 'PATCH'])
 def user():
     if request.method == 'GET':
-        if request.headers['Content-Type'] == 'application/json':
-            d = request.get_json()
-            u = getUser(d['id'])
-            print "player", u, "\n"
+        if (request.values.get('id', None)):
+            d = request.values.get('id', None)
+            u = getUser(d)
 
+        elif request.headers['Content-Type'] == 'application/json':
+            d = request.get_json()
+            print d
+            u = getUser(d['id'])
+
+        print "player", u, "\n"
+
+        if u is None:
+            resp = Response(json.dumps(u), status=404, mimetype='application/json')
+            resp.headers['Action'] = 'user not found'
+            return resp
+
+        else:
             udata = {
                 'player id':u['id'],
                 'player created on':str(u['cdate']),
