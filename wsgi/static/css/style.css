@@ -126,14 +126,6 @@ input[type=number]::-webkit-outer-spin-button {
   display:none;
 }
 
-#error-msg {
-  color: red;
-}
-
-#valid-msg {
-  color: #00C900;
-}
-
 input {
   transition: background-color 100ms ease-out;
 }
