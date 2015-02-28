@@ -117,27 +117,38 @@ def smsout():
     sendSMS(u,s,n) # user object, gamestate object (defines previous state, next state, and any other data), and npc object (number, name, gender(??) etc.)
     log(u['id'], 'output', 'sms')
 
-def sendSMS(u,s,n):
-    try:
-        c = twilio.rest.TwilioRestClient(Tsid, Ttoken)
-        if (s['media']): # if game state object has a media URL, we should send it via MMS!
-            c.messages.create(to=u['phone'], from_=n['phone'],body=s['msg'], media_url=s['media'])
-        else:
-            c.messages.create(to=u['phone'], from_=n['phone'],body=s['msg'])
-    except twilio.TwilioRestException as e:
-        print e
+def sendSMS(f,t,m,u,d,st):
+
+    worker = IronWorker()
+    task = Task(code_name="sms", scheduled=True)
+    task.payload = {"keys": {"auth": Tsid, "token": Ttoken}, "fnum": f, "tnum": t, "msg": m, "url": u}
+
+    # scheduling conditions
+    if d is not None:
+        task.delay = d
+        print "sending after", d, "second delay"
+    else:
+        task.start_at = st # desired `send @ playertime` converted to servertime
+        print "sending at:", st
+
+    # now queue the damn thing & get a response.
+    response = worker.queue(task)
+    print response
+    return response.id
 
 def signupSMSauth(tel,auth):
-    fromNum ="+17183959467" # should be env variable.
+    fnum ="+17183959467" # should be env variable.
     msg = "code: " + auth +" "+ u"\U0001F6A8"
     print "signupSMSauth", tel, msg
 
-    try:
-        c = twilio.rest.TwilioRestClient(Tsid, Ttoken)
-        c.messages.create(to=tel, from_=fromNum, body=msg)
+    # send auth SMS
+    workerStatus = sendSMS(fnum,tel,msg,None,0,None) #no media, 0s delay, no sendTime
+
+    if workerStatus is not None:
+        print "worker id", workerStatus
         return True
-    except twilio.TwilioRestException as e:
-        print e
+    else:
+        print "worker didn't complete properly (i think)"
         return False
 
 """
@@ -269,6 +280,7 @@ def makeUser(ud):
         return render_template('signup1_EorP_Taken.html', name=ud['fname'])
 
 # update user data using POST payload.
+# NOT ACTUALLY WRITTEN YET!!!!!!
 def updateUser(userData):
     #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
     db = create_engine(Mdb, convert_unicode=True, echo=False)

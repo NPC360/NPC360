@@ -1,0 +1,5 @@
+runtime 'python'
+#dependencies
+pip 'twilio'
+
+exec 'smsworker.py'
