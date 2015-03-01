@@ -120,7 +120,7 @@ def smsout():
 def sendSMS(f,t,m,u,d,st):
 
     worker = IronWorker()
-    task = Task(code_name="sms", scheduled=True)
+    task = Task(code_name="smsworker", scheduled=True)
     task.payload = {"keys": {"auth": Tsid, "token": Ttoken}, "fnum": f, "tnum": t, "msg": m, "url": u}
 
     # scheduling conditions
