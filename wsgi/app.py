@@ -38,6 +38,7 @@ landing page / HTML / authorization routes
 def index():
     return render_template('index.html')
 
+#@app.route("/careers", methods = ['GET','POST'])
 @app.route("/signup", methods = ['GET','POST'])
 def signup():
     if request.method == 'POST':
