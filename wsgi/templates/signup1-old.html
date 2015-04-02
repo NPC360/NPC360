@@ -1,0 +1,124 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Sign up | NPC360</title>
+  <meta name="description" content="Enter your name, phone number, and timezone to sign up for NPC360.">
+  <meta name="author" content="NPC 360">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href='http://fonts.googleapis.com/css?family=Roboto+Slab|Roboto:400,400italic,500|Roboto+Condensed' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="{{url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{url_for('static', filename='css/intlTelInput.css') }}">
+
+  <!--<link rel="stylesheet" href="../static/css/style.css">-->
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+
+
+<div class="container">
+
+  <h1>Careers</h1>
+
+  <p>Opening paragraph about exciting opportunities working at ficticious corp</p>
+
+  <h2>Open positions</h2>
+
+  <div class="position-container">
+  
+    <div class="left-column">
+      <h3>System Administrator</h3>
+      <p>Job description paragraph</p>
+
+      <!-- clicking on the apply now button will expand the div below? or perhaps it opens up a form kind of like how your flight project opens up the view/download interface? -->
+      <button>APPLY NOW</button>
+    </div>
+    </div class="right-column">
+      <span><strong>Location:</strong> Remote worker</span>
+      <span><strong>Term:</strong> Contract</span>
+      <span><strong>Salary range:</strong> Based on experience</span>
+      <span><strong>Start date:</strong> Immediate</span>
+
+    </div>
+  </div>
+
+  <div class="expanding-div">
+    <form id="signupForm" class="signupForm" action="/signup" method="POST">
+
+        <p>Contact details</p>
+
+        <div>
+          <label>First name</label>
+          <input id="fname" type="text" name="fname" required/>
+        </div>
+
+        <div>
+          <label>Last name</label>
+          <input id="lname" type="text" name="lname" required/>
+        </div>
+
+        <div>
+          <label>Email address</label>
+          <input id="email" type="email" name="email" required/>
+        </div>
+
+        <div>
+          <label>Mobile phone number</label>
+          <input id="tel" type="tel" name="tel" placeholder="Enter mobile number" required/>
+        </div>
+
+        <div>
+          <label>Time zone</label>
+          <p>Note: Insert custom JS timezone picker library</p>
+        </div>
+
+        <h2>Tell us a little about yourself</h2>
+
+        <div>
+          <label>Why do you want to work for ficticious corp</label>
+          <textarea id="whywork" name="whywork" rows="8" cols="70" required></textarea>
+        </div>
+
+        <div>
+          <label>Relevant work history</label>
+          <textarea id="history" name="history" rows="8" cols="70" required></textarea>
+        </div>
+
+        <div>
+          <label>The following best describes me</label>               
+            <label><input type=radio name=group value="I work alone"> I work alone </label><br/>
+            <label><input type=radio name=group value="I somtimes work alone"> I sometimes work alone </label><br/>
+            <label><input type=radio name=group value="I always work with others"> I always work with others</label><br/>
+        </div>
+
+        
+        <div>
+          <label>Upload resume</label>
+          <input type="file" name="resumefile" accept=".pdf/*">
+        </div>
+
+      <!--Use JS to determine timezone or use a map based selector-->
+      <input id="tz" class="hiddeninput" type="text" name="tz" hidden/>
+
+      <p id="tel-invalid" class="hide val">invalid phone number</p>
+      <p id="email-exists" class="hide val">email already registered</p>
+      <p id="tel-exists" class="hide val">phone already registered</p>
+
+      <input id="submit" class="btn-primary" type="submit" value="Continue">
+
+    </form>
+  </div>
+
+</div>
+
+  <!-- JaVAVAVAVAVa -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="{{url_for('static', filename='js/intlTelInput.min.js') }}"></script>
+  <script src="{{url_for('static', filename='js/signup1.js') }}"></script>
+</body>
+</html>

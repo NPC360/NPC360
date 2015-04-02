@@ -1,63 +1,263 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
 
-  <title>Sign up | NPC360</title>
-  <meta name="description" content="Enter your name, phone number, and timezone to sign up for NPC360.">
-  <meta name="author" content="NPC 360">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href='http://fonts.googleapis.com/css?family=Roboto+Slab|Roboto:400,400italic,500|Roboto+Condensed' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="{{url_for('static', filename='css/style.css') }}">
-  <link rel="stylesheet" href="{{url_for('static', filename='css/intlTelInput.css') }}">
+    <title>OmniCorp - Careers</title>
 
-  <!--<link rel="stylesheet" href="../static/css/style.css">-->
-  <!--[if lt IE 9]>
-    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
-</head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 
-<body>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css') }}">
+
+    <!-- Custom CSS -->    
+    <link rel="stylesheet" href="{{url_for('static', filename='css/intlTelInput.css') }}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/custom.css') }}">    
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">OmniCorp</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#projects">Projects</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="../navbar-static-top/">Careers </a><span class="sr-only">(current)</span></li>
+            <li class="active"><a href="./">Contact Us</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
 
 
-<div class="container">
-
-  <h2>Sign up for NPC360</h2>
-
-  <form id="signupForm" class="signupForm" action="/signup" method="POST">
-
-      <div>
-        <label>First name</label>
-        <input id="fname" type="text" name="fname" required/>
+      <div class="blog-header">
+        <h1 class="blog-title">Careers at OmniCorp</h1>
+        <p class="lead blog-description">A cheesey slogan that sounds corporate but is also a subtle jab at the storyline to come</p>
       </div>
 
-      <div>
-        <label>Email address</label>
-        <input id="email" type="email" name="email" required/>
-      </div>
+      <div class="row">
 
-      <div>
-        <label>Mobile phone number</label>
-        <input id="tel" type="tel" name="tel" placeholder="Enter mobile number" required/>
-      </div>
+        <div class="col-sm-8 blog-main">
 
-    <!--Use JS to determine timezone or use a map based selector-->
-    <input id="tz" class="hiddeninput" type="text" name="tz" hidden/>
+          <div class="blog-post">
 
-    <p id="tel-invalid" class="hide val">invalid phone number</p>
-    <p id="email-exists" class="hide val">email already registered</p>
-    <p id="tel-exists" class="hide val">phone already registered</p>
+            <h2 class="blog-post-title">Junior System Administrator</h2>
+            <p class="blog-post-meta">Full Time | Generous Benefits | Great Experience | Global branches</p>
+            <br>
+            <p>The role will be responsible for ensuring the efficient implementations/installations, maintenance and operations of all IT functions, with the assistance of vendor/service partners and under the direction of the IT Manager to ensure it is aligned to business objectives and strategy of the organisation. The key function of this role is to ensure business users have connectivity, providing operational support for server technologies and general system administration.</p>
 
-    <input id="submit" class="btn-primary" type="submit" value="Continue">
+            <p>To be successful in the role you must have:</p>
 
-  </form>
+            <ul>
+              <li>4 years' experience in a Level 2 Desktop Support role</li>
+              <li>Experience in supporting and resolving minor hardware and networking issues</li>
+              <li>Working experience of VMware (VSphere, VCentrem, ESXi)</li>
+              <li>Solid troubleshooting skills</li>
+              <li>Experience in liaising and managing third party vendors</li>
+              <li>Exposure to network and data security management and monitoring</li>
+              <li>Deep knowledge and experience Microsoft Window Server/Desktop administration</li>
+              <li>Excellent documentation and problem solving skills.</li>
+              <li>Strong communication and business engagement skills.</li>
+              <li>Must be Microsoft Certified, MCP, MCSE, MCSA, MTA etc</li>
+              <li>This is an excellent time to join this organisation growing from strength to strength and contribute your knowledge and have the opportunity to expand your technical and product skill set as the company grows and requires a larger IT environment and infrastructure to support the business.</li>
+            </ul>
 
-</div>
+            <p>The role is a permanent role and would suit a candidate who is looking to work for an organisation that values and rewards their employee's contribution and loyalty. The average tenure of employees that work for this organisation is over 7 years, therefore they are looking for a candidate that can demonstrate long term employment with one organisation.</p>
 
-  <!-- JaVAVAVAVAVa -->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <script src="{{url_for('static', filename='js/intlTelInput.min.js') }}"></script>
-  <script src="{{url_for('static', filename='js/signup1.js') }}"></script>
-</body>
+            <p>This client is interviewing next week, as they would like to have someone start ASAP, so if you are ready for a new challenge apply today!</p>
+
+            <p>Please note that only short listed candidates will be contacted.</p>
+
+            <!-- Already browsing through the source code? You are an inquisitive one aren't you. Flick us an email at EMAIL@OMNICORP.com to let us know you found this message, it will serve well on your application -->
+            <br>
+            <!--<p><a id="apply-btn" class="btn btn-primary btn-lg" href="#" role="button">Apply </a></p>-->
+            <button id="apply-btn" class="btn btn-primary btn-lg" >
+              Apply now
+            </button>
+        </div><!-- /.blog-main -->
+        </div>
+
+        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+          <div class="sidebar-module sidebar-module-inset">
+            <h4>About</h4>
+            <p>This is a inspriring statement about the company. Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
+          </div>
+          <div class="sidebar-module">
+            <h4>Archives</h4>
+            <ol class="list-unstyled">
+              <li><a href="#">March 2014</a></li>
+              <li><a href="#">February 2014</a></li>
+              <li><a href="#">January 2014</a></li>
+              <li><a href="#">December 2013</a></li>
+              <li><a href="#">November 2013</a></li>
+              <li><a href="#">October 2013</a></li>
+              <li><a href="#">September 2013</a></li>
+              <li><a href="#">August 2013</a></li>
+              <li><a href="#">July 2013</a></li>
+              <li><a href="#">June 2013</a></li>
+              <li><a href="#">May 2013</a></li>
+              <li><a href="#">April 2013</a></li>
+            </ol>
+          </div>
+          <div class="sidebar-module">
+            <h4>Elsewhere</h4>
+            <ol class="list-unstyled">
+              <li><a href="#">GitHub</a></li>
+              <li><a href="#">Twitter</a></li>
+              <li><a href="#">Facebook</a></li>
+            </ol>
+          </div>
+        </div><!-- /.blog-sidebar -->
+
+      </div><!-- /.row -->
+
+      <div class="row">
+
+        <div id="apply-form" class="col-sm-8 blog-main" style="display: none;">
+        
+          <form id="signupForm" class="signupForm" action="/careers" method="POST">
+
+            <p style="margin-top: 25px;">Contact details</p>
+
+              <div class="form-group">
+                <label for="fname">First Name *</label>
+                <input type="text" class="form-control" id="fname" placeholder="First name" name="fname" required />
+              </div>
+
+              <div class="form-group">
+                <label for="lname">Last Name *</label>
+                <input type="text" class="form-control" id="lname" placeholder="Last name" name="lname" required />
+              </div>
+
+              <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter your email" name="email" required />
+              </div>
+
+              <div class="form-group">
+                <label for="tel">Mobile Number *</label>
+                <input type="tel" class="form-control" id="tel" placeholder="Enter mobile number" name="tel" required />
+              </div>
+
+              <div class="form-group">
+                <label for="time-zone">Time Zone (library coming soon) (skip for now)</label>
+                <input type="text" class="form-control" id="time-zone" placeholder="Enter timezone" name="time-zone" />
+              </div>
+
+              <p style="margin-top: 25px;">Tell us a little about yourself</p>
+
+              <div class="form-group">
+                <label for="why-work">Why do you want to work for OmniCorp</label>
+                <textarea id="why-work" class="form-control" name="why-work" rows="8" ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="history">Relevant work history</label>
+                <textarea id="history" class="form-control" name="history" rows="8" ></textarea>
+              </div>
+
+              <br><p>Which best describes how you prefer to work</p>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+                  I work alone
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+                  I sometimes work alone
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="optionsRadios" id="optionsRadios3" value="option3" >
+                  I always work with others
+                </label>
+              </div>
+
+              <br>
+              <div class="form-group">
+                <label for="exampleInputFile">Upload resume</label>
+                <input type="file" name="resumefile" id="resumeFile" accept=".pdf">
+                <p class="help-block">Please upload resumes in PDF format</p>
+              </div>
+
+              <br>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" required> I am happy to be contacted by OmniCorp about future employment opportunities *
+                </label>
+              </div>
+
+              <button id="submit" class="btn btn-primary btn-lg" type="submit" value="Continue">Submit</button>
+
+              <!--Use JS to determine timezone or use a map based selector-->
+              <input id="tz" class="hiddeninput" type="text" name="tz" hidden/>
+
+              <p id="tel-invalid" class="hide val">invalid phone number</p>
+              <p id="email-exists" class="hide val">email already registered</p>
+              <p id="tel-exists" class="hide val">phone already registered</p>
+
+          </form>
+
+        </div> <!-- /.col for form -->
+
+      </div> <!-- /.row -->
+
+
+
+    </div><!-- /.container -->
+
+    <script>
+    
+    $(document).ready(function(){
+        
+        $("#apply-btn").click(function(){
+            $("#apply-form").show( "slow" );
+        })
+
+    });
+
+    </script>
+
+    <!-- JaVAVAVAVAVa -->
+    <script src="{{url_for('static', filename='js/intlTelInput.min.js') }}"></script>
+    <script src="{{url_for('static', filename='js/signup1.js') }}"></script>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../static/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../static/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
 </html>
