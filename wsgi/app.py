@@ -62,6 +62,12 @@ def signup():
                 d = {'fname':name, 'tel':tel, 'tz':tz, 'email':email}
                 uid = makeUser(d)
                 print "new uid", uid
+
+                ######
+                # this is where we should kick off the 'newGame' worker
+                # (which also needs to be written)
+                ######
+
                 return render_template('signupSuccess.html', name=name, tel=tel, tz=tz, email=email)
             else:
                 return render_template('signupError.html', name=name, tel=tel, tz=tz, uid=uid, email=email)
