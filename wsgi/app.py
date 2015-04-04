@@ -20,6 +20,8 @@ import twilio.rest
 import twilio.twiml
 from sqlalchemy import *
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import CompileError
+
 
 from firebase import firebase
 
@@ -297,12 +299,24 @@ def user():
         if request.headers['Content-Type'] == 'application/json':
             d = request.get_json()
             print d
-            #build updated user object data structure from payload
-            uu = "xxx"
-            print uu
-            u = updateUser(uu)
-            #log(u['uid'], 'mod user', 'api')
-            return u
+
+            if getUser(d['id']) and d['id'] == getUser(d['id'])['id']:
+                data = d['data']
+                r = updateUser(d['id'], data)
+
+                # if nothing returns, nothing was updated, so we need to return an error.
+                if r == None:
+                    resp = Response(json.dumps(d), status=500, mimetype='application/json')
+                    resp.headers['Action'] = 'updateUser() error'
+                else:
+                    #log(u['uid'], 'mod user', 'api')
+                    # if r returns data, than -something- was updated
+                    resp = Response(json.dumps(r), status=200, mimetype='application/json')
+                    resp.headers['Action'] = 'user updated'
+            else:
+                resp = Response(json.dumps(d), status=500, mimetype='application/json')
+                resp.headers['Action'] = 'user id mismatch error'
+            return resp
 
 
 """
@@ -338,8 +352,8 @@ def getUser(uid):
 
 # create new user using POST payload.
 def makeUser(ud):
-    #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
     try:
+        #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
         db = create_engine(Mdb, convert_unicode=True, echo=False)
         md = MetaData(bind=db)
         table = Table('playerInfo', md, autoload=True)
@@ -362,17 +376,19 @@ def makeUser(ud):
         return render_template('signup1_EorP_Taken.html', name=ud['fname'])
 
 # update user data using POST payload.
-# NOT ACTUALLY WRITTEN YET!!!!!!
-def updateUser(userData):
-    #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
-    db = create_engine(Mdb, convert_unicode=True, echo=False)
-    md = MetaData(bind=db)
-    table = Table('playerInfo', md, autoload=True)
-    con = db.connect()
-    #con.execute( table.update(), date=d, user=u, action=a, medium=m)
+def updateUser(uid, data):
+    try:
+        #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
+        db = create_engine(Mdb, convert_unicode=True, echo=False)
+        md = MetaData(bind=db)
+        table = Table('playerInfo', md, autoload=True)
+        con = db.connect()
+        res = con.execute( table.update().where(table.c.id == uid).values(data) )
+        con.close()
+        return res.last_updated_params()
 
-    #con.close()
-    return u
+    except (CompileError, IntegrityError) as e:
+        print e
 
 # SMS auth - store token
 def newAuth(a):
