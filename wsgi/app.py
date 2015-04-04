@@ -152,7 +152,7 @@ def sendSMS(f,t,m,u,d,st):
     return response.id
 
 def signupSMSauth(tel,auth):
-    fnum ="+17183959467" # should be env variable.
+    fnum ="+17183959467" # should be env variable < maybe a lookup?
     msg = "code: " + auth +" "+ u"\U0001F6A8"
     print "signupSMSauth", tel, msg
 
@@ -197,7 +197,6 @@ def processInput(user, msg):
         if x in msg:
             advanceGame(user, triggers[x])
 
-
 def getGameStateData(id):
     fb = firebase.FirebaseApplication(FB, None)
     data = fb.get('/gameData/'+id, None)
@@ -224,10 +223,9 @@ def checkErr(msg):
 
 def advanceGame(user, state):
     # advance user state, send new prompt, log game state change?
-    #updateUser(user_data)
+    updateUser(user['id'], {"gstate":state})
     #sendSMS(user, message, from, etc.)
     #log(user['id'], "advance to game state "+ state, "SMS")
-    pass
 
 def sendErrorSMS(user):
     # send random error phrase from list to user
@@ -236,7 +234,7 @@ def sendErrorSMS(user):
     pass
 
 """
-user API
+User API
 """
 @app.route("/user", methods = ['GET', 'POST', 'PATCH'])
 def user():
@@ -320,7 +318,7 @@ def user():
 
 
 """
-DATASTORE METHODS
+MySQL DATASTORE METHODS
 """
 # I/O Logging (time, userid, action taken, I/O medium -- what else??)
 def log(u,a,m):
