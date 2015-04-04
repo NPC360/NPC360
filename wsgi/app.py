@@ -33,8 +33,8 @@ app = Flask(__name__)
 # API & DB credentials
 from Keys import *
 
-# YES/No words
-from yesno import *
+# YES/No/Error phrases
+from yesnoerr import *
 
 """
 landing page / HTML / authorization routes
@@ -165,7 +165,7 @@ def signupSMSauth(tel,auth):
         return False
 
 def processInput(user, msg):
-    gameState = i['gstate']
+    gameState = user['gstate']
     gameStateData = getGameStateData(gameState)
 
     triggers = gameStateData['triggers']
@@ -222,9 +222,15 @@ def checkErr(msg):
 
 def advanceGame(user, state):
     # advance user state, send new prompt, log game state change?
+    #updateUser(user_data)
+    #sendSMS(user, message, from, etc.)
+    #log(user['id'], "advance to game state "+ state, "SMS")
     pass
 
 def sendErrorSMS(user):
+    # send random error phrase from list to user
+    err = random.choice(errlist)
+    #sendSMS(user, err, from, etc.)
     pass
 
 """
