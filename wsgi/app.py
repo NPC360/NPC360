@@ -21,6 +21,8 @@ import twilio.twiml
 from sqlalchemy import *
 from sqlalchemy.exc import IntegrityError
 
+from firebase import firebase
+
 from iron_worker import *
 import datetime
 import random
@@ -30,6 +32,9 @@ app = Flask(__name__)
 
 # API & DB credentials
 from Keys import *
+
+# YES/No words
+from yesno import *
 
 """
 landing page / HTML / authorization routes
@@ -103,11 +108,13 @@ def smsin():
     u = requests.get(url_for('user'), {'id':phone})
     print u
 
-    log(u['id'], 'input', 'sms') # (what else do we need to log here?)
+    #log(u['id'], 'input', 'sms')
 
-    #process input payload (if payload_error, return info via /smsout)
-    #update player game state (external datastore)
-    #return new prompt to player via /smsout
+    processInput(u, msg)
+
+        # process input payload (if payload_error, return info via /smsout)
+        # update player game state (external datastore)
+        # return new prompt to player via /smsout
 
 @app.route("/smsout", methods =['POST'])
 def smsout():
@@ -156,6 +163,66 @@ def signupSMSauth(tel,auth):
     else:
         print "worker didn't complete properly (i think)"
         return False
+
+def processInput(user, msg):
+    gameState = i['gstate']
+    gameStateData = getGameStateData(gameState)
+
+    triggers = gameStateData['triggers']
+    print triggers
+
+    sT = triggers.copy()
+    sT.pop('yes', None)
+    sT.pop('no', None)
+    sT.pop('error', None)
+    sT.pop('noresp', None)
+
+    print sT # this array only contains triggers that aren't tied to special keywords / operations ^^
+
+    # check for affirmative / negative responses
+    if checkYes(msg):
+        advanceGame(user, triggers['yes'])
+    elif checkNo(msg):
+        advanceGame(user, triggers['no'])
+
+    # check if response is even in the list
+    elif checkErr(msg):
+        sendErrorMsgSMS(user)
+    # todo: check for no response?
+
+    # now, we can run through our list of triggers and see if any contains our key phrase.
+    for x in sT:
+        if x in msg:
+            advanceGame(user, triggers[x])
+
+
+def getGameStateData(id):
+    fb = firebase.FirebaseApplication(FB, None)
+    data = fb.get('/gameData/'+id, None)
+    print data
+    return data
+
+def checkYes(msg):
+    if msg.lower() in map(str.lower, yeslist):
+        return True
+    else:
+        return False
+
+def checkNo(msg):
+    if msg.lower() in map(str.lower, nolist):
+        return True
+    else:
+        return False
+
+def checkErr(msg):
+    return True
+
+def advanceGame(user, state):
+    # advance user state, send new prompt, log game state change?
+    pass
+
+def sendErrorMsgSMS(user):
+    pass
 
 """
 user API
