@@ -187,7 +187,7 @@ def processInput(user, msg):
 
     # check if response is even in the list
     elif checkErr(msg):
-        sendErrorMsgSMS(user)
+        sendErrorSMS(user)
     # todo: check for no response?
 
     # now, we can run through our list of triggers and see if any contains our key phrase.
@@ -215,13 +215,16 @@ def checkNo(msg):
         return False
 
 def checkErr(msg):
-    return True
+    if msg.lower() not in map(str.lower, sT.values()):
+        return True
+    else:
+        return False
 
 def advanceGame(user, state):
     # advance user state, send new prompt, log game state change?
     pass
 
-def sendErrorMsgSMS(user):
+def sendErrorSMS(user):
     pass
 
 """
