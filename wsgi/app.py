@@ -71,10 +71,8 @@ def signup():
                 uid = makeUser(d)
                 print "new uid", uid
 
-                ######
-                # this is where we should kick off the 'newGame' worker
-                # (which also needs to be written)
-                ######
+                # now, schedule game start by scheduling advanceGame() worker
+                startGame(uid)
 
                 return render_template('signupSuccess.html', name=name, tel=tel, tz=tz, email=email)
             else:
@@ -133,6 +131,7 @@ def smsout():
     sendSMS(u,s,n) # user object, gamestate object (defines previous state, next state, and any other data), and npc object (number, name, gender(??) etc.)
     log(u['id'], 'output', 'sms')
 
+#This method is 'dumb'. All it does is accept data, build a payload, and schedule a job. If the job is queued successfully, it returns a task/job id. It doesen't know it's sending an SMS!!!
 def sendSMS(f,t,m,u,d,st):
 
     worker = IronWorker()
@@ -224,12 +223,14 @@ def checkErr(msg):
     else:
         return False
 
+#THIS METHOD IS NOT COMPLETE
 def advanceGame(user, state):
     # advance user state, send new prompt, log game state change?
     updateUser(user['id'], {"gstate":state})
     #sendSMS(user, message, from, etc.)
     #log(user['id'], "advance to game state "+ state, "SMS")
 
+# THIS METHOD IS NOT COMPLETE
 def sendErrorSMS(user):
     # send random error phrase from list to user
     err = random.choice(errlist)
@@ -436,6 +437,12 @@ def checkAuth(uid):
 def getCountryCode(tel):
     lookup = TwilioLookupsClient(Tsid, Ttoken)
     return lookup.phone_numbers.get(tel).country_code
+
+#NOT COMPLETE YET
+def startGame(uid):
+    player = getUser(uid)
+    #schedule advanceGame(player, 1) job for next upcoming (12-2pm) based on player timezone / server time.
+    pass
 
 if __name__ == "__main__":
     app.run(debug=True)
