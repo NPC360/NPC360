@@ -17,6 +17,7 @@ import json
 import re
 import twilio
 import twilio.rest
+from twilio.rest.lookups import TwilioLookupsClient
 import twilio.twiml
 from sqlalchemy import *
 from sqlalchemy.exc import IntegrityError
@@ -152,7 +153,9 @@ def sendSMS(f,t,m,u,d,st):
     return response.id
 
 def signupSMSauth(tel,auth):
-    fnum ="+17183959467" # should be env variable < maybe a lookup?
+    #fnum ="+17183959467" # should be env variable < maybe a lookup?
+    # lookup admin NPC # for the user's country (this of course, assumes we have one)
+    fnum = getNPC({ "country": getCountryCode(tel) }, 'admin')['tel']
     msg = "code: " + auth +" "+ u"\U0001F6A8"
     print "signupSMSauth", tel, msg
 
@@ -263,6 +266,7 @@ def user():
                 'tel':u['tel'],
                 'email':u['email'],
                 #'twitter':u['twitter'],
+                'country':u['country'],
                 'timezone':u['tz'],
                 'game state':u['gstate'],
                 'game started on':str(u['gstart']),
@@ -362,7 +366,7 @@ def makeUser(ud):
         d = now.strftime('%Y-%m-%d %H:%M:%S')
 
         con = db.connect()
-        x = con.execute( table.insert(), name=ud['fname'], tel=normTel, tz=ud['tz'], email=ud['email'], cdate=d, gstart=d, gstate=0 )
+        x = con.execute( table.insert(), name=ud['fname'], tel=normTel, tz=ud['tz'], email=ud['email'], country=getCountryCode(normTel),  cdate=d, gstart=d, gstate=0 )
 
         uid = x.inserted_primary_key[0]
         con.close()
@@ -387,6 +391,19 @@ def updateUser(uid, data):
 
     except (CompileError, IntegrityError) as e:
         print e
+
+# get NPC info & tel by matching NPC number and the country code of player.
+def getNPC(playerInfo, npcName):
+    db = create_engine(Mdb, convert_unicode=True, echo=False)
+    md = MetaData(bind=db)
+    table = Table('npcInfo', md, autoload=True)
+    con = db.connect()
+
+    x = con.execute( table.select().where(and_(table.c.name == npcName, table.c.country == playerInfo['country'])))
+
+    row = x.fetchone()
+    con.close()
+    return row
 
 # SMS auth - store token
 def newAuth(a):
@@ -415,6 +432,10 @@ def checkAuth(uid):
     a = x.fetchone()['auth']
     con.close()
     return a
+
+def getCountryCode(tel):
+    lookup = TwilioLookupsClient(Tsid, Ttoken)
+    return lookup.phone_numbers.get(tel).country_code
 
 if __name__ == "__main__":
     app.run(debug=True)
