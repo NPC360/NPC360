@@ -16,9 +16,9 @@
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css') }}">
 
-    <!-- Custom CSS -->    
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{url_for('static', filename='css/intlTelInput.css') }}">
-    <link rel="stylesheet" href="{{url_for('static', filename='css/custom.css') }}">    
+    <link rel="stylesheet" href="{{url_for('static', filename='css/custom.css') }}">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -142,7 +142,7 @@
       <div class="row">
 
         <div id="apply-form" class="col-sm-8 blog-main" style="display: none;">
-        
+
           <form id="signupForm" class="signupForm" action="/careers" method="POST">
 
             <p style="margin-top: 25px;">Contact details</p>
@@ -238,9 +238,9 @@
     </div><!-- /.container -->
 
     <script>
-    
+
     $(document).ready(function(){
-        
+
         $("#apply-btn").click(function(){
             $("#apply-form").show( "slow" );
         })
@@ -250,6 +250,7 @@
     </script>
 
     <!-- JaVAVAVAVAVa -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <script src="{{url_for('static', filename='js/intlTelInput.min.js') }}"></script>
     <script src="{{url_for('static', filename='js/signup1.js') }}"></script>
 
