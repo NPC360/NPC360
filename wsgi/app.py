@@ -362,7 +362,9 @@ def makeUser(ud):
         table = Table('playerInfo', md, autoload=True)
 
         #normalize phone # & get current datetime
-        normTel = re.sub(r'[^a-zA-Z0-9\+]','', ud['tel'])
+        #normTel = re.sub(r'[^a-zA-Z0-9\+]','', ud['tel'])
+        normTel = normalizeTel(ud['tel'])
+
         now = datetime.datetime.now()
         d = now.strftime('%Y-%m-%d %H:%M:%S')
 
@@ -435,6 +437,9 @@ def checkAuth(uid):
     return a
 
 def getCountryCode(tel):
+
+    tel = normalizeTel(tel)
+
     lookup = TwilioLookupsClient(Tsid, Ttoken)
     return lookup.phone_numbers.get(tel).country_code
 
@@ -443,6 +448,10 @@ def startGame(uid):
     player = getUser(uid)
     #schedule advanceGame(player, 1) job for next upcoming (12-2pm) based on player timezone / server time.
     pass
+
+def normalizeTel(tel):
+    nTel = re.sub(r'[^a-zA-Z0-9\+]','', tel)
+    return nTel
 
 if __name__ == "__main__":
     app.run(debug=True)
