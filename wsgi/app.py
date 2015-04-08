@@ -22,7 +22,7 @@ import twilio.twiml
 from sqlalchemy import *
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import CompileError
-
+import arrow
 
 from firebase import firebase
 
@@ -129,10 +129,16 @@ def smsout():
 
     u = requests.get(url_for('/user'), {'id':uid})
     sendSMS(u,s,n) # user object, gamestate object (defines previous state, next state, and any other data), and npc object (number, name, gender(??) etc.)
-    log(u['id'], 'output', 'sms')
+    #log(u['id'], 'output', 'sms')
 
 #This method is 'dumb'. All it does is accept data, build a payload, and schedule a job. If the job is queued successfully, it returns a task/job id. It doesen't know it's sending an SMS!!!
 def sendSMS(f,t,m,u,d,st):
+    # f - from
+    # t - to
+    # m - msg
+    # u - url
+    # d - delay
+    # st - absolute send time
 
     worker = IronWorker()
     task = Task(code_name="smsworker", scheduled=True)
@@ -165,7 +171,7 @@ def signupSMSauth(tel,auth):
         print "worker id", workerStatus
         return True
     else:
-        print "worker didn't complete properly (i think)"
+        print "worker error - probably"
         return False
 
 def processInput(user, msg):
@@ -201,7 +207,7 @@ def processInput(user, msg):
 
 def getGameStateData(id):
     fb = firebase.FirebaseApplication(FB, None)
-    data = fb.get('/gameData/'+id, None)
+    data = fb.get('/gameData/'+ str(id), None)
     print data
     return data
 
@@ -446,8 +452,17 @@ def getCountryCode(tel):
 #NOT COMPLETE YET
 def startGame(uid):
     player = getUser(uid)
-    #schedule advanceGame(player, 1) job for next upcoming (12-2pm) based on player timezone / server time.
-    pass
+    gs = getGameStateData(1)
+    npc = getNPC(player, gs['prompt']['npc'])
+
+    # if current player time is before 1pm, send msg at 2:05pm player time otherwise, same time next day.
+    pt = arrow.now().to(player['tz'])
+    if pt.hour < 13: # earlier than 1pm
+        t = arrow.get(pt.year, pt.month, pt.day, 14, 5, 15, 0,  player['tz']).datetime
+    else:
+        t = arrow.get(pt.year, pt.month, pt.day+1, 14, 5, 15, 0, player['tz']).datetime
+
+    sendSMS(npc['tel'], player['tel'], gs['prompt']['msg'], None, None, t)
 
 def normalizeTel(tel):
     nTel = re.sub(r'[^a-zA-Z0-9\+]','', tel)
