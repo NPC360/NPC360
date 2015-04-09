@@ -104,19 +104,17 @@ def smsin():
 
     phone = request.values.get('From', None)
     msg = request.values.get('Body', None)
-    print uid, msg
+    print phone, msg
 
-    u = requests.get(url_for('user'), {'id':phone})
-    print u
-
+    u = getUser(phone)
     #log(u['id'], 'input', 'sms')
-
     processInput(u, msg)
 
-        # process input payload (if payload_error, return info via /smsout)
-        # update player game state (external datastore)
-        # return new prompt to player via /smsout
+    resp = Response(json.dumps(request.values), status=200, mimetype='application/json')
+    resp.headers['Action'] = 'SMS received: ' + msg + " +, from: " + phone
+    return resp
 
+# SO TOTALLY NOT WRITTEN YET.
 @app.route("/smsout", methods =['POST'])
 def smsout():
     print "sms out"
@@ -148,9 +146,12 @@ def sendSMS(f,t,m,u,d,st):
     if d is not None:
         task.delay = d
         print "sending after", d, "second delay"
-    else:
+    elif st is not None:
         task.start_at = st # desired `send @ playertime` converted to servertime
         print "sending at:", st
+    else:
+        task.delay = 0
+        print "sending right away"
 
     # now queue the damn thing & get a response.
     response = worker.queue(task)
@@ -178,32 +179,44 @@ def processInput(user, msg):
     gameState = user['gstate']
     gameStateData = getGameStateData(gameState)
 
-    triggers = gameStateData['triggers']
-    print triggers
+    #special reset / debug method
+    if "!reset!" in msg:
+         print "MANUAL GAME RESET FOR PLAYER: " + str(user['id'])
+         startGame(user['id'])
 
-    sT = triggers.copy()
-    sT.pop('yes', None)
-    sT.pop('no', None)
-    sT.pop('error', None)
-    sT.pop('noresp', None)
+    elif 'triggers' in gameStateData and gameStateData['triggers'] is not None:
+        triggers = gameStateData['triggers']
+        print triggers
 
-    print sT # this array only contains triggers that aren't tied to special keywords / operations ^^
+        sT = triggers.copy()
+        sT.pop('yes', None)
+        sT.pop('no', None)
+        sT.pop('error', None)
+        sT.pop('noresp', None)
 
-    # check for affirmative / negative responses
-    if checkYes(msg):
-        advanceGame(user, triggers['yes'])
-    elif checkNo(msg):
-        advanceGame(user, triggers['no'])
+        print sT # this array only contains triggers that aren't tied to special keywords / operations ^^
 
-    # check if response is even in the list
-    elif checkErr(msg):
-        sendErrorSMS(user)
-    # todo: check for no response?
 
-    # now, we can run through our list of triggers and see if any contains our key phrase.
-    for x in sT:
-        if x in msg:
-            advanceGame(user, triggers[x])
+        # check for affirmative / negative responses
+        if 'yes' in triggers and checkYes(msg):
+            advanceGame(user, triggers['yes'])
+        elif 'no' in triggers and checkNo(msg):
+            advanceGame(user, triggers['no'])
+
+        # check if response is even in the list
+
+        elif msg.lower() in sT:
+            print "input matches one of the triggers"
+            for x in sT:
+                #print x
+                if x in msg.lower():
+                    print x + " is in "+ msg
+                    advanceGame(user, triggers[x])
+                    break
+
+        else:
+            print "input does not match any triggers"
+            sendErrorSMS(user)
 
 def getGameStateData(id):
     fb = firebase.FirebaseApplication(FB, None)
@@ -223,25 +236,59 @@ def checkNo(msg):
     else:
         return False
 
-def checkErr(msg):
-    if msg.lower() not in map(str.lower, sT.values()):
+# deprecated method.
+def checkErr(msg, sT):
+
+    print msg.lower()
+    print sT.keys()
+
+    if msg.lower() in sT:
+        print "input matches triggers!"
         return True
     else:
+        print "input not found in `triggers`"
         return False
 
 #THIS METHOD IS NOT COMPLETE
-def advanceGame(user, state):
+def advanceGame(player, gsid):
     # advance user state, send new prompt, log game state change?
-    updateUser(user['id'], {"gstate":state})
-    #sendSMS(user, message, from, etc.)
+    updateUser(player['id'], {"gstate":gsid})
+    gs = getGameStateData(gsid)
+    npc = getNPC(player, gs['prompt']['npc'])
+    msg = gs['prompt']['msg']
+
+    if 'url' in gs:
+        url = gs['prompt']['url'];
+    else:
+        url = None;
+
+    if 'delay' in gs:
+        d = gs['prompt']['d'];
+    else:
+        d = None;
+
+    if 'st' in gs:
+        st = gs['prompt']['st'];
+    else:
+        st = None;
+
+#### add a loop in here to check for & fill in variables like %fname% <- use data from player dict.
+
+    sendSMS(npc['tel'], player['tel'], msg, url, d, st)
+
     #log(user['id'], "advance to game state "+ state, "SMS")
 
 # THIS METHOD IS NOT COMPLETE
-def sendErrorSMS(user):
+def sendErrorSMS(player):
     # send random error phrase from list to user
     err = random.choice(errlist)
-    #sendSMS(user, err, from, etc.)
-    pass
+    print "error msg: " + err
+
+    gs = getGameStateData(player['gstate'])
+    npc = getNPC(player, gs['prompt']['npc'])
+
+    sendSMS(npc['tel'], player['tel'], err, None, 45, None)
+
 
 """
 User API
@@ -449,11 +496,13 @@ def getCountryCode(tel):
     lookup = TwilioLookupsClient(Tsid, Ttoken)
     return lookup.phone_numbers.get(tel).country_code
 
-#NOT COMPLETE YET
 def startGame(uid):
     player = getUser(uid)
+    updateUser(player['id'], {"gstate":1})
     gs = getGameStateData(1)
     npc = getNPC(player, gs['prompt']['npc'])
+
+    print npc
 
     # if current player time is before 1pm, send msg at 2:05pm player time otherwise, same time next day.
     pt = arrow.now().to(player['tz'])
@@ -462,7 +511,8 @@ def startGame(uid):
     else:
         t = arrow.get(pt.year, pt.month, pt.day+1, 14, 5, 15, 0, player['tz']).datetime
 
-    sendSMS(npc['tel'], player['tel'], gs['prompt']['msg'], None, None, t)
+    #sendSMS(npc['tel'], player['tel'], gs['prompt']['msg'], None, None, t)
+    sendSMS(npc['tel'], player['tel'], gs['prompt']['msg'], None, None, None)
 
 def normalizeTel(tel):
     nTel = re.sub(r'[^a-zA-Z0-9\+]','', tel)
