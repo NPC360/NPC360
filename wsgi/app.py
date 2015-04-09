@@ -17,9 +17,14 @@ import json
 import re
 import twilio
 import twilio.rest
+from twilio.rest.lookups import TwilioLookupsClient
 import twilio.twiml
 from sqlalchemy import *
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import CompileError
+import arrow
+
+from firebase import firebase
 
 from iron_worker import *
 import datetime
@@ -30,6 +35,9 @@ app = Flask(__name__)
 
 # API & DB credentials
 from Keys import *
+
+# YES/No/Error phrases
+from yesnoerr import *
 
 """
 landing page / HTML / authorization routes
@@ -63,10 +71,8 @@ def signup():
                 uid = makeUser(d)
                 print "new uid", uid
 
-                ######
-                # this is where we should kick off the 'newGame' worker
-                # (which also needs to be written)
-                ######
+                # now, schedule game start by scheduling advanceGame() worker
+                startGame(uid)
 
                 return render_template('signupSuccess.html', name=name, tel=tel, tz=tz, email=email)
             else:
@@ -98,17 +104,17 @@ def smsin():
 
     phone = request.values.get('From', None)
     msg = request.values.get('Body', None)
-    print uid, msg
+    print phone, msg
 
-    u = requests.get(url_for('user'), {'id':phone})
-    print u
+    u = getUser(phone)
+    #log(u['id'], 'input', 'sms')
+    processInput(u, msg)
 
-    log(u['id'], 'input', 'sms') # (what else do we need to log here?)
+    resp = Response(json.dumps(request.values), status=200, mimetype='application/json')
+    resp.headers['Action'] = 'SMS received: ' + msg + " +, from: " + phone
+    return resp
 
-    #process input payload (if payload_error, return info via /smsout)
-    #update player game state (external datastore)
-    #return new prompt to player via /smsout
-
+# SO TOTALLY NOT WRITTEN YET.
 @app.route("/smsout", methods =['POST'])
 def smsout():
     print "sms out"
@@ -121,9 +127,16 @@ def smsout():
 
     u = requests.get(url_for('/user'), {'id':uid})
     sendSMS(u,s,n) # user object, gamestate object (defines previous state, next state, and any other data), and npc object (number, name, gender(??) etc.)
-    log(u['id'], 'output', 'sms')
+    #log(u['id'], 'output', 'sms')
 
+#This method is 'dumb'. All it does is accept data, build a payload, and schedule a job. If the job is queued successfully, it returns a task/job id. It doesen't know it's sending an SMS!!!
 def sendSMS(f,t,m,u,d,st):
+    # f - from
+    # t - to
+    # m - msg
+    # u - url
+    # d - delay
+    # st - absolute send time
 
     worker = IronWorker()
     task = Task(code_name="smsworker", scheduled=True)
@@ -133,9 +146,12 @@ def sendSMS(f,t,m,u,d,st):
     if d is not None:
         task.delay = d
         print "sending after", d, "second delay"
-    else:
+    elif st is not None:
         task.start_at = st # desired `send @ playertime` converted to servertime
         print "sending at:", st
+    else:
+        task.delay = 0
+        print "sending right away"
 
     # now queue the damn thing & get a response.
     response = worker.queue(task)
@@ -143,7 +159,9 @@ def sendSMS(f,t,m,u,d,st):
     return response.id
 
 def signupSMSauth(tel,auth):
-    fnum ="+17183959467" # should be env variable.
+    #fnum ="+17183959467" # should be env variable < maybe a lookup?
+    # lookup admin NPC # for the user's country (this of course, assumes we have one)
+    fnum = getNPC({ "country": getCountryCode(tel) }, 'admin')['tel']
     msg = "code: " + auth +" "+ u"\U0001F6A8"
     print "signupSMSauth", tel, msg
 
@@ -154,11 +172,126 @@ def signupSMSauth(tel,auth):
         print "worker id", workerStatus
         return True
     else:
-        print "worker didn't complete properly (i think)"
+        print "worker error - probably"
         return False
 
+def processInput(user, msg):
+    gameState = user['gstate']
+    gameStateData = getGameStateData(gameState)
+
+    #special reset / debug method
+    if "!reset!" in msg:
+         print "MANUAL GAME RESET FOR PLAYER: " + str(user['id'])
+         startGame(user['id'])
+
+    elif 'triggers' in gameStateData and gameStateData['triggers'] is not None:
+        triggers = gameStateData['triggers']
+        print triggers
+
+        sT = triggers.copy()
+        sT.pop('yes', None)
+        sT.pop('no', None)
+        sT.pop('error', None)
+        sT.pop('noresp', None)
+
+        print sT # this array only contains triggers that aren't tied to special keywords / operations ^^
+
+
+        # check for affirmative / negative responses
+        if 'yes' in triggers and checkYes(msg):
+            advanceGame(user, triggers['yes'])
+        elif 'no' in triggers and checkNo(msg):
+            advanceGame(user, triggers['no'])
+
+        # check if response is even in the list
+
+        elif msg.lower() in sT:
+            print "input matches one of the triggers"
+            for x in sT:
+                #print x
+                if x in msg.lower():
+                    print x + " is in "+ msg
+                    advanceGame(user, triggers[x])
+                    break
+
+        else:
+            print "input does not match any triggers"
+            sendErrorSMS(user)
+
+def getGameStateData(id):
+    fb = firebase.FirebaseApplication(FB, None)
+    data = fb.get('/gameData/'+ str(id), None)
+    print data
+    return data
+
+def checkYes(msg):
+    if msg.lower() in map(str.lower, yeslist):
+        return True
+    else:
+        return False
+
+def checkNo(msg):
+    if msg.lower() in map(str.lower, nolist):
+        return True
+    else:
+        return False
+
+# deprecated method.
+def checkErr(msg, sT):
+
+    print msg.lower()
+    print sT.keys()
+
+    if msg.lower() in sT:
+        print "input matches triggers!"
+        return True
+    else:
+        print "input not found in `triggers`"
+        return False
+
+#THIS METHOD IS NOT COMPLETE
+def advanceGame(player, gsid):
+    # advance user state, send new prompt, log game state change?
+    updateUser(player['id'], {"gstate":gsid})
+    gs = getGameStateData(gsid)
+    npc = getNPC(player, gs['prompt']['npc'])
+    msg = gs['prompt']['msg']
+
+    if 'url' in gs:
+        url = gs['prompt']['url'];
+    else:
+        url = None;
+
+    if 'delay' in gs:
+        d = gs['prompt']['d'];
+    else:
+        d = None;
+
+    if 'st' in gs:
+        st = gs['prompt']['st'];
+    else:
+        st = None;
+
+#### add a loop in here to check for & fill in variables like %fname% <- use data from player dict.
+
+    sendSMS(npc['tel'], player['tel'], msg, url, d, st)
+
+    #log(user['id'], "advance to game state "+ state, "SMS")
+
+# THIS METHOD IS NOT COMPLETE
+def sendErrorSMS(player):
+    # send random error phrase from list to user
+    err = random.choice(errlist)
+    print "error msg: " + err
+
+    gs = getGameStateData(player['gstate'])
+    npc = getNPC(player, gs['prompt']['npc'])
+
+    sendSMS(npc['tel'], player['tel'], err, None, 45, None)
+
+
 """
-user API
+User API
 """
 @app.route("/user", methods = ['GET', 'POST', 'PATCH'])
 def user():
@@ -187,6 +320,7 @@ def user():
                 'tel':u['tel'],
                 'email':u['email'],
                 #'twitter':u['twitter'],
+                'country':u['country'],
                 'timezone':u['tz'],
                 'game state':u['gstate'],
                 'game started on':str(u['gstart']),
@@ -221,16 +355,28 @@ def user():
         if request.headers['Content-Type'] == 'application/json':
             d = request.get_json()
             print d
-            #build updated user object data structure from payload
-            uu = "xxx"
-            print uu
-            u = updateUser(uu)
-            #log(u['uid'], 'mod user', 'api')
-            return u
+
+            if getUser(d['id']) and d['id'] == getUser(d['id'])['id']:
+                data = d['data']
+                r = updateUser(d['id'], data)
+
+                # if nothing returns, nothing was updated, so we need to return an error.
+                if r == None:
+                    resp = Response(json.dumps(d), status=500, mimetype='application/json')
+                    resp.headers['Action'] = 'updateUser() error'
+                else:
+                    #log(u['uid'], 'mod user', 'api')
+                    # if r returns data, than -something- was updated
+                    resp = Response(json.dumps(r), status=200, mimetype='application/json')
+                    resp.headers['Action'] = 'user updated'
+            else:
+                resp = Response(json.dumps(d), status=500, mimetype='application/json')
+                resp.headers['Action'] = 'user id mismatch error'
+            return resp
 
 
 """
-DATASTORE METHODS
+MySQL DATASTORE METHODS
 """
 # I/O Logging (time, userid, action taken, I/O medium -- what else??)
 def log(u,a,m):
@@ -262,19 +408,21 @@ def getUser(uid):
 
 # create new user using POST payload.
 def makeUser(ud):
-    #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
     try:
+        #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
         db = create_engine(Mdb, convert_unicode=True, echo=False)
         md = MetaData(bind=db)
         table = Table('playerInfo', md, autoload=True)
 
         #normalize phone # & get current datetime
-        normTel = re.sub(r'[^a-zA-Z0-9\+]','', ud['tel'])
+        #normTel = re.sub(r'[^a-zA-Z0-9\+]','', ud['tel'])
+        normTel = normalizeTel(ud['tel'])
+
         now = datetime.datetime.now()
         d = now.strftime('%Y-%m-%d %H:%M:%S')
 
         con = db.connect()
-        x = con.execute( table.insert(), name=ud['fname'], tel=normTel, tz=ud['tz'], email=ud['email'], cdate=d, gstart=d, gstate=0 )
+        x = con.execute( table.insert(), name=ud['fname'], tel=normTel, tz=ud['tz'], email=ud['email'], country=getCountryCode(normTel),  cdate=d, gstart=d, gstate=0 )
 
         uid = x.inserted_primary_key[0]
         con.close()
@@ -286,17 +434,32 @@ def makeUser(ud):
         return render_template('signup1_EorP_Taken.html', name=ud['fname'])
 
 # update user data using POST payload.
-# NOT ACTUALLY WRITTEN YET!!!!!!
-def updateUser(userData):
-    #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
+def updateUser(uid, data):
+    try:
+        #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
+        db = create_engine(Mdb, convert_unicode=True, echo=False)
+        md = MetaData(bind=db)
+        table = Table('playerInfo', md, autoload=True)
+        con = db.connect()
+        res = con.execute( table.update().where(table.c.id == uid).values(data) )
+        con.close()
+        return res.last_updated_params()
+
+    except (CompileError, IntegrityError) as e:
+        print e
+
+# get NPC info & tel by matching NPC number and the country code of player.
+def getNPC(playerInfo, npcName):
     db = create_engine(Mdb, convert_unicode=True, echo=False)
     md = MetaData(bind=db)
-    table = Table('playerInfo', md, autoload=True)
+    table = Table('npcInfo', md, autoload=True)
     con = db.connect()
-    #con.execute( table.update(), date=d, user=u, action=a, medium=m)
 
-    #con.close()
-    return u
+    x = con.execute( table.select().where(and_(table.c.name == npcName, table.c.country == playerInfo['country'])))
+
+    row = x.fetchone()
+    con.close()
+    return row
 
 # SMS auth - store token
 def newAuth(a):
@@ -325,6 +488,35 @@ def checkAuth(uid):
     a = x.fetchone()['auth']
     con.close()
     return a
+
+def getCountryCode(tel):
+
+    tel = normalizeTel(tel)
+
+    lookup = TwilioLookupsClient(Tsid, Ttoken)
+    return lookup.phone_numbers.get(tel).country_code
+
+def startGame(uid):
+    player = getUser(uid)
+    updateUser(player['id'], {"gstate":1})
+    gs = getGameStateData(1)
+    npc = getNPC(player, gs['prompt']['npc'])
+
+    print npc
+
+    # if current player time is before 1pm, send msg at 2:05pm player time otherwise, same time next day.
+    pt = arrow.now().to(player['tz'])
+    if pt.hour < 13: # earlier than 1pm
+        t = arrow.get(pt.year, pt.month, pt.day, 14, 5, 15, 0,  player['tz']).datetime
+    else:
+        t = arrow.get(pt.year, pt.month, pt.day+1, 14, 5, 15, 0, player['tz']).datetime
+
+    #sendSMS(npc['tel'], player['tel'], gs['prompt']['msg'], None, None, t)
+    sendSMS(npc['tel'], player['tel'], gs['prompt']['msg'], None, None, None)
+
+def normalizeTel(tel):
+    nTel = re.sub(r'[^a-zA-Z0-9\+]','', tel)
+    return nTel
 
 if __name__ == "__main__":
     app.run(debug=True)
