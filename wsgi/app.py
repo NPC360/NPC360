@@ -180,7 +180,7 @@ def processInput(user, msg):
     gameStateData = getGameStateData(gameState)
 
     #special reset / debug method
-    if "!reset!" in msg:
+    if "!reset" in msg:
          print "MANUAL GAME RESET FOR PLAYER: " + str(user['id'])
          startGame(user['id'])
 
@@ -257,18 +257,18 @@ def advanceGame(player, gsid):
     npc = getNPC(player, gs['prompt']['npc'])
     msg = gs['prompt']['msg']
 
-    if 'url' in gs:
-        url = gs['prompt']['url'];
+    if 'url' in gs['prompt']:
+        url = gs['prompt']['url']
     else:
         url = None;
 
-    if 'delay' in gs:
-        d = gs['prompt']['d'];
+    if 'delay' in gs['prompt']:
+        d = gs['prompt']['delay']
     else:
         d = None;
 
-    if 'st' in gs:
-        st = gs['prompt']['st'];
+    if 'st' in gs['prompt']:
+        st = gs['prompt']['st']
     else:
         st = None;
 
