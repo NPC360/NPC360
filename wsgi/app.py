@@ -171,7 +171,7 @@ def signupSMSauth(tel,auth):
     fnum = getNPC({ "country": getCountryCode(tel) }, 'admin')['tel']
     print "send sms from: " + fnum
     msg = "code: " + str(auth) +" "+ u"\U0001F6A8"
-    print "signupSMSauth", tel, msg
+    print "ok, msg built, i'mma set up a worker now & schedule this msg"
 
     # send auth SMS
     workerStatus = sendSMS(fnum,tel,msg,None,0,None) #no media, 0s delay, no sendTime
