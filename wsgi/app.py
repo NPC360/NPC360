@@ -138,6 +138,7 @@ def sendSMS(f,t,m,u,d,st):
     # d - delay
     # st - absolute send time
 
+    print "sendSMS: "+f+" "+t+" "+m+" "+u+" "+d+" "+st
     worker = IronWorker()
     print worker
 
