@@ -161,7 +161,14 @@ def sendSMS(f,t,m,u,d,st):
 def signupSMSauth(tel,auth):
     #fnum ="+17183959467" # should be env variable < maybe a lookup?
     # lookup admin NPC # for the user's country (this of course, assumes we have one)
+
+    print "incoming tel: "+ tel
+
     fnum = getNPC({ "country": getCountryCode(tel) }, 'admin')['tel']
+
+    #
+    print "send sms from: " + fnum
+
     msg = "code: " + auth +" "+ u"\U0001F6A8"
     print "signupSMSauth", tel, msg
 
@@ -491,13 +498,9 @@ def checkAuth(uid):
     return a
 
 def getCountryCode(tel):
-
     tel = normalizeTel(tel)
-
     lookup = TwilioLookupsClient(environ['TSID'], environ['TTOKEN'])
-
-    print "player country: " + lookup.phone_numbers.get(tel).country_code
-
+    #print "player country: " + lookup.phone_numbers.get(tel).country_code
     return lookup.phone_numbers.get(tel).country_code
 
 def startGame(uid):
