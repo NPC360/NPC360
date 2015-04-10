@@ -34,7 +34,7 @@ from os import environ
 app = Flask(__name__)
 
 # API & DB credentials
-from Keys import *
+#from Keys import *
 
 # YES/No/Error phrases
 from yesnoerr import *
@@ -140,7 +140,7 @@ def sendSMS(f,t,m,u,d,st):
 
     worker = IronWorker()
     task = Task(code_name="smsworker", scheduled=True)
-    task.payload = {"keys": {"auth": Tsid, "token": Ttoken}, "fnum": f, "tnum": t, "msg": m, "url": u}
+    task.payload = {"keys": {"auth": environ['TSID'], "token": environ['TTOKEN']}, "fnum": f, "tnum": t, "msg": m, "url": u}
 
     # scheduling conditions
     if d is not None:
@@ -219,7 +219,7 @@ def processInput(user, msg):
             sendErrorSMS(user)
 
 def getGameStateData(id):
-    fb = firebase.FirebaseApplication(FB, None)
+    fb = firebase.FirebaseApplication(environ['FB'], None)
     data = fb.get('/gameData/'+ str(id), None)
     print data
     return data
@@ -394,8 +394,8 @@ def log(u,a,m):
 
 # lookup user from datastore using a provided 'id' - could be uid, phone / email / twitter handle, etc. (should be medium agnostic)
 def getUser(uid):
-    #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
-    db = create_engine(Mdb, convert_unicode=True, echo=False)
+    db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
+    #db = create_engine(Mdb, convert_unicode=True, echo=False)
     md = MetaData(bind=db)
     table = Table('playerInfo', md, autoload=True)
     con = db.connect()
@@ -409,8 +409,8 @@ def getUser(uid):
 # create new user using POST payload.
 def makeUser(ud):
     try:
-        #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
-        db = create_engine(Mdb, convert_unicode=True, echo=False)
+        db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
+        #db = create_engine(Mdb, convert_unicode=True, echo=False)
         md = MetaData(bind=db)
         table = Table('playerInfo', md, autoload=True)
 
@@ -436,8 +436,8 @@ def makeUser(ud):
 # update user data using POST payload.
 def updateUser(uid, data):
     try:
-        #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
-        db = create_engine(Mdb, convert_unicode=True, echo=False)
+        db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
+        #db = create_engine(Mdb, convert_unicode=True, echo=False)
         md = MetaData(bind=db)
         table = Table('playerInfo', md, autoload=True)
         con = db.connect()
@@ -450,7 +450,8 @@ def updateUser(uid, data):
 
 # get NPC info & tel by matching NPC number and the country code of player.
 def getNPC(playerInfo, npcName):
-    db = create_engine(Mdb, convert_unicode=True, echo=False)
+    db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
+    #db = create_engine(Mdb, convert_unicode=True, echo=False)
     md = MetaData(bind=db)
     table = Table('npcInfo', md, autoload=True)
     con = db.connect()
@@ -463,8 +464,8 @@ def getNPC(playerInfo, npcName):
 
 # SMS auth - store token
 def newAuth(a):
-    #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
-    db = create_engine(Mdb, convert_unicode=True, echo=False)
+    db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
+    #db = create_engine(Mdb, convert_unicode=True, echo=False)
     md = MetaData(bind=db)
     table = Table('tokenAuth', md, autoload=True)
     con = db.connect()
@@ -479,8 +480,8 @@ def newAuth(a):
 
 # SMS auth - return auth based on token
 def checkAuth(uid):
-    #db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
-    db = create_engine(Mdb, convert_unicode=True, echo=False)
+    db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=True)
+    #db = create_engine(Mdb, convert_unicode=True, echo=False)
     md = MetaData(bind=db)
     table = Table('tokenAuth', md, autoload=True)
     con = db.connect()
@@ -493,7 +494,7 @@ def getCountryCode(tel):
 
     tel = normalizeTel(tel)
 
-    lookup = TwilioLookupsClient(Tsid, Ttoken)
+    lookup = TwilioLookupsClient(environ['TSID'], environ['TTOKEN'])
     return lookup.phone_numbers.get(tel).country_code
 
 def startGame(uid):

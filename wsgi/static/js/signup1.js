@@ -66,7 +66,7 @@ emailInput.keydown(function() {
 });
 
 function checkT(x) {
-  var api = "http://localhost:5000/user";
+  var api = "http://npc360a-nealrs.rhcloud.com/user";
   $.getJSON(api, {
     id: x
   })
@@ -87,7 +87,7 @@ function checkT(x) {
 }
 
 function checkE(x) {
-  var api = "http://localhost:5000/user";
+  var api = "http://npc360a-nealrs.rhcloud.com/user";
   $.getJSON(api, {
     id: x
   })
