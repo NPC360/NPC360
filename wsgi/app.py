@@ -167,9 +167,9 @@ def sendSMS(f,t,m,u,d,st):
 def signupSMSauth(tel,auth):
     # lookup admin NPC # for the user's country (this of course, assumes we have one)
 
-    #print "incoming tel: "+ tel
+    print "incoming tel: "+ tel
     fnum = getNPC({ "country": getCountryCode(tel) }, 'admin')['tel']
-    #print "send sms from: " + fnum
+    print "send sms from: " + fnum
     msg = "code: " + auth +" "+ u"\U0001F6A8"
     print "signupSMSauth", tel, msg
 
