@@ -495,6 +495,9 @@ def getCountryCode(tel):
     tel = normalizeTel(tel)
 
     lookup = TwilioLookupsClient(environ['TSID'], environ['TTOKEN'])
+
+    print "player country: " + lookup.phone_numbers.get(tel).country_code
+
     return lookup.phone_numbers.get(tel).country_code
 
 def startGame(uid):
