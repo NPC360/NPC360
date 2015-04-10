@@ -139,8 +139,13 @@ def sendSMS(f,t,m,u,d,st):
     # st - absolute send time
 
     worker = IronWorker()
+    print worker
+
     task = Task(code_name="smsworker", scheduled=True)
+    print task
+
     task.payload = {"keys": {"auth": environ['TSID'], "token": environ['TTOKEN']}, "fnum": f, "tnum": t, "msg": m, "url": u}
+    print task.payload
 
     # scheduling conditions
     if d is not None:
@@ -159,16 +164,11 @@ def sendSMS(f,t,m,u,d,st):
     return response.id
 
 def signupSMSauth(tel,auth):
-    #fnum ="+17183959467" # should be env variable < maybe a lookup?
     # lookup admin NPC # for the user's country (this of course, assumes we have one)
 
-    print "incoming tel: "+ tel
-
+    #print "incoming tel: "+ tel
     fnum = getNPC({ "country": getCountryCode(tel) }, 'admin')['tel']
-
-    #
-    print "send sms from: " + fnum
-
+    #print "send sms from: " + fnum
     msg = "code: " + auth +" "+ u"\U0001F6A8"
     print "signupSMSauth", tel, msg
 
