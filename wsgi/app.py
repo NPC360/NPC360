@@ -315,6 +315,14 @@ def advanceGame(player, gsid):
     npc = getNPC(player, gs['prompt']['npc'])
     msg = gs['prompt']['msg']
 
+    #### add a loop in here to check for & fill in variables like %fname% <- use data from player dict.
+    merge = re.findall(r'%%([^%%]*)%%', msg)
+    for x in merge:
+        print x
+        if player[x.lower()]:
+            msg = re.sub('%%'+x+'%%', player[x], msg)
+
+
     if 'url' in gs['prompt']:
         url = gs['prompt']['url']
     else:
@@ -329,10 +337,6 @@ def advanceGame(player, gsid):
         st = gs['prompt']['st']
     else:
         st = None;
-
-#### add a loop in here to check for & fill in variables like %fname% <- use data from player dict.
-
-
 
     sendSMS(npc['tel'], player['tel'], msg, url, d, st)
 
