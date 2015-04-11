@@ -31,7 +31,7 @@ r = requests.post(
       pl['dom'],
       auth=("api", pl['key']),
       data={
-          "from": pl['fr']['name'] +" <"+ pl['fr']['email']+">",
+          "from": pl['fr']['display_name'] +" <"+ pl['fr']['email']+">",
           "to": pl['to']['name'] +" <"+ pl['to']['email']+">",
           "subject": pl['sub'],
           "text": pl['txt'],
