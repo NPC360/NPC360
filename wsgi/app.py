@@ -313,15 +313,9 @@ def advanceGame(player, gsid):
     updateUser(player['id'], {"gstate":gsid})
     gs = getGameStateData(gsid)
     npc = getNPC(player, gs['prompt']['npc'])
-    msg = gs['prompt']['msg']
-
-    #### add a loop in here to check for & fill in variables like %fname% <- use data from player dict.
-    merge = re.findall(r'%%([^%%]*)%%', msg)
-    for x in merge:
-        print x
-        if player[x.lower()]:
-            msg = re.sub('%%'+x+'%%', player[x], msg)
-            #print msg
+    #msg = gs['prompt']['msg']
+    #### Fill in variables like %%fname%% <- use data from player dict.
+    msg = getPlayerVars(player, gs['prompt']['msg'])
 
     if 'url' in gs['prompt']:
         url = gs['prompt']['url']
@@ -566,6 +560,8 @@ def startGame(uid):
     npc = getNPC(player, gs['prompt']['npc'])
 
     print npc
+    ### Fill in variables like %%fname%% <- use data from player dict.
+    msg = getPlayerVars(player, gs['prompt']['msg'])
 
     # if current player time is before 1pm, send msg at 2:05pm player time otherwise, same time next day.
     pt = arrow.now().to(player['tz'])
@@ -574,15 +570,6 @@ def startGame(uid):
     else:
         t = arrow.get(pt.year, pt.month, pt.day+1, 14, 5, 15, 0, player['tz']).datetime
 
-    #### add a loop in here to check for & fill in variables like %fname% <- use data from player dict.
-    msg = gs['prompt']['msg']
-    merge = re.findall(r'%%([^%%]*)%%', msg)
-    for x in merge:
-        print x
-        if player[x.lower()]:
-            msg = re.sub('%%'+x+'%%', player[x], msg)
-            #print msg
-
     #sendSMS(npc['tel'], player['tel'], msg, None, None, t)
     sendSMS(npc['tel'], player['tel'], msg, None, None, None)
     sendEmail(npc['email'], npc['display_name'], player['email'], player['name'], "Mercury Global application accepted", "Thanks for applying", "<h3>your app was accepted</h3><img src='http://media.giphy.com/media/xTiTnxxyVuH374sjRu/giphy.gif'>", None, None)
@@ -590,6 +577,16 @@ def startGame(uid):
 def normalizeTel(tel):
     nTel = re.sub(r'[^a-zA-Z0-9\+]','', tel)
     return nTel
+
+def getPlayerVars(player, msg):
+    merge = re.findall(r'%%([^%%]*)%%', msg)
+    for x in merge:
+        print x
+        if player[x.lower()]:
+            msg = re.sub('%%'+x+'%%', player[x], msg)
+            #print msg
+    return msg
+
 
 if __name__ == "__main__":
     app.run(debug=True)
