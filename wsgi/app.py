@@ -42,8 +42,8 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 from yesnoerr import *
 
 # Get IronWorker keys
-ironId = "ironworker_1321d"; # your OpenShift Service Plan ID
-ironInfo = json.loads(os.getenv(ironId))
+#ironId = "ironworker_1321d"; # your OpenShift Service Plan ID
+#ironInfo = json.loads(os.getenv(ironId))
 
 """
 landing page / HTML / authorization routes
@@ -147,14 +147,12 @@ def sendSMS(f,t,m,u,d,st):
     print "####"
 
     #worker = IronWorker()
-    #worker = IronWorker(project_id=environ['IID'], token=environ['ITOKEN'])
     worker = IronWorker(project_id=environ['IID2'], token=environ['ITOKEN2'])
     #worker = IronWorker(project_id=ironInfo['project_id'], token=ironInfo['token'])
-
-    print worker
+    #print worker
 
     task = Task(code_name="smsworker", scheduled=True)
-    print task
+    #print task
 
     task.payload = {"keys": {"auth": environ['TSID'], "token": environ['TTOKEN']}, "fnum": f, "tnum": t, "msg": m, "url": u}
     #print task.payload
@@ -182,7 +180,7 @@ def signupSMSauth(tel,auth):
 
     # send auth SMS
     workerStatus = sendSMS(fnum,tel,msg,None,0,None) #no media, 0s delay, no sendTime
-    print workerStatus
+    #print workerStatus
 
     if workerStatus is not None:
         print "worker id", workerStatus
