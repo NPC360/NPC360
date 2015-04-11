@@ -41,8 +41,8 @@ app = Flask(__name__)
 from yesnoerr import *
 
 # Get IronWorker keys
-ironId = "ironworker_4f526"; # your OpenShift Service Plan ID
-ironInfo = json.loads(os.getenv(ironId))
+#ironId = "ironworker_4f526"; # your OpenShift Service Plan ID
+#ironInfo = json.loads(os.getenv(ironId))
 
 """
 landing page / HTML / authorization routes
@@ -143,14 +143,14 @@ def sendSMS(f,t,m,u,d,st):
     # d - delay
     # st - absolute send time
 
-    print "####"
-    print f
-    print t
+    #print "####"
+    #print f
+    #print t
     #print m
-    print u
-    print d
-    print st
-    print "####"
+    #print u
+    #print d
+    #print st
+    #print "####"
 
     worker = IronWorker()
     print worker
