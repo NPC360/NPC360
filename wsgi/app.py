@@ -143,8 +143,7 @@ def sendSMS(f,t,m,u,d,st):
     # u - url
     # d - delay
     # st - absolute send time
-
-    print "####"
+    #print "####"
 
     #worker = IronWorker()
     worker = IronWorker(project_id=environ['IID2'], token=environ['ITOKEN2'])
@@ -176,7 +175,8 @@ def sendSMS(f,t,m,u,d,st):
 def signupSMSauth(tel,auth):
     # lookup admin NPC # for the user's country (this of course, assumes we have one)
     fnum = getNPC({ "country": getCountryCode(tel) }, 'admin')['tel']
-    msg = "code: " + str(auth) +" "+ u"\U0001F6A8"
+    #msg = "code: " + str(auth) +" "+ u"\U0001F6A8"
+    msg = "--Mercury Group HR system--\nThank you for your application.\nYour 4 digit identification code is: "str(auth)
 
     # send auth SMS
     workerStatus = sendSMS(fnum,tel,msg,None,0,None) #no media, 0s delay, no sendTime
@@ -287,6 +287,8 @@ def advanceGame(player, gsid):
         st = None;
 
 #### add a loop in here to check for & fill in variables like %fname% <- use data from player dict.
+
+
 
     sendSMS(npc['tel'], player['tel'], msg, url, d, st)
 

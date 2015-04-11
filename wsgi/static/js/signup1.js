@@ -91,14 +91,14 @@ function checkE(x) {
     id: x
   })
   .done(function( data ) {
-    console.log("player found: ", data);
+    //console.log("player found: ", data);
     emailExists.classList.remove('hide');
 
     // disable submit button
     document.getElementById('submit').disabled = true;
   })
   .fail(function() {
-    console.log( "no player found / error" );
+    //console.log( "no player found / error" );
     emailExists.classList.add('hide');
 
     // enable submit button
