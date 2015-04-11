@@ -172,6 +172,46 @@ def sendSMS(f,t,m,u,d,st):
     #print response
     return response.id
 
+def sendEmail():
+    # dom - MG domain
+    # key - MG api key
+    # fr - npc dict
+    # to - player dict
+    # sub - subject line
+    # txt - text version of email
+    # html - html version of email
+
+    #worker = IronWorker()
+    worker = IronWorker(project_id=environ['IID2'], token=environ['ITOKEN2'])
+
+    task = Task(code_name="emailworker", scheduled=True)
+    task.payload = {
+        "dom": environ['MGDOM'],
+        "key": environ['MGKEY'],
+        "fr": fr,
+        "to": to,
+        "sub": sub,
+        "txt": txt,
+        "html": html
+        }
+
+    # scheduling conditions
+    if d is not None:
+        task.delay = d
+        print "sending after", d, "second delay"
+    elif st is not None:
+        task.start_at = st # desired `send @ playertime` converted to servertime
+        print "sending at:", st
+    else:
+        task.delay = 0
+        print "sending right away"
+
+    # now queue the damn thing & get a response.
+    response = worker.queue(task)
+    #print response
+    return response.id
+
+
 def signupSMSauth(tel,auth):
     # lookup admin NPC # for the user's country (this of course, assumes we have one)
     fnum = getNPC({ "country": getCountryCode(tel) }, 'admin')['tel']
