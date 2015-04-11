@@ -321,7 +321,7 @@ def advanceGame(player, gsid):
         print x
         if player[x.lower()]:
             msg = re.sub('%%'+x+'%%', player[x], msg)
-
+            #print msg
 
     if 'url' in gs['prompt']:
         url = gs['prompt']['url']
@@ -574,8 +574,17 @@ def startGame(uid):
     else:
         t = arrow.get(pt.year, pt.month, pt.day+1, 14, 5, 15, 0, player['tz']).datetime
 
-    #sendSMS(npc['tel'], player['tel'], gs['prompt']['msg'], None, None, t)
-    sendSMS(npc['tel'], player['tel'], gs['prompt']['msg'], None, None, None)
+    #### add a loop in here to check for & fill in variables like %fname% <- use data from player dict.
+    msg = gs['prompt']['msg']
+    merge = re.findall(r'%%([^%%]*)%%', msg)
+    for x in merge:
+        print x
+        if player[x.lower()]:
+            msg = re.sub('%%'+x+'%%', player[x], msg)
+            #print msg
+
+    #sendSMS(npc['tel'], player['tel'], msg, None, None, t)
+    sendSMS(npc['tel'], player['tel'], msg, None, None, None)
     sendEmail(npc['email'], npc['display_name'], player['email'], player['name'], "Mercury Global application accepted", "Thanks for applying", "<h3>your app was accepted</h3><img src='http://media.giphy.com/media/xTiTnxxyVuH374sjRu/giphy.gif'>", None, None)
 
 def normalizeTel(tel):
