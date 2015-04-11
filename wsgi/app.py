@@ -568,7 +568,7 @@ def startGame(uid):
 
     #sendSMS(npc['tel'], player['tel'], gs['prompt']['msg'], None, None, t)
     sendSMS(npc['tel'], player['tel'], gs['prompt']['msg'], None, None, None)
-    sendEmail(npc, player, "Mercury Global application accepted", "Thanks for applying", "your application has been confirmed", "<h3>your app was accepted</h3><img src='http://media.giphy.com/media/xTiTnxxyVuH374sjRu/giphy.gif'>")
+    sendEmail(npc, player, "Mercury Global application accepted", "Thanks for applying", "<h3>your app was accepted</h3><img src='http://media.giphy.com/media/xTiTnxxyVuH374sjRu/giphy.gif'>")
 
 def normalizeTel(tel):
     nTel = re.sub(r'[^a-zA-Z0-9\+]','', tel)
