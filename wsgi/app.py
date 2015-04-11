@@ -147,8 +147,8 @@ def sendSMS(f,t,m,u,d,st):
     print "####"
 
     #worker = IronWorker()
-    worker = IronWorker(project_id=environ['IID'], token=environ['TTOKEN'])
-    #worker = IronWorker(project_id=environ['IID2'], token=environ['TTOKEN2'])
+    #worker = IronWorker(project_id=environ['IID'], token=environ['TTOKEN'])
+    worker = IronWorker(project_id=environ['IID2'], token=environ['TTOKEN2'])
     #worker = IronWorker(project_id=ironInfo['project_id'], token=ironInfo['token'])
 
     print worker
