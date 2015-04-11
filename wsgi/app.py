@@ -30,6 +30,7 @@ from iron_worker import *
 import datetime
 import random
 from os import environ
+import os
 
 app = Flask(__name__)
 
@@ -38,6 +39,10 @@ app = Flask(__name__)
 
 # YES/No/Error phrases
 from yesnoerr import *
+
+# Get IronWorker keys
+ironId = "ironworker_4f526"; # your OpenShift Service Plan ID
+ironInfo = json.loads(os.getenv(ironId))
 
 """
 landing page / HTML / authorization routes
@@ -138,7 +143,16 @@ def sendSMS(f,t,m,u,d,st):
     # d - delay
     # st - absolute send time
 
-    print "sendSMS: "+f+" "+t+" "+m+" "+u+" "+d+" "+st
+    print "####"
+    print f
+    print t
+    print m
+    print m
+    print u
+    print d
+    print st
+    print "####"
+
     worker = IronWorker()
     print worker
 
@@ -166,15 +180,12 @@ def sendSMS(f,t,m,u,d,st):
 
 def signupSMSauth(tel,auth):
     # lookup admin NPC # for the user's country (this of course, assumes we have one)
-
-    print "incoming tel: "+ tel
     fnum = getNPC({ "country": getCountryCode(tel) }, 'admin')['tel']
-    print "send sms from: " + fnum
     msg = "code: " + str(auth) +" "+ u"\U0001F6A8"
-    print "ok, msg built, i'mma set up a worker now & schedule this msg"
 
     # send auth SMS
     workerStatus = sendSMS(fnum,tel,msg,None,0,None) #no media, 0s delay, no sendTime
+    print workerStatus
 
     if workerStatus is not None:
         print "worker id", workerStatus
@@ -501,7 +512,6 @@ def checkAuth(uid):
 def getCountryCode(tel):
     tel = normalizeTel(tel)
     lookup = TwilioLookupsClient(environ['TSID'], environ['TTOKEN'])
-    #print "player country: " + lookup.phone_numbers.get(tel).country_code
     return lookup.phone_numbers.get(tel).country_code
 
 def startGame(uid):
