@@ -1,3 +1,4 @@
 *.DS_Store
 wsgi/Keys.py
 wsgi/*.pyc
+wsgi/iron.json
