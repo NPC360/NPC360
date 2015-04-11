@@ -176,7 +176,7 @@ def signupSMSauth(tel,auth):
     # lookup admin NPC # for the user's country (this of course, assumes we have one)
     fnum = getNPC({ "country": getCountryCode(tel) }, 'admin')['tel']
     #msg = "code: " + str(auth) +" "+ u"\U0001F6A8"
-    msg = "--Mercury Group HR system--\nThank you for your application.\nYour 4 digit identification code is: "str(auth)
+    msg = "--Mercury Group HR system--\nThank you for your application.\nYour 4 digit identification code is: " + str(auth)
 
     # send auth SMS
     workerStatus = sendSMS(fnum,tel,msg,None,0,None) #no media, 0s delay, no sendTime
