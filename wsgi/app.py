@@ -33,6 +33,7 @@ from os import environ
 import os
 
 app = Flask(__name__)
+app.config['PROPAGATE_EXCEPTIONS'] = True
 
 # API & DB credentials
 #from Keys import *
@@ -144,19 +145,19 @@ def sendSMS(f,t,m,u,d,st):
     # st - absolute send time
 
     #print "####"
-    print f
-    print t
+    #print f
+    #print t
     #print m
-    print u
-    print d
-    print st
-    #print "####"
+    #print u
+    #print d
+    #print st
+    print "####"
 
     worker = IronWorker()
-    #print worker
+    print worker
 
     task = Task(code_name="smsworker", scheduled=True)
-    #print task
+    print task
 
     task.payload = {"keys": {"auth": environ['TSID'], "token": environ['TTOKEN']}, "fnum": f, "tnum": t, "msg": m, "url": u}
     #print task.payload
