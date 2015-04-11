@@ -146,8 +146,7 @@ def sendSMS(f,t,m,u,d,st):
     print "####"
     print f
     print t
-    print m
-    print m
+    #print m
     print u
     print d
     print st
