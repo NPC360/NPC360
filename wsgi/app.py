@@ -159,20 +159,20 @@ def sendSMS(f,t,m,u,d,st):
     # scheduling conditions
     if d is not None:
         task.delay = d
-        print "sending after", d, "second delay"
+        print "sending SMS after", d, "second delay"
     elif st is not None:
         task.start_at = st # desired `send @ playertime` converted to servertime
-        print "sending at:", st
+        print "sending SMS at:", st
     else:
         task.delay = 0
-        print "sending right away"
+        print "sending SMS right away"
 
     # now queue the damn thing & get a response.
     response = worker.queue(task)
     #print response
     return response.id
 
-def sendEmail():
+def sendEmail(fr, to, sub, txt, html):
     # dom - MG domain
     # key - MG api key
     # fr - npc dict
@@ -198,13 +198,13 @@ def sendEmail():
     # scheduling conditions
     if d is not None:
         task.delay = d
-        print "sending after", d, "second delay"
+        print "sending email after", d, "second delay"
     elif st is not None:
         task.start_at = st # desired `send @ playertime` converted to servertime
-        print "sending at:", st
+        print "sending email at:", st
     else:
         task.delay = 0
-        print "sending right away"
+        print "sending email right away"
 
     # now queue the damn thing & get a response.
     response = worker.queue(task)
