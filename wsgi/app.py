@@ -172,11 +172,13 @@ def sendSMS(f,t,m,u,d,st):
     #print response
     return response.id
 
-def sendEmail(fr, to, sub, txt, html, d, st):
+def sendEmail(fe, fn, te, tn, sub, txt, html, d, st):
     # dom - MG domain
     # key - MG api key
-    # fr - npc dict
-    # to - player dict
+    # fe - npc email
+    # fn - npc display_name
+    # te - player email
+    # tn - player name
     # sub - subject line
     # txt - text version of email
     # html - html version of email
@@ -188,8 +190,10 @@ def sendEmail(fr, to, sub, txt, html, d, st):
     task.payload = {
         "dom": environ['MGDOM'],
         "key": environ['MGKEY'],
-        "fr": fr,
-        "to": to,
+        "fe": fe,
+        "fn": fn,
+        "te": te,
+        "tn": tn,
         "sub": sub,
         "txt": txt,
         "html": html
@@ -568,7 +572,7 @@ def startGame(uid):
 
     #sendSMS(npc['tel'], player['tel'], gs['prompt']['msg'], None, None, t)
     sendSMS(npc['tel'], player['tel'], gs['prompt']['msg'], None, None, None)
-    sendEmail(npc, player, "Mercury Global application accepted", "Thanks for applying", "<h3>your app was accepted</h3><img src='http://media.giphy.com/media/xTiTnxxyVuH374sjRu/giphy.gif'>", None, None)
+    sendEmail(npc['email'], npc['display_name'], player['email'], player['name'], "Mercury Global application accepted", "Thanks for applying", "<h3>your app was accepted</h3><img src='http://media.giphy.com/media/xTiTnxxyVuH374sjRu/giphy.gif'>", None, None)
 
 def normalizeTel(tel):
     nTel = re.sub(r'[^a-zA-Z0-9\+]','', tel)

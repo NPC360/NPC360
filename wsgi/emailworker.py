@@ -21,8 +21,10 @@ print pl
 
 # dom - MG domain
 # key - MG api key
-# fr - npc dict
-# to - player dict
+# fe - npc email
+# fn - npc display_name
+# te - player email
+# tn - player name
 # sub - subject line
 # txt - text version of email
 # html - html version of email
@@ -31,8 +33,8 @@ r = requests.post(
       pl['dom'],
       auth=("api", pl['key']),
       data={
-          "from": pl['fr']['display_name'] +" <"+ pl['fr']['email']+">",
-          "to": pl['to']['name'] +" <"+ pl['to']['email']+">",
+          "from": pl['fn'] +" <"+ pl['fe']+">",
+          "to": pl['tn'] +" <"+ pl['te']+">",
           "subject": pl['sub'],
           "text": pl['txt'],
           "html": pl['html']})
