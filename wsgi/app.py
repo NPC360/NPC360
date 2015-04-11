@@ -41,10 +41,6 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 # YES/No/Error phrases
 from yesnoerr import *
 
-# Get IronWorker keys
-#ironId = "ironworker_4f526"; # your OpenShift Service Plan ID
-#ironInfo = json.loads(os.getenv(ironId))
-
 """
 landing page / HTML / authorization routes
 
@@ -144,16 +140,11 @@ def sendSMS(f,t,m,u,d,st):
     # d - delay
     # st - absolute send time
 
-    #print "####"
-    #print f
-    #print t
-    #print m
-    #print u
-    #print d
-    #print st
     print "####"
 
-    worker = IronWorker()
+    #worker = IronWorker()
+    worker = IronWorker(project_id=environ['IID'], project_id=environ['TTOKEN'])
+
     print worker
 
     task = Task(code_name="smsworker", scheduled=True)
