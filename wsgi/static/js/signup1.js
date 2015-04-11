@@ -17,7 +17,6 @@ var telExists = document.getElementById("tel-exists");
 var emailExists = document.getElementById("email-exists");
 
 telInput.intlTelInput({
-  defaultCountry: "US",
   utilsScript: "/static/js/intlTelInputUtils.js"
 });
 
