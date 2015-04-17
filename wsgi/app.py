@@ -48,7 +48,7 @@ log = logging.getLogger()
 log.setLevel(logging.DEBUG)
 logf = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
-fh = logging.FileHandler('log.txt')
+fh = logging.FileHandler('/log/log.txt')
 fh.setLevel(logging.DEBUG)
 fh.setFormatter(logf)
 log.addHandler(fh)
