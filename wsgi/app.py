@@ -23,14 +23,11 @@ from sqlalchemy import *
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import CompileError
 import arrow
-
 from firebase import firebase
-
 from iron_worker import *
 import datetime
 import random
 from os import environ
-import os
 
 app = Flask(__name__)
 app.config['PROPAGATE_EXCEPTIONS'] = True
@@ -44,6 +41,22 @@ from yesnoerr import *
 # Get IronWorker keys
 #ironId = "ironworker_1321d"; # your OpenShift Service Plan ID
 #ironInfo = json.loads(os.getenv(ironId))
+
+# SETUP BASIC LOGGING
+import logging
+log = logging.getLogger()
+log.setLevel(logging.DEBUG)
+logf = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
+fh = logging.FileHandler('log.txt')
+fh.setLevel(logging.DEBUG)
+fh.setFormatter(logf)
+log.addHandler(fh)
+
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+ch.setFormatter(logf)
+log.addHandler(ch)
 
 """
 landing page / HTML / authorization routes
@@ -65,17 +78,21 @@ def signup():
         if request.values.get('auth', None):
             auth = request.values.get('auth', None)
             uid = request.values.get('uid', None)
-            print auth, name, tel, tz, email, uid
+            #print auth, name, tel, tz, email, uid
+            log.debug( 'Variables from form: ' + str(auth), name, str(tel), tz, email, str(uid) )
+
 
             tableAuth = checkAuth(uid)
-            print "auth from table", tableAuth
+            #print "auth from table", tableAuth
+            log.debug('auth code from table: ', tableAuth)
 
             #if auth is correct, create new user in playerInfo table.
             #if auth is not correct, return to confirmation step.
             if str(auth) in str(tableAuth):
                 d = {'fname':name, 'tel':tel, 'tz':tz, 'email':email}
                 uid = makeUser(d)
-                print "new uid", uid
+                #print "new uid", uid
+                log.info('new user:', name, 'uid:', uid)
 
                 # now, schedule game start by scheduling advanceGame() worker
                 startGame(uid)
@@ -91,7 +108,8 @@ def signup():
                 auth = str(random.randint(1000, 9999))
                 # add data to MySQL table for lookup later on & get row id/token
                 uid = newAuth(auth)
-                print auth, uid
+                #print auth, uid
+                log.info('auth code:', str(auth), 'player uid:', str(uid) )
 
                 if signupSMSauth(tel, auth):
                     return render_template('signup2.html', name=name, tel=tel, tz=tz, uid=uid, email=email)
@@ -106,11 +124,11 @@ SMS IO controller
 """
 @app.route("/smsin", methods = ['GET','POST'])
 def smsin():
-    print "sms in"
-
+    #print "sms in"
     phone = request.values.get('From', None)
     msg = request.values.get('Body', None)
-    print phone, msg
+    #print phone, msg
+    log.info('sms in', str(phone), str(msg) )
 
     u = getUser(phone)
     #log(u['id'], 'input', 'sms')
@@ -159,13 +177,16 @@ def sendSMS(f,t,m,u,d,st):
     # scheduling conditions
     if d is not None:
         task.delay = d
-        print "sending SMS after", d, "second delay"
+        #print "sending SMS after", d, "second delay"
+        log.info('sending sms after', str(d), 'second delay' )
     elif st is not None:
         task.start_at = st # desired `send @ playertime` converted to servertime
-        print "sending SMS at:", st
+        #print "sending SMS at:", st
+        log.info('sending sms at', str(st))
     else:
         task.delay = 0
-        print "sending SMS right away"
+        #print "sending SMS right away"
+        log.info('sending sms right away')
 
     # now queue the damn thing & get a response.
     response = worker.queue(task)
@@ -202,13 +223,16 @@ def sendEmail(fe, fn, te, tn, sub, txt, html, d, st):
     # scheduling conditions
     if d is not None:
         task.delay = d
-        print "sending email after", d, "second delay"
+        #print "sending email after", d, "second delay"
+        log.info('sending email after', str(d), 'second delay' )
     elif st is not None:
         task.start_at = st # desired `send @ playertime` converted to servertime
-        print "sending email at:", st
+        #print "sending email at:", st
+        log.info('sending email at', str(st))
     else:
         task.delay = 0
-        print "sending email right away"
+        #print "sending email right away"
+        log.info('sending email right away')
 
     # now queue the damn thing & get a response.
     response = worker.queue(task)
@@ -227,10 +251,12 @@ def signupSMSauth(tel,auth):
     #print workerStatus
 
     if workerStatus is not None:
-        print "worker id", workerStatus
+        #print "worker id", workerStatus
+        log.info('worker id', workerStatus)
         return True
     else:
-        print "worker error - probably"
+        #print "worker error - probably"
+        log.debug('worker error ~ probably')
         return False
 
 def processInput(user, msg):
@@ -239,12 +265,14 @@ def processInput(user, msg):
 
     #special reset / debug method
     if "!reset" in msg:
-         print "MANUAL GAME RESET FOR PLAYER: " + str(user['id'])
+         #print "MANUAL GAME RESET FOR PLAYER: " + str(user['id'])
+         log.warning('MANUAL GAME RESET FOR PLAYER:', str(user['id']))
          startGame(user['id'])
 
     elif 'triggers' in gameStateData and gameStateData['triggers'] is not None:
         triggers = gameStateData['triggers']
-        print triggers
+        #print triggers
+        log.debug(triggers)
 
         sT = triggers.copy()
         sT.pop('yes', None)
@@ -252,8 +280,8 @@ def processInput(user, msg):
         sT.pop('error', None)
         sT.pop('noresp', None)
 
-        print sT # this array only contains triggers that aren't tied to special keywords / operations ^^
-
+        #print sT # this array only contains triggers that aren't tied to special keywords / operations ^^
+        log.debugging(sT)
 
         # check for affirmative / negative responses
         if 'yes' in triggers and checkYes(msg):
@@ -264,22 +292,26 @@ def processInput(user, msg):
         # check if response is even in the list
 
         elif msg.lower() in sT:
-            print "input matches one of the triggers"
+            #print "input matches one of the triggers"
+            log.debug('input matches one of the triggers')
             for x in sT:
                 #print x
                 if x in msg.lower():
-                    print x + " is in "+ msg
+                    #print x + " is in "+ msg
+                    log.debug( str(x), 'is in', str(msg) )
                     advanceGame(user, triggers[x])
                     break
 
         else:
-            print "input does not match any triggers"
+            #print "input does not match any triggers"
+            log.warning('input does not match any triggers')
             sendErrorSMS(user)
 
 def getGameStateData(id):
     fb = firebase.FirebaseApplication(environ['FB'], None)
     data = fb.get('/gameData/'+ str(id), None)
-    print data
+    #print data
+    log.debug('game data', str(data))
     return data
 
 def checkYes(msg):
@@ -297,14 +329,19 @@ def checkNo(msg):
 # deprecated method.
 def checkErr(msg, sT):
 
-    print msg.lower()
-    print sT.keys()
+    #print msg.lower()
+    #print sT.keys()
+
+    log.debug(msg.lower())
+    log.debug(sT.keys())
 
     if msg.lower() in sT:
-        print "input matches triggers!"
+        #print "input matches triggers!"
+        log.debug('input matches triggers!')
         return True
     else:
-        print "input not found in `triggers`"
+        #print "input not found in `triggers`"
+        log.debug('input not found in `triggers`')
         return False
 
 #THIS METHOD IS NOT COMPLETE
@@ -340,7 +377,8 @@ def advanceGame(player, gsid):
 def sendErrorSMS(player):
     # send random error phrase from list to user
     err = random.choice(errlist)
-    print "error msg: " + err
+    #print "error msg: " + err
+    log.debug('error SMS msg:', err)
 
     gs = getGameStateData(player['gstate'])
     npc = getNPC(player, gs['prompt']['npc'])
@@ -360,10 +398,12 @@ def user():
 
         elif request.headers['Content-Type'] == 'application/json':
             d = request.get_json()
-            print d
+            #print d
+            log.debug(d)
             u = getUser(d['id'])
 
-        print "player", u, "\n"
+        #print "player", u, "\n"
+        log.debug('player', str(u))
 
         if u is None:
             resp = Response(json.dumps(u), status=404, mimetype='application/json')
@@ -399,7 +439,9 @@ def user():
                 'tz':d['tz'],
                 'email':d['email']
             }
-            print udata
+            #print udata
+            log.debug(d)
+
             uid = makeUser(udata)
             #log(uid, 'new user', 'api')
 
@@ -412,7 +454,8 @@ def user():
     elif request.method == 'PATCH':
         if request.headers['Content-Type'] == 'application/json':
             d = request.get_json()
-            print d
+            #print d
+            log.debug(d)
 
             if getUser(d['id']) and d['id'] == getUser(d['id'])['id']:
                 data = d['data']
@@ -484,11 +527,13 @@ def makeUser(ud):
 
         uid = x.inserted_primary_key[0]
         con.close()
-        print uid
+        #print uid
+        log.debug('new player uid:', str(uid))
         return uid
 
     except IntegrityError as e:
-        print e
+        #print e
+        log.debug(e)
         return render_template('signup1_EorP_Taken.html', name=ud['fname'])
 
 # update user data using POST payload.
@@ -504,7 +549,8 @@ def updateUser(uid, data):
         return res.last_updated_params()
 
     except (CompileError, IntegrityError) as e:
-        print e
+        #print e
+        log.debug(e)
 
 # get NPC info & tel by matching NPC number and the country code of player.
 def getNPC(playerInfo, npcName):
@@ -559,7 +605,9 @@ def startGame(uid):
     gs = getGameStateData(1)
     npc = getNPC(player, gs['prompt']['npc'])
 
-    print npc
+    #print npc
+    log.debug('npc info:', str(npc))
+
     ### Fill in variables like %%fname%% <- use data from player dict.
     msg = getPlayerVars(player, gs['prompt']['msg'])
 
@@ -581,7 +629,7 @@ def normalizeTel(tel):
 def getPlayerVars(player, msg):
     merge = re.findall(r'%%([^%%]*)%%', msg)
     for x in merge:
-        print x
+        #print x
         if player[x.lower()]:
             msg = re.sub('%%'+x+'%%', player[x], msg)
             #print msg
