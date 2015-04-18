@@ -43,16 +43,37 @@ from yesnoerr import *
 #ironInfo = json.loads(os.getenv(ironId))
 
 # SETUP BASIC LOGGING
+# papertrail stuff from http://help.papertrailapp.com/kb/configuration/configuring-centralized-logging-from-python-apps/
 import logging
+import socket
+from logging.handlers import SysLogHandler
+
+class ContextFilter(logging.Filter):
+  hostname = socket.gethostname()
+
+  def filter(self, record):
+    record.hostname = ContextFilter.hostname
+    return True
+
 log = logging.getLogger()
 log.setLevel(logging.DEBUG)
-logf = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+#logf = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
-fh = logging.FileHandler('log/log.txt')
-fh.setLevel(logging.DEBUG)
-fh.setFormatter(logf)
-log.addHandler(fh)
+# paper trail handler
+ptcf = ContextFilter()
+logger.addFilter(ptcf)
+pt = SysLogHandler(address=('logs2.papertrailapp.com', 16696))
+ptf = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s', datefmt='%Y-%m-%dT%H:%M:%S')
+pt.setFormatter(ptf)
+logger.addHandler(pt)
 
+# file handler
+#fh = logging.FileHandler('log/log.txt')
+#fh.setLevel(logging.DEBUG)
+#fh.setFormatter(logf)
+#log.addHandler(fh)
+
+# console handler
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 ch.setFormatter(logf)
