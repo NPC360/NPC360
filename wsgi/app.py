@@ -61,11 +61,11 @@ log.setLevel(logging.DEBUG)
 
 # paper trail handler
 ptcf = ContextFilter()
-logger.addFilter(ptcf)
-pt = SysLogHandler(address=('logs2.papertrailapp.com', 16696))
+log.addFilter(ptcf)
+pt = SysLogHandler(address=('logs2.papertrailapp.com', 18620))
 ptf = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s', datefmt='%Y-%m-%dT%H:%M:%S')
 pt.setFormatter(ptf)
-logger.addHandler(pt)
+log.addHandler(pt)
 
 # file handler
 #fh = logging.FileHandler('log/log.txt')
