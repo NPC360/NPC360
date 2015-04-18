@@ -63,8 +63,8 @@ log.setLevel(logging.DEBUG)
 ptcf = ContextFilter()
 log.addFilter(ptcf)
 pt = SysLogHandler(address=('logs2.papertrailapp.com', 18620))
-ptf = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s', datefmt='%Y-%m-%dT%H:%M:%S')
-pt.setFormatter(ptf)
+lf = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s', datefmt='%Y-%m-%dT%H:%M:%S')
+pt.setFormatter(lf)
 log.addHandler(pt)
 
 # file handler
@@ -76,7 +76,7 @@ log.addHandler(pt)
 # console handler
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
-ch.setFormatter(logf)
+ch.setFormatter(lf)
 log.addHandler(ch)
 
 """
