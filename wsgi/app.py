@@ -151,12 +151,12 @@ def smsin():
     #print "sms in"
     phone = request.values.get('From', None)
     msg = request.values.get('Body', None)
-    print 'sms in', str(phone), str(msg)
+    #print 'sms in', str(phone), str(msg)
     log.info('sms in %s %s' % (phone, msg))
 
     u = getUser(phone)
-    print u['id'], 'input', 'sms'
-    log('user id: %s input via SMS' % (u['id']))
+    #print u['id'], 'input', 'sms'
+    log.info('user id: %s input via SMS' % (u['id']))
     processInput(u, msg)
 
     resp = Response(json.dumps(request.values), status=200, mimetype='application/json')
