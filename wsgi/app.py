@@ -152,7 +152,7 @@ def smsin():
     phone = request.values.get('From', None)
     msg = request.values.get('Body', None)
     print 'sms in', str(phone), str(msg)
-    log.info('sms in %u %u' % (phone, msg))
+    log.info('sms in %s %s' % (phone, msg))
 
     u = getUser(phone)
     print u['id'], 'input', 'sms'
