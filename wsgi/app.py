@@ -288,7 +288,7 @@ def processInput(user, msg):
     gameStateData = getGameStateData(gameState)
 
     #special reset / debug method
-    if "!reset" in msg:
+    if "!reset" in msg.lower():
          print "MANUAL GAME RESET FOR PLAYER: " + str(user['id'])
          #log.warning('MANUAL GAME RESET FOR PLAYER:', str(user['id']))
          startGame(user['id'])
@@ -392,8 +392,8 @@ def advanceGame(player, gsid):
     else:
         st = None
 
-    #smsResp = sendSMS(npc['tel'], player['tel'], msg, url, d, st)
-    #print smsResp
+    smsResp = sendSMS(npc['tel'], player['tel'], msg, url, d, st)
+    print smsResp
     print 'gamestate info from advanceGame method', gs['prompt']
 
     # after sending prompt, if there's a goto statement, we can jump forward in the game. this is for sequential msg prompts.
