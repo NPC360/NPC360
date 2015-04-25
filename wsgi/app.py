@@ -428,7 +428,7 @@ def user():
         elif request.headers['Content-Type'] == 'application/json':
             d = request.get_json()
             #print d
-            log.debug('incoming request: %s', % (d))
+            log.debug('incoming request: %s' % (d))
             u = getUser(d['id'])
 
         #print "player", u, "\n"
@@ -484,7 +484,7 @@ def user():
         if request.headers['Content-Type'] == 'application/json':
             d = request.get_json()
             #print d
-            log.debug('incoming request: %s', % (d))
+            log.debug('incoming request: %s' % (d))
 
             if getUser(d['id']) and d['id'] == getUser(d['id'])['id']:
                 data = d['data']
