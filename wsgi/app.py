@@ -392,8 +392,9 @@ def advanceGame(player, gsid):
     else:
         st = None
 
-    smsResp = sendSMS(npc['tel'], player['tel'], msg, url, d, st)
-    print smsResp
+    #smsResp = sendSMS(npc['tel'], player['tel'], msg, url, d, st)
+    #print smsResp
+    print 'gamestate info from advanceGame method', gs['prompt']
 
     # after sending prompt, if there's a goto statement, we can jump forward in the game. this is for sequential msg prompts.
     if 'goto' in gs['prompt']:
