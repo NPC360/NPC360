@@ -411,7 +411,7 @@ def sendErrorSMS(player):
     gs = getGameStateData(player['gstate'])
     npc = getNPC(player, gs['prompt']['npc'])
 
-    sendSMS(npc['tel'], player['tel'], err, None, 45, None)
+    sendSMS(npc['tel'], player['tel'], err, None, 22, None)
 
 
 """
