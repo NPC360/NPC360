@@ -156,7 +156,7 @@ def smsin():
 
     u = getUser(phone)
     print u['id'], 'input', 'sms'
-    log(str(u['id']), 'input', 'sms')
+    log(u['id'], 'input', 'sms')
     processInput(u, msg)
 
     resp = Response(json.dumps(request.values), status=200, mimetype='application/json')
