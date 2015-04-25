@@ -203,11 +203,11 @@ def sendSMS(f,t,m,u,d,st):
     if d is not None:
         task.delay = d
         #print "sending SMS after", d, "second delay"
-        log.info('sending sms after %s second delay', % (d) )
+        log.info('sending sms after %s second delay' % (d) )
     elif st is not None:
         task.start_at = st # desired `send @ playertime` converted to servertime
         #print "sending SMS at:", st
-        log.info('sending sms at %s', % (st))
+        log.info('sending sms at %s' % (st))
     else:
         task.delay = 0
         #print "sending SMS right away"
@@ -249,11 +249,11 @@ def sendEmail(fe, fn, te, tn, sub, txt, html, d, st):
     if d is not None:
         task.delay = d
         #print "sending email after", d, "second delay"
-        log.info('sending email after %s second delay', % (d) )
+        log.info('sending email after %s second delay' % (d) )
     elif st is not None:
         task.start_at = st # desired `send @ playertime` converted to servertime
         #print "sending email at:", st
-        log.info('sending email at %s', % (st))
+        log.info('sending email at %s' % (st))
     else:
         task.delay = 0
         #print "sending email right away"
@@ -276,7 +276,7 @@ def signupSMSauth(tel,auth):
 
     if workerStatus is not None:
         #print "worker id", workerStatus
-        log.info('worker id %s', % (workerStatus))
+        log.info('worker id %s' % (workerStatus))
         return True
     else:
         #print "worker error - probably"
@@ -290,13 +290,13 @@ def processInput(user, msg):
     #special reset / debug method
     if "!reset" in msg.lower():
          #print "MANUAL GAME RESET FOR PLAYER: " + str(user['id'])
-         log.warning('MANUAL GAME RESET FOR PLAYER: %s', % (user['id']))
+         log.warning('MANUAL GAME RESET FOR PLAYER: %s' % (user['id']))
          startGame(user['id'])
 
     elif 'triggers' in gameStateData and gameStateData['triggers'] is not None:
         triggers = gameStateData['triggers']
         #print triggers
-        log.debug('triggers %s', % (triggers))
+        log.debug('triggers %s' % (triggers))
 
         sT = triggers.copy()
         sT.pop('yes', None)
@@ -305,7 +305,7 @@ def processInput(user, msg):
         sT.pop('noresp', None)
 
         #print sT # this array only contains triggers that aren't tied to special keywords / operations ^^
-        log.debug('truncated triggers %s', % (sT))
+        log.debug('truncated triggers %s' % (sT))
 
         # check for affirmative / negative responses
         if 'yes' in triggers and checkYes(msg):
@@ -333,8 +333,8 @@ def processInput(user, msg):
 def getGameStateData(id):
     fb = firebase.FirebaseApplication(environ['FB'], None)
     data = fb.get('/gameData/'+ str(id), None)
-    print 'game data:', str(data)
-    #log.debug('game data', str(data))
+    #print 'game data:', str(data)
+    log.debug('game data: %s' % (data))
     return data
 
 def checkYes(msg):
@@ -352,18 +352,18 @@ def checkNo(msg):
 # deprecated method.
 def checkErr(msg, sT):
 
-    print msg.lower()
-    print sT.keys()
-    #log.debug(msg.lower())
-    #log.debug(sT.keys())
+    #print msg.lower()
+    #print sT.keys()
+    log.debug('msg: %s' % (msg.lower()))
+    log.debug('keys: %s' % (sT.keys()))
 
     if msg.lower() in sT:
-        print "input matches triggers!"
-        #log.debug('input matches triggers!')
+        #print "input matches triggers!"
+        log.debug('input matches triggers!')
         return True
     else:
-        print "input not found in `triggers`"
-        #log.debug('input not found in `triggers`')
+        #print "input not found in `triggers`"
+        log.debug('input not found in `triggers`')
         return False
 
 #THIS METHOD IS NOT COMPLETE
