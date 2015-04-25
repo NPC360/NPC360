@@ -202,16 +202,16 @@ def sendSMS(f,t,m,u,d,st):
     # scheduling conditions
     if d is not None:
         task.delay = d
-        print "sending SMS after", d, "second delay"
-        #log.info('sending sms after', str(d), 'second delay' )
+        #print "sending SMS after", d, "second delay"
+        log.info('sending sms after %s second delay', % d )
     elif st is not None:
         task.start_at = st # desired `send @ playertime` converted to servertime
-        print "sending SMS at:", st
-        #log.info('sending sms at', str(st))
+        #print "sending SMS at:", st
+        log.info('sending sms at %s', % st)
     else:
         task.delay = 0
-        print "sending SMS right away"
-        #log.info('sending sms right away')
+        #print "sending SMS right away"
+        log.info('sending sms right away')
 
     # now queue the damn thing & get a response.
     response = worker.queue(task)
@@ -248,16 +248,16 @@ def sendEmail(fe, fn, te, tn, sub, txt, html, d, st):
     # scheduling conditions
     if d is not None:
         task.delay = d
-        print "sending email after", d, "second delay"
-        #log.info('sending email after', str(d), 'second delay' )
+        #print "sending email after", d, "second delay"
+        log.info('sending email after %s second delay', % d )
     elif st is not None:
         task.start_at = st # desired `send @ playertime` converted to servertime
-        print "sending email at:", st
-        #log.info('sending email at', str(st))
+        #print "sending email at:", st
+        log.info('sending email at %s', % st)
     else:
         task.delay = 0
-        print "sending email right away"
-        #log.info('sending email right away')
+        #print "sending email right away"
+        log.info('sending email right away')
 
     # now queue the damn thing & get a response.
     response = worker.queue(task)
@@ -275,12 +275,12 @@ def signupSMSauth(tel,auth):
     #print workerStatus
 
     if workerStatus is not None:
-        print "worker id", workerStatus
-        #log.info('worker id', workerStatus)
+        #print "worker id", workerStatus
+        log.info('worker id %s', % workerStatus)
         return True
     else:
-        print "worker error - probably"
-        #log.debug('worker error ~ probably')
+        #print "worker error - probably"
+        log.debug('worker error ~ probably')
         return False
 
 def processInput(user, msg):
@@ -289,14 +289,14 @@ def processInput(user, msg):
 
     #special reset / debug method
     if "!reset" in msg.lower():
-         print "MANUAL GAME RESET FOR PLAYER: " + str(user['id'])
-         #log.warning('MANUAL GAME RESET FOR PLAYER:', str(user['id']))
+         #print "MANUAL GAME RESET FOR PLAYER: " + str(user['id'])
+         log.warning('MANUAL GAME RESET FOR PLAYER: %s', % user['id'])
          startGame(user['id'])
 
     elif 'triggers' in gameStateData and gameStateData['triggers'] is not None:
         triggers = gameStateData['triggers']
-        print triggers
-        #log.debug(triggers)
+        #print triggers
+        log.debug('triggers %s', % triggers)
 
         sT = triggers.copy()
         sT.pop('yes', None)
@@ -304,8 +304,8 @@ def processInput(user, msg):
         sT.pop('error', None)
         sT.pop('noresp', None)
 
-        print sT # this array only contains triggers that aren't tied to special keywords / operations ^^
-        #log.debugging(sT)
+        #print sT # this array only contains triggers that aren't tied to special keywords / operations ^^
+        log.debug('truncated triggers %s', % sT)
 
         # check for affirmative / negative responses
         if 'yes' in triggers and checkYes(msg):
@@ -321,14 +321,14 @@ def processInput(user, msg):
             for x in sT:
                 #print x
                 if x in msg.lower():
-                    print x + " is in "+ msg
-                    #log.debug( str(x), 'is in', str(msg) )
+                    #print x + " is in "+ msg
+                    log.debug('%s is in %s' % (x, msg))
                     advanceGame(user, triggers[x])
                     break
 
         else:
-            print "input does not match any triggers"
-            #log.warning('input does not match any triggers')
+            #print "input does not match any triggers"
+            log.warning('input does not match any triggers')
             sendErrorSMS(user)
 
 def getGameStateData(id):
