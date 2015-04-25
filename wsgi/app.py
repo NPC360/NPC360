@@ -368,6 +368,7 @@ def checkErr(msg, sT):
 #THIS METHOD IS NOT COMPLETE
 def advanceGame(player, gsid):
     # advance user state, send new prompt, log game state change?
+    log.info('advancing user: %s to game state %s' % (player['id'], gsid))
     updateUser(player['id'], {"gstate":gsid})
     gs = getGameStateData(gsid)
     npc = getNPC(player, gs['prompt']['npc'])
@@ -399,8 +400,6 @@ def advanceGame(player, gsid):
         #print 'jump to game state:', gs['prompt']['goto']
         log.info('jump player %s to game state: %s' % (player['id'], gs['prompt']['goto']))
         advanceGame(player, gs['prompt']['goto'])
-
-    log.info('advancing user: %s to game state %s' % (player['id'], state))
 
 # THIS METHOD IS NOT COMPLETE
 def sendErrorSMS(player):
