@@ -264,7 +264,6 @@ def sendEmail(fe, fn, te, tn, sub, txt, html, d, st):
     #print response
     return response.id
 
-
 def signupSMSauth(tel,auth):
     # lookup admin NPC # for the user's country (this of course, assumes we have one)
     fnum = getNPC({ "country": getCountryCode(tel) }, 'admin')['tel']
@@ -393,10 +392,12 @@ def advanceGame(player, gsid):
     else:
         st = None
 
-    sendSMS(npc['tel'], player['tel'], msg, url, d, st)
+    smsResp = sendSMS(npc['tel'], player['tel'], msg, url, d, st)
+    print smsResp
 
     # after sending prompt, if there's a goto statement, we can jump forward in the game. this is for sequential msg prompts.
     if 'goto' in gs['prompt']:
+        print 'jump to game state:', gs['prompt']['goto']
         advanceGame(player, gs['prompt']['goto'])
 
     #log(user['id'], "advance to game state "+ state, "SMS")
@@ -508,18 +509,18 @@ def user():
 MySQL DATASTORE METHODS
 """
 # I/O Logging (time, userid, action taken, I/O medium -- what else??)
-def log(u,a,m):
-    db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=False)
-    md = MetaData(bind=db)
-
-    now = datetime.datetime.now()
-    d = now.strftime('%Y-%m-%d %H:%M:%S')
-
-    table = Table('log', md, autoload=True)
-    con = db.connect()
-    con.execute( table.insert(), date=d, user=u, action=a, medium=m)
-    con.close()
-    print d,u,a,m
+# def log(u,a,m):
+#     db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=False)
+#     md = MetaData(bind=db)
+#
+#     now = datetime.datetime.now()
+#     d = now.strftime('%Y-%m-%d %H:%M:%S')
+#
+#     table = Table('log', md, autoload=True)
+#     con = db.connect()
+#     con.execute( table.insert(), date=d, user=u, action=a, medium=m)
+#     con.close()
+#     print d,u,a,m
 
 # lookup user from datastore using a provided 'id' - could be uid, phone / email / twitter handle, etc. (should be medium agnostic)
 def getUser(uid):
@@ -648,7 +649,7 @@ def startGame(uid):
 
     #sendSMS(npc['tel'], player['tel'], msg, None, None, t)
     sendSMS(npc['tel'], player['tel'], msg, None, None, None)
-    sendEmail(npc['email'], npc['display_name'], player['email'], player['name'], "Mercury Global application accepted", "Thanks for applying", "<h3>your app was accepted</h3><img src='http://media.giphy.com/media/xTiTnxxyVuH374sjRu/giphy.gif'>", None, None)
+    #sendEmail(npc['email'], npc['display_name'], player['email'], player['name'], "Mercury Global application accepted", "Thanks for applying", "<h3>your app was accepted</h3><img src='http://media.giphy.com/media/xTiTnxxyVuH374sjRu/giphy.gif'>", None, None)
 
 def normalizeTel(tel):
     nTel = re.sub(r'[^a-zA-Z0-9\+]','', tel)
