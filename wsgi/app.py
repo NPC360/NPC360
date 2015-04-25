@@ -314,7 +314,6 @@ def processInput(user, msg):
             advanceGame(user, triggers['no'])
 
         # check if response is even in the list
-
         elif msg.lower() in sT:
             #print "input matches one of the triggers"
             log.debug('input matches one of the triggers')
@@ -397,17 +396,18 @@ def advanceGame(player, gsid):
 
     # after sending prompt, if there's a goto statement, we can jump forward in the game. this is for sequential msg prompts.
     if 'goto' in gs['prompt']:
-        print 'jump to game state:', gs['prompt']['goto']
+        #print 'jump to game state:', gs['prompt']['goto']
+        log.info('jump player %s to game state: %s', % (player['id'], gs['prompt']['goto']))
         advanceGame(player, gs['prompt']['goto'])
 
-    #log(user['id'], "advance to game state "+ state, "SMS")
+    log.info('advancing user: %s to game state %s' % (player['id'], state))
 
 # THIS METHOD IS NOT COMPLETE
 def sendErrorSMS(player):
     # send random error phrase from list to user
     err = random.choice(errlist)
     print "error msg: " + err
-    #log.debug('error SMS msg:', err)
+    log.debug('error SMS msg: %s' % (err))
 
     gs = getGameStateData(player['gstate'])
     npc = getNPC(player, gs['prompt']['npc'])
@@ -427,12 +427,12 @@ def user():
 
         elif request.headers['Content-Type'] == 'application/json':
             d = request.get_json()
-            print d
-            #log.debug(d)
+            #print d
+            log.debug('incoming request: %s', % (d))
             u = getUser(d['id'])
 
-        print "player", u, "\n"
-        #log.debug('player', str(u))
+        #print "player", u, "\n"
+        log.debug('player info: %S' % (u))
 
         if u is None:
             resp = Response(json.dumps(u), status=404, mimetype='application/json')
@@ -468,11 +468,11 @@ def user():
                 'tz':d['tz'],
                 'email':d['email']
             }
-            print udata
-            #log.debug(d)
+            #print udata
+            log.debug(udata)
 
             uid = makeUser(udata)
-            #log(uid, 'new user', 'api')
+            log.info('new user id: %s via API' % (uid))
 
             # return data
             udata.update({'uid':uid})
@@ -483,8 +483,8 @@ def user():
     elif request.method == 'PATCH':
         if request.headers['Content-Type'] == 'application/json':
             d = request.get_json()
-            print d
-            #log.debug(d)
+            #print d
+            log.debug('incoming request: %s', % (d))
 
             if getUser(d['id']) and d['id'] == getUser(d['id'])['id']:
                 data = d['data']
@@ -556,13 +556,13 @@ def makeUser(ud):
 
         uid = x.inserted_primary_key[0]
         con.close()
-        print uid
-        #log.debug('new player uid:', str(uid))
+        #print uid
+        log.debug('new player uid: %s' % (uid))
         return uid
 
     except IntegrityError as e:
-        print e
-        #log.debug(e)
+        #print e
+        log.debug('error %s' % (e))
         return render_template('signup1_EorP_Taken.html', name=ud['fname'])
 
 # update user data using POST payload.
@@ -578,8 +578,8 @@ def updateUser(uid, data):
         return res.last_updated_params()
 
     except (CompileError, IntegrityError) as e:
-        print e
-        #log.debug(e)
+        #print e
+        log.debug('error %s' % (e))
 
 # get NPC info & tel by matching NPC number and the country code of player.
 def getNPC(playerInfo, npcName):
@@ -634,8 +634,8 @@ def startGame(uid):
     gs = getGameStateData(1)
     npc = getNPC(player, gs['prompt']['npc'])
 
-    print npc
-    #log.debug('npc info:', str(npc))
+    #print npc
+    log.debug('npc info: %s' % (npc))
 
     ### Fill in variables like %%fname%% <- use data from player dict.
     msg = getPlayerVars(player, gs['prompt']['msg'])
