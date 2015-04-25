@@ -397,7 +397,7 @@ def advanceGame(player, gsid):
     # after sending prompt, if there's a goto statement, we can jump forward in the game. this is for sequential msg prompts.
     if 'goto' in gs['prompt']:
         #print 'jump to game state:', gs['prompt']['goto']
-        log.info('jump player %s to game state: %s', % (player['id'], gs['prompt']['goto']))
+        log.info('jump player %s to game state: %s' % (player['id'], gs['prompt']['goto']))
         advanceGame(player, gs['prompt']['goto'])
 
     log.info('advancing user: %s to game state %s' % (player['id'], state))
