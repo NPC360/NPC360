@@ -59,15 +59,15 @@ class ContextFilter(logging.Filter):
 
 log = logging.getLogger()
 log.setLevel(logging.DEBUG)
-#logf = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+logf = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
 # paper trail handler
-#ptcf = ContextFilter()
-#log.addFilter(ptcf)
-#pt = logging.handlers.SysLogHandler(address=('logs2.papertrailapp.com', 18620))
+ptcf = ContextFilter()
+log.addFilter(ptcf)
+pt = logging.handlers.SysLogHandler(address=('logs2.papertrailapp.com', 18620))
 lf = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s', datefmt='%Y-%m-%dT%H:%M:%S')
-#pt.setFormatter(lf)
-#log.addHandler(pt)
+pt.setFormatter(lf)
+log.addHandler(pt)
 
 # file handler
 #fh = logging.FileHandler('log/log.txt')
@@ -77,7 +77,7 @@ lf = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s', datefmt='%Y-
 
 # console handler
 ch = logging.StreamHandler()
-#ch.setLevel(logging.DEBUG)
+ch.setLevel(logging.DEBUG)
 ch.setFormatter(lf)
 log.addHandler(ch)
 
@@ -152,11 +152,11 @@ def smsin():
     phone = request.values.get('From', None)
     msg = request.values.get('Body', None)
     print 'sms in', str(phone), str(msg)
-    #log.info('sms in', str(phone), str(msg) )
+    log.info('sms in', str(phone), str(msg) )
 
     u = getUser(phone)
     print u['id'], 'input', 'sms'
-    #log(u['id'], 'input', 'sms')
+    log(u['id'], 'input', 'sms')
     processInput(u, msg)
 
     resp = Response(json.dumps(request.values), status=200, mimetype='application/json')
