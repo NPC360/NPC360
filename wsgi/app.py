@@ -381,19 +381,23 @@ def advanceGame(player, gsid):
     if 'url' in gs['prompt']:
         url = gs['prompt']['url']
     else:
-        url = None;
+        url = None
 
     if 'delay' in gs['prompt']:
         d = gs['prompt']['delay']
     else:
-        d = None;
+        d = None
 
     if 'st' in gs['prompt']:
         st = gs['prompt']['st']
     else:
-        st = None;
+        st = None
 
     sendSMS(npc['tel'], player['tel'], msg, url, d, st)
+
+    # after sending prompt, if there's a goto statement, we can jump forward in the game. this is for sequential msg prompts.
+    if 'goto' in gs['prompt']:
+        advanceGame(player, gs['prompt']['goto'])
 
     #log(user['id'], "advance to game state "+ state, "SMS")
 
