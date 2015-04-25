@@ -46,7 +46,9 @@ from yesnoerr import *
 # papertrail stuff from http://help.papertrailapp.com/kb/configuration/configuring-centralized-logging-from-python-apps/
 import logging
 import socket
-from logging.handlers import SysLogHandler
+import logging.handlers
+
+#from logging.handlers import SysLogHandler
 
 class ContextFilter(logging.Filter):
   hostname = socket.gethostname()
@@ -62,7 +64,7 @@ log.setLevel(logging.DEBUG)
 # paper trail handler
 ptcf = ContextFilter()
 log.addFilter(ptcf)
-pt = SysLogHandler(address=('logs2.papertrailapp.com', 18620))
+pt = logging.handlers.SysLogHandler(address=('logs2.papertrailapp.com', 18620))
 lf = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s', datefmt='%Y-%m-%dT%H:%M:%S')
 pt.setFormatter(lf)
 log.addHandler(pt)
