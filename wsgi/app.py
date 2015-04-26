@@ -47,30 +47,24 @@ from yesnoerr import *
 import logging
 import socket
 import logging.handlers
-import logging.config
-import loggly.handlers
 
 #from logging.handlers import SysLogHandler
 
-#class ContextFilter(logging.Filter):
-#  hostname = socket.gethostname()
-#
-#  def filter(self, record):
-#    record.hostname = ContextFilter.hostname
-#    return True
+class ContextFilter(logging.Filter):
+  hostname = socket.gethostname()
 
-#loggly handler
-logging.config.fileConfig('loggly.conf')
+  def filter(self, record):
+    record.hostname = ContextFilter.hostname
+    return True
 
 log = logging.getLogger()
 log.setLevel(logging.DEBUG)
 lf = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s', datefmt='%Y-%m-%dT%H:%M:%S')
-#lf = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-
 # paper trail handler
 #ptcf = ContextFilter()
 #log.addFilter(ptcf)
 #pt = logging.handlers.SysLogHandler(address=('logs2.papertrailapp.com', 18620))
+
 #pt.setFormatter(lf)
 #log.addHandler(pt)
 
@@ -85,8 +79,6 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 ch.setFormatter(lf)
 log.addHandler(ch)
-
-#logger = logging.getLogger('myLogger')
 
 """
 landing page / HTML / authorization routes
@@ -418,7 +410,7 @@ def sendErrorSMS(player):
     gs = getGameStateData(player['gstate'])
     npc = getNPC(player, gs['prompt']['npc'])
 
-    sendSMS(npc['tel'], player['tel'], err, None, 22, None)
+    sendSMS(npc['tel'], player['tel'], err, None, 14, None)
 
 
 """
