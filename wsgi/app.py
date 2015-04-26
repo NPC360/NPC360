@@ -47,15 +47,20 @@ from yesnoerr import *
 import logging
 import socket
 import logging.handlers
+import logging.config
+import loggly.handlers
 
 #from logging.handlers import SysLogHandler
 
-class ContextFilter(logging.Filter):
-  hostname = socket.gethostname()
+#class ContextFilter(logging.Filter):
+#  hostname = socket.gethostname()
+#
+#  def filter(self, record):
+#    record.hostname = ContextFilter.hostname
+#    return True
 
-  def filter(self, record):
-    record.hostname = ContextFilter.hostname
-    return True
+#loggly handler
+logging.config.fileConfig('loggly.conf')
 
 log = logging.getLogger()
 log.setLevel(logging.DEBUG)
@@ -63,11 +68,11 @@ lf = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s', datefmt='%Y-
 #lf = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
 # paper trail handler
-ptcf = ContextFilter()
-log.addFilter(ptcf)
-pt = logging.handlers.SysLogHandler(address=('logs2.papertrailapp.com', 18620))
-pt.setFormatter(lf)
-log.addHandler(pt)
+#ptcf = ContextFilter()
+#log.addFilter(ptcf)
+#pt = logging.handlers.SysLogHandler(address=('logs2.papertrailapp.com', 18620))
+#pt.setFormatter(lf)
+#log.addHandler(pt)
 
 # file handler
 #fh = logging.FileHandler('log/log.txt')
@@ -80,6 +85,8 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 ch.setFormatter(lf)
 log.addHandler(ch)
+
+#logger = logging.getLogger('myLogger')
 
 """
 landing page / HTML / authorization routes
