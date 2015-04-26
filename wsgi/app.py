@@ -59,20 +59,20 @@ class ContextFilter(logging.Filter):
 
 log = logging.getLogger()
 log.setLevel(logging.DEBUG)
-logf = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+lf = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s', datefmt='%Y-%m-%dT%H:%M:%S')
+#lf = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
 # paper trail handler
-#ptcf = ContextFilter()
-#log.addFilter(ptcf)
-#pt = logging.handlers.SysLogHandler(address=('logs2.papertrailapp.com', 18620))
-lf = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s', datefmt='%Y-%m-%dT%H:%M:%S')
-#pt.setFormatter(lf)
-#log.addHandler(pt)
+ptcf = ContextFilter()
+log.addFilter(ptcf)
+pt = logging.handlers.SysLogHandler(address=('logs2.papertrailapp.com', 18620))
+pt.setFormatter(lf)
+log.addHandler(pt)
 
 # file handler
 #fh = logging.FileHandler('log/log.txt')
 #fh.setLevel(logging.DEBUG)
-#fh.setFormatter(logf)
+#fh.setFormatter(lf)
 #log.addHandler(fh)
 
 # console handler
