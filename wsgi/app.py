@@ -145,7 +145,7 @@ def signup():
         # oh, and ideally we should make sure the email/phone aren't already in the table.  (future?)
         else:
             #print name, tel, tz, email
-            log.debug('name: %s, tel: %s, tz: %s, email: %s')
+            log.debug('name: %s, tel: %s, tz: %s, email: %s' % (name, tel, tz, email))
             if name and tel and tz and email:
                 auth = str(random.randint(1000, 9999))
                 # add data to MySQL table for lookup later on & get row id/token
@@ -449,7 +449,7 @@ def user():
             u = getUser(d['id'])
 
         #print "player", u, "\n"
-        log.debug('player info: %S' % (u))
+        log.debug('player info: %s' % (u))
 
         if u is None:
             resp = Response(json.dumps(u), status=404, mimetype='application/json')
@@ -576,7 +576,21 @@ def makeUser(ud):
         d = now.strftime('%Y-%m-%d %H:%M:%S')
 
         con = db.connect()
-        x = con.execute( table.insert(), name=ud['fname'], tel=normTel, tz=ud['tz'], email=ud['email'], country=getCountryCode(normTel),  cdate=d, gstart=d, gstate=0 )
+        x = con.execute( table.insert(),
+            name=ud['fname'],
+            tel=normTel,
+            tz=ud['tz'],
+            email=ud['email'],
+            country=getCountryCode(normTel),
+            cdate=d,
+            gstart=d,
+            gstate=0,
+            why=ud['why'],
+            history=ud['history'],
+            soloteam=ud['soloteam'],
+            ambitious=ud['ambitious'],
+            animal=ud['animal']
+            )
 
         uid = x.inserted_primary_key[0]
         con.close()
