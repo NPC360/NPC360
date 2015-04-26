@@ -97,45 +97,64 @@ def signup():
         tz = request.values.get('tz', None)
         email = request.values.get('email', None)
 
+        # non contact vars
+        why = request.values.get('why-work', None)
+        history = request.values.get('history', None)
+        soloteam = request.values.get('soloteam', None)
+        ambitious = request.values.get('ambitious', None)
+        animal = request.values.get('animal', None)
+
+        log.debug( 'form data: %s' % (request.values))
+
         if request.values.get('auth', None):
             auth = request.values.get('auth', None)
             uid = request.values.get('uid', None)
             #print auth, name, tel, tz, email, uid
-            print 'Variables from form: ' + str(auth), name, str(tel), tz, email, str(uid)
-            #log.debug( 'Variables from form: ' + str(auth), name, str(tel), tz, email, str(uid) )
-
+            #print 'Variables from form: ' + str(auth), name, str(tel), tz, email, str(uid)
+            log.debug('auth form data: %s' % (request.values))
 
             tableAuth = checkAuth(uid)
-            print "auth code from table:", tableAuth
-            #log.debug('auth code from table: ', tableAuth)
+            #print "auth code from table:", tableAuth
+            log.debug('auth code from table: %s' % (tableAuth))
 
             #if auth is correct, create new user in playerInfo table.
             #if auth is not correct, return to confirmation step.
             if str(auth) in str(tableAuth):
-                d = {'fname':name, 'tel':tel, 'tz':tz, 'email':email}
+                d = {'fname':name,
+                    'tel':tel,
+                    'tz':tz,
+                    'email':email,
+
+                    'why':why,
+                    'history':history,
+                    'soloteam':soloteam,
+                    'ambitious':ambitious,
+                    'animal':animal
+                    }
                 uid = makeUser(d)
-                print 'new user:', name, 'uid:', uid
-                #log.info('new user:', name, 'uid:', uid)
+                #print 'new user:', name, 'uid:', uid
+                log.info('new user created : %s, uid: %s' % (name, uid))
 
                 # now, schedule game start by scheduling advanceGame() worker
                 startGame(uid)
 
-                return render_template('signupSuccess.html', name=name, tel=tel, tz=tz, email=email)
+                return render_template('signupSuccess.html', name=name)
             else:
-                return render_template('signupError.html', name=name, tel=tel, tz=tz, uid=uid, email=email)
+                return render_template('signupError.html', name=name, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious, animal=animal)
         # if no auth code passed in, we need to ask for it!
         # oh, and ideally we should make sure the email/phone aren't already in the table.  (future?)
         else:
-            print name, tel, tz, email
+            #print name, tel, tz, email
+            log.debug('name: %s, tel: %s, tz: %s, email: %s')
             if name and tel and tz and email:
                 auth = str(random.randint(1000, 9999))
                 # add data to MySQL table for lookup later on & get row id/token
                 uid = newAuth(auth)
-                print 'auth code:', str(auth), 'player uid:', str(uid)
-                #log.info('auth code:', str(auth), 'player uid:', str(uid) )
+                #print 'auth code:', str(auth), 'player uid:', str(uid)
+                log.info('auth code: %s, player uid: %s' % (auth, uid) )
 
                 if signupSMSauth(tel, auth):
-                    return render_template('signup2.html', name=name, tel=tel, tz=tz, uid=uid, email=email)
+                    return render_template('signup2.html', name=name, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious, animal=animal)
                 else:
                     return render_template('signup1Error.html', name=name, email=email)
     # but, if no data POSTed at all, then we need to render the signup form!
@@ -464,7 +483,14 @@ def user():
                 'fname':d['fname'],
                 'tel':d['tel'],
                 'tz':d['tz'],
-                'email':d['email']
+                'email':d['email'],
+
+                # extended info
+                'why':d['why-work'],
+                'history':d['history'],
+                'soloteam':d['soloteam'],
+                'ambitious':d['ambitious'],
+                'animal':d['animal']
             }
             #print udata
             log.debug(udata)

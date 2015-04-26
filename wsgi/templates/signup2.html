@@ -17,8 +17,8 @@
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css') }}">
 
-    <!-- Custom CSS -->    
-    <link rel="stylesheet" href="{{url_for('static', filename='css/intlTelInput.css') }}">  
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{url_for('static', filename='css/intlTelInput.css') }}">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -50,6 +50,14 @@
     <input id="tel" class="hiddeninput" name="tel" type="tel" value="{{tel}}" hidden>
     <input id="tz" class="hiddeninput" name="tz" type="text" value="{{tz}}" hidden>
     <input id="tel" class="hiddeninput" name="email" type="email" value="{{email}}" hidden>
+
+    <!-- extended info-->
+
+    <textarea id="why-work" class="hiddeninput" name="why-work" hidden>{{why}}</textarea>
+    <textarea id="history" class="hiddeninput" name="history" hidden>{{history}}</textarea>
+    <input id="soloteam" class="hiddeninput" name="soloteam" type="text" value="{{soloteam}}" hidden>
+    <input id="ambitious" class="hiddeninput" name="ambitious" type="text" value="{{ambitious}}" hidden>
+    <input id="animal" class="hiddeninput" name="animal" type="text" value="{{animal}}" hidden>
 
     <input id="submit" class="btn-primary" type="submit" value="Complete signup">
 

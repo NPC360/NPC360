@@ -114,7 +114,7 @@
 
           <form id="signupForm" class="signupForm" action="/careers" method="POST">
 
-            <p style="margin-top: 25px;">Contact details</p>
+            <h3 style="margin-top: 25px;">Contact information</h3>
 
               <div class="form-group">
                 <label for="fname">First Name *</label>
@@ -136,68 +136,68 @@
                 <input type="tel" class="form-control" id="tel" placeholder="Enter mobile number" name="tel" required />
               </div>
 
-              <p style="margin-top: 25px;">Tell us a little about yourself</p>
+              <h3 style="margin-top: 25px;">Tell us about yourself</h3>
 
               <div class="form-group">
-                <label for="why-work">Why do you want to work for Mercury Group</label>
-                <textarea id="why-work" class="form-control" name="why-work" rows="8" ></textarea>
+                <label for="why-work">Why do you want to work for Mercury Group? *</label>
+                <textarea id="why-work" class="form-control" name="why-work" rows="8" required></textarea>
               </div>
 
               <div class="form-group">
                 <label for="history">Relevant work history</label>
-                <textarea id="history" class="form-control" name="history" rows="8" ></textarea>
+                <textarea id="history" class="form-control" name="history" rows="8" required></textarea>
               </div>
 
-              <br><p>Which best describes how you prefer to work</p>
+              <br><p>What is your preferred working environment? *</p>
               <div class="radio">
                 <label>
-                  <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
-                  I prefer to work alone
+                  <input type="radio" name="soloteam" id="optionsRadios1" value="alone" checked>
+                  I prefer to work alone.
                 </label>
               </div>
               <div class="radio">
                 <label>
-                  <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
-                  I prefer to work with a mix of both teams and alone
+                  <input type="radio" name="soloteam" id="optionsRadios2" value="solo or with a team">
+                  I prefer to work with a mix of both teams and alone.
                 </label>
               </div>
               <div class="radio">
                 <label>
-                  <input type="radio" name="optionsRadios" id="optionsRadios3" value="option3" >
-                  I prefer to work with a team
+                  <input type="radio" name="soloteam" id="optionsRadios3" value="with a team" >
+                  I prefer to work with a team.
                 </label>
               </div>
 
-              <br><p>Would you describe yourself as ambitious?</p>
+              <br><p>Would you describe yourself as ambitious? *</p>
               <div class="radio">
                 <label>
-                  <input type="radio" name="optionsRadiosAmbitiousYes" id="optionsRadiosYes" value="option1" checked>
+                  <input type="radio" name="ambitious" id="optionsRadiosYes" value="yes" checked>
                   Yes
                 </label>
               </div>
               <div class="radio">
                 <label>
-                  <input type="radio" name="optionsRadiosAmbitiousNo" id="optionsRadiosNo" value="option2">
+                  <input type="radio" name="ambitious" id="optionsRadiosNo" value="no">
                   No
                 </label>
               </div>
 
               <div class="form-group">
-                <label for="animal">If you were an animal what would you be?</label>
-                <textarea id="animal" class="form-control" name="animal" rows="8" ></textarea>
+                <label for="animal">If you were an animal, what kind would you be? *</label>
+                <input type="text" id="animal" class="form-control" name="animal" required>
               </div>
 
               <br>
               <div class="form-group">
-                <label for="exampleInputFile">Upload resume</label>
+                <label for="exampleInputFile">Upload your résumé</label>
                 <input type="file" name="resumefile" id="resumeFile" accept=".pdf">
-                <p class="help-block">Please upload resumes in PDF format</p>
+                <p class="help-block">Note: résumés must be in PDF format</p>
               </div>
 
               <br>
               <div class="checkbox">
                 <label>
-                  <input type="checkbox" required> I am happy to be contacted by Mercury Group about future employment opportunities *
+                  <input type="checkbox" required> I hereby declare that the above statements are true to the best of my knowledge and belief. *
                 </label>
               </div>
 
@@ -226,6 +226,9 @@
 
         $("#apply-btn").click(function(){
             $("#apply-form").show( "slow" );
+            $('html, body').animate({
+        scrollTop: $("#apply-form").offset().top
+    }, 1500);
         })
 
     });
