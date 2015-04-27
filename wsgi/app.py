@@ -28,6 +28,7 @@ from iron_worker import *
 import datetime
 import random
 from os import environ
+import tinys3
 
 app = Flask(__name__)
 app.config['PROPAGATE_EXCEPTIONS'] = True
@@ -104,6 +105,19 @@ def signup():
         ambitious = request.values.get('ambitious', None)
         animal = request.values.get('animal', None)
 
+        ######
+        # upload resume (if it exists?) to s3
+        s3 = tinys3.Connection(environ['S3KEY'],environ['S3SECRET'])
+        resume = request.files['resumefile']
+
+        now = datetime.datetime.now()
+        fnd = now.strftime('%Y_%m_%d_%H_%M_%S')
+
+        fn = '%s_%s.pdf' % (email, fnd)
+        print fn
+        conn.upload(fn,resume,'npc360/resumes')
+        ######
+
         log.debug( 'form data: %s' % (request.values))
 
         if request.values.get('auth', None):
@@ -124,7 +138,6 @@ def signup():
                     'tel':tel,
                     'tz':tz,
                     'email':email,
-
                     'why':why,
                     'history':history,
                     'soloteam':soloteam,
@@ -140,7 +153,7 @@ def signup():
 
                 return render_template('signupSuccess.html', name=name)
             else:
-                return render_template('signupError.html', name=name, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious, animal=animal)
+                return render_template('signupError.html', name=name, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious, animal=animal, resume=resume)
         # if no auth code passed in, we need to ask for it!
         # oh, and ideally we should make sure the email/phone aren't already in the table.  (future?)
         else:
@@ -154,7 +167,7 @@ def signup():
                 log.info('auth code: %s, player uid: %s' % (auth, uid) )
 
                 if signupSMSauth(tel, auth):
-                    return render_template('signup2.html', name=name, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious, animal=animal)
+                    return render_template('signup2.html', name=name, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious, animal=animal, resume=resume)
                 else:
                     return render_template('signup1Error.html', name=name, email=email)
     # but, if no data POSTed at all, then we need to render the signup form!
