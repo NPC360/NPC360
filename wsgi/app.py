@@ -93,7 +93,8 @@ def index():
 def signup():
     if request.method == 'POST':
         # if auth code has been passed in, we need to process it.
-        name = request.values.get('fname', None)
+        fname = request.values.get('fname', None)
+        lname = request.values.get('lname', None)
         tel = request.values.get('tel', None)
         tz = request.values.get('tz', None)
         email = request.values.get('email', None)
@@ -107,15 +108,15 @@ def signup():
 
         ######
         # upload resume (if it exists?) to s3
-        s3 = tinys3.Connection(environ['S3KEY'],environ['S3SECRET'])
-        resume = request.files['resumefile']
-
-        now = datetime.datetime.now()
-        fnd = now.strftime('%Y_%m_%d_%H_%M_%S')
-
-        fn = '%s_%s.pdf' % (email, fnd)
-        print fn
-        conn.upload(fn,resume,'npc360/resumes')
+        # s3 = tinys3.Connection(environ['S3KEY'],environ['S3SECRET'])
+        # resume = request.files['resumefile']
+        #
+        # now = datetime.datetime.now()
+        # fnd = now.strftime('%Y_%m_%d_%H_%M_%S')
+        #
+        # fn = '%s_%s.pdf' % (email, fnd)
+        # print fn
+        # conn.upload(fn,resume,'npc360/resumes')
         ######
 
         log.debug( 'form data: %s' % (request.values))
@@ -134,7 +135,8 @@ def signup():
             #if auth is correct, create new user in playerInfo table.
             #if auth is not correct, return to confirmation step.
             if str(auth) in str(tableAuth):
-                d = {'fname':name,
+                d = {'fname':fname,
+                    'lname':lname,
                     'tel':tel,
                     'tz':tz,
                     'email':email,
@@ -146,20 +148,20 @@ def signup():
                     }
                 uid = makeUser(d)
                 #print 'new user:', name, 'uid:', uid
-                log.info('new user created : %s, uid: %s' % (name, uid))
+                log.info('new user created : %s %s, uid: %s' % (fname, lname,  uid))
 
                 # now, schedule game start by scheduling advanceGame() worker
                 startGame(uid)
 
-                return render_template('signupSuccess.html', name=name)
+                return render_template('signupSuccess.html', fname=fname)
             else:
-                return render_template('signupError.html', name=name, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious, animal=animal, resume=resume)
+                return render_template('signupError.html', fname=fname, lname=lname, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious, animal=animal, resume=resume)
         # if no auth code passed in, we need to ask for it!
         # oh, and ideally we should make sure the email/phone aren't already in the table.  (future?)
         else:
             #print name, tel, tz, email
-            log.debug('name: %s, tel: %s, tz: %s, email: %s' % (name, tel, tz, email))
-            if name and tel and tz and email:
+            log.debug('name: %s %s, tel: %s, tz: %s, email: %s' % (fname, lname, tel, tz, email))
+            if fname and lname and tel and tz and email:
                 auth = str(random.randint(1000, 9999))
                 # add data to MySQL table for lookup later on & get row id/token
                 uid = newAuth(auth)
@@ -167,9 +169,9 @@ def signup():
                 log.info('auth code: %s, player uid: %s' % (auth, uid) )
 
                 if signupSMSauth(tel, auth):
-                    return render_template('signup2.html', name=name, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious, animal=animal, resume=resume)
+                    return render_template('signup2.html', fname=fname, lname=lname, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious, animal=animal, resume=resume)
                 else:
-                    return render_template('signup1Error.html', name=name, email=email)
+                    return render_template('signup1Error.html', fname=fname, lname=lname, email=email)
     # but, if no data POSTed at all, then we need to render the signup form!
     else:
         return render_template('signup1.html')
@@ -473,7 +475,8 @@ def user():
             udata = {
                 'player id':u['id'],
                 'player created on':str(u['cdate']),
-                'name':u['name'],
+                'fname':u['fname'],
+                'lname':u['lname'],
                 'tel':u['tel'],
                 'email':u['email'],
                 #'twitter':u['twitter'],
@@ -494,6 +497,7 @@ def user():
             d = request.get_json()
             udata = {
                 'fname':d['fname'],
+                'lname':d['lname'],
                 'tel':d['tel'],
                 'tz':d['tz'],
                 'email':d['email'],
@@ -590,7 +594,8 @@ def makeUser(ud):
 
         con = db.connect()
         x = con.execute( table.insert(),
-            name=ud['fname'],
+            fname=ud['fname'],
+            lname=ud['lname'],
             tel=normTel,
             tz=ud['tz'],
             email=ud['email'],
