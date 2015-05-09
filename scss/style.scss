@@ -71,6 +71,9 @@ p:first-child {
 			&:active {
 				color: $blue-dark;
 			}
+			&.active {
+				color: $light-grey;
+			}
 		}
 	}
 }
