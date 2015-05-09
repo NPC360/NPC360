@@ -15,6 +15,12 @@ body {
 	margin: 0 auto;
 	padding: 0 $pl;
 }
+h2 {
+	font-family: Georgia, serif;
+	color: $grey;
+	font-size: 32px;
+	font-weight: 100;
+}
 a {
 	@include transition-property(color, background, border, opacity);
 	@include transition-duration;
