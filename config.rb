@@ -1,0 +1,10 @@
+project_type    = :stand_alone
+environment     = :development
+http_path       = "/"
+sass_path       = "scss"
+css_dir         = "wsgi/static/css"
+images_dir      = "wsgi/static/img"
+javascripts_dir = "wsgi/static/js"
+fonts_dir       = "wsgi/static/fonts"
+output_style    = :compact
+relative_assets = false
