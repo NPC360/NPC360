@@ -1,0 +1,41 @@
+{
+	"folders":
+	[
+		{
+			"path": ".",
+			"name": "NPC360",
+			"folder_exclude_patterns": [
+				".git",
+				".sass-cache",
+				"dist",
+				"misc",
+				"build",
+				"*.egg-info"
+			],
+			"file_exclude_patterns": [
+				"*.diff",
+				"*.err",
+				"*.esproj",
+				"*.log",
+				"*.orig",
+				"*.rej",
+				"*.sass-cache",
+				"*.sublime-*",
+				"*.swo",
+				"*.swp",
+				"*.vi",
+				"*~",
+				".cache",
+				".DS_Store",
+				".komodotools",
+				".project",
+				".settings",
+				".tmproj",
+				"dwsync.xml",
+				"Gemfile.lock",
+				"nbproject",
+				"Thumbs.db"
+			]
+		}
+	]
+}
