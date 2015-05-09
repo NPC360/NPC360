@@ -84,6 +84,10 @@ p:first-child {
 	padding: $ps 0 0;
 }
 
+.main {
+	min-height: 200px;
+}
+
 .hero {
 	margin: $pxxl 0;
 	font-family: Georgia, serif;
