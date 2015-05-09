@@ -1,0 +1,96 @@
+<form id="signupForm" action="/careers" method="POST">
+	<h3>Application</h3>
+		<div class="form-group">
+			<label for="fname">First Name*</label>
+			<input type="text" class="form-control" id="fname" placeholder="First name" name="fname" required>
+		</div>
+
+		<div class="form-group">
+			<label for="lname">Last Name*</label>
+			<input type="text" class="form-control" id="lname" placeholder="Last name" name="lname" required>
+		</div>
+
+		<div class="form-group">
+			<label for="email">Email*</label>
+			<input type="email" class="form-control" id="email" placeholder="Enter your email" name="email" required>
+		</div>
+
+		<div class="form-group">
+			<label for="tel">Mobile Number*</label>
+			<input type="tel" class="form-control" id="tel" placeholder="Enter mobile number" name="tel" required>
+		</div>
+
+		<p>Tell us a little about yourself</p>
+
+		<div class="form-group">
+			<label for="why-work">Why do you want to work for Mercury Group</label>
+			<textarea id="why-work" class="form-control" name="why-work" rows="8" ></textarea>
+		</div>
+
+		<div class="form-group">
+			<label for="history">Relevant work history</label>
+			<textarea id="history" class="form-control" name="history" rows="8" ></textarea>
+		</div>
+
+		<br><p>Which best describes how you prefer to work</p>
+		<div class="radio">
+			<label>
+				<input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+				I prefer to work alone
+			</label>
+		</div>
+		<div class="radio">
+			<label>
+				<input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+				I prefer to work with a mix of both teams and alone
+			</label>
+		</div>
+		<div class="radio">
+			<label>
+				<input type="radio" name="optionsRadios" id="optionsRadios3" value="option3" >
+				I prefer to work with a team
+			</label>
+		</div>
+
+		<br><p>Would you describe yourself as ambitious?</p>
+		<div class="radio">
+			<label>
+				<input type="radio" name="optionsRadiosAmbitiousYes" id="optionsRadiosYes" value="option1" checked>
+				Yes
+			</label>
+		</div>
+		<div class="radio">
+			<label>
+				<input type="radio" name="optionsRadiosAmbitiousNo" id="optionsRadiosNo" value="option2">
+				No
+			</label>
+		</div>
+
+		<div class="form-group">
+			<label for="animal">If you were an animal what would you be?</label>
+			<textarea id="animal" class="form-control" name="animal" rows="8" ></textarea>
+		</div>
+
+		<br>
+		<div class="form-group">
+			<label for="exampleInputFile">Upload resume</label>
+			<input type="file" name="resumefile" id="resumeFile" accept=".pdf">
+			<p class="help-block">Please upload resumes in PDF format</p>
+		</div>
+
+		<br>
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" required> I am happy to be contacted by Mercury Group about future employment opportunities*
+			</label>
+		</div>
+
+		<button id="submit" class="btn btn-primary btn-lg" type="submit" value="Continue">Submit</button>
+
+		<!--Use JS to determine timezone or use a map based selector-->
+		<input id="tz" class="hiddeninput" type="text" name="tz" hidde>
+
+		<p id="tel-invalid" class="hide val">invalid phone number</p>
+		<p id="email-exists" class="hide val">email already registered</p>
+		<p id="tel-exists" class="hide val">phone already registered</p>
+</form>

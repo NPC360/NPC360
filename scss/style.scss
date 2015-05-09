@@ -8,6 +8,7 @@ body {
 	font-size: 15px;
 	font-family: Helvetica, Arial, sans-serif;
 	background: #FFF;
+	font-weight: 400;
 	margin: 0;
 }
 .content-layout {
@@ -24,6 +25,28 @@ h2 {
 a {
 	@include transition-property(color, background, border, opacity);
 	@include transition-duration;
+	color: $blue;
+	text-decoration: none;
+
+	&:hover, &:active {
+		text-decoration: underline;
+		color: $blue-light;
+	}
+	&:focus {
+		color: $blue-dark;
+	}
+}
+ul {
+	list-style: square;
+	margin: $margins;
+	padding: 0 $pl;
+}
+li + li {
+	margin-top: $pxs;
+}
+p {
+	margin: $margins;
+	line-height: 1.5;
 }
 p:first-child {
 	margin-top: 0;
@@ -117,5 +140,40 @@ p:first-child {
 			background-size: floor(image-width($image) / 2);
 			margin: 0 0 0 $pxs;
 		}
+	}
+}
+
+ul.block {
+	padding: 0;
+	list-style: none;
+	border: solid 1px $light-grey;
+
+	li + li {
+		margin: 0;
+		border-top: solid 1px $light-grey;
+	}
+	li > span, li > a {
+		display: block;
+		padding: $ps $pm;
+	}
+	li > span {
+		color: $grey;
+	}
+}
+
+button {
+	background: $blue;
+	color: #FFF;
+	padding: $pm $pxl;
+	display: inline-block;
+	border: 0;
+	text-transform: uppercase;
+	font-weight: bold;
+
+	&:hover, &:active {
+		background: $blue-light;
+	}
+	&:focus {
+		background: $blue-dark;
 	}
 }
