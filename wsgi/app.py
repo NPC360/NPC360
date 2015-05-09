@@ -101,7 +101,7 @@ def case_studies():
 def contact():
     return render_template('contact.html')
 
-@app.route("/careers", methods = ['GET','POST'])
+@app.route("/careers/", methods = ['GET','POST'])
 def signup():
     if request.method == 'POST':
         # if auth code has been passed in, we need to process it.
