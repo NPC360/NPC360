@@ -3,3 +3,106 @@
 @import "variables";
 @import "functional";
 @import "intlTelInput";
+
+body {
+	font-size: 15px;
+	font-family: Helvetica, Arial, sans-serif;
+	background: #FFF;
+	margin: 0;
+}
+.content-layout {
+	max-width: $page-max-width;
+	margin: 0 auto;
+	padding: 0 $pl;
+}
+a {
+	@include transition-property(color, background, border, opacity);
+	@include transition-duration;
+}
+p:first-child {
+	margin-top: 0;
+}
+.header {
+	h1 {
+		margin: 0;
+
+		&, a {
+			width: $logo-width;
+			height: $logo-height;
+		}
+		a {
+			display: block;
+			background: image-url($logo-image) no-repeat 0 0;
+			background-size: $logo-width;
+
+			&:hover, &:active, &:focus {
+				opacity: 0.9;
+			}
+		}
+	}
+	nav {
+		display: block;
+		text-transform: uppercase;
+		margin: $pxxl 0;
+		font-size: 13px;
+		font-weight: bold;
+
+		ul {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: block;
+		}
+		li {
+			float: left;
+		}
+		li + li {
+			margin: 0 0 0 $pl;
+		}
+		a {
+			display: block;
+			padding: $pxs 0;
+			text-decoration: none;
+			color: $black;
+
+			&:hover, &:focus {
+				color: $blue-light;
+			}
+			&:active {
+				color: $blue-dark;
+			}
+		}
+	}
+}
+
+.footer {
+	text-transform: uppercase;
+	font-size: 12px;
+	color: $light-grey;
+	border-top: solid 1px $light-grey;
+	margin: $pl 0 0;
+	padding: $ps 0 0;
+}
+
+.hero {
+	margin: $pxxl 0;
+	font-family: Georgia, serif;
+	font-size: 28px;
+	line-height: 1.5;
+	color: $grey;
+
+	p {
+		margin: 0;
+
+		&:after {
+			$image: "crane.png";
+			display: inline-block;
+			content: "";
+			background: image-url($image) no-repeat 0 0;
+			width: floor(image-width($image) / 2);
+			height: floor(image-height($image) / 2);
+			background-size: floor(image-width($image) / 2);
+			margin: 0 0 0 $pxs;
+		}
+	}
+}
