@@ -13,11 +13,9 @@
 
 	{% include 'partials/position-description.html' %}
 	{% include 'partials/register-form.html' %}
-
-
-<!-- JaVAVAVAVAVa -->
+{% endblock %}
+{% block scripts %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
 <script src="{{url_for('static', filename='js/intlTelInput.min.js') }}"></script>
 <script src="{{url_for('static', filename='js/signup1.js') }}"></script>
-
 {% endblock %}
