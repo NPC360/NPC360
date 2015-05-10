@@ -336,12 +336,17 @@ def processInput(user, msg):
         sT.pop('no', None)
         sT.pop('error', None)
         sT.pop('noresp', None)
+        sT.pop('*', None)
 
         #print sT # this array only contains triggers that aren't tied to special keywords / operations ^^
         log.debug('truncated triggers %s' % (sT))
 
+        # check for 'any input response (*)'
+        if '*' in triggers and msg is not None:
+            advanceGame(user, triggers['*'])
+
         # check for affirmative / negative responses
-        if 'yes' in triggers and checkYes(msg):
+        elif 'yes' in triggers and checkYes(msg):
             advanceGame(user, triggers['yes'])
         elif 'no' in triggers and checkNo(msg):
             advanceGame(user, triggers['no'])
