@@ -1,23 +1,6 @@
 <form id="signupForm" action="/careers/" method="POST">
 	<h3>Application</h3>
-	<div class="group three-columns cf">
-		<div class="field">
-			<label for="fname">First Name*</label>
-			<input type="text" class="form-control" id="fname" name="fname" required>
-		</div>
-		<div class="field">
-			<label for="lname">Last Name*</label>
-			<input type="text" class="form-control" id="lname" name="lname" required>
-		</div>
-		<div class="field">
-			<label for="email">Email*</label>
-			<input type="email" class="form-control" id="email" name="email" required>
-		</div>
-		<div class="field">
-			<label for="tel">Mobile Number*</label>
-			<input type="tel" class="form-control" id="tel" value="+61 " name="tel" required>
-		</div>
-	</div>
+	{% include 'partials/personal-details.html' %}
 
 	<h4>Tell us a little about yourself</h4>
 	<div class="group">
@@ -82,7 +65,7 @@
 		<button id="submit" class="btn btn-primary btn-lg" type="submit" value="Continue">Submit</button>
 	</div>
 
-	<p id="tel-invalid" class="hide val">invalid phone number</p>
-	<p id="email-exists" class="hide val">email already registered</p>
-	<p id="tel-exists" class="hide val">phone already registered</p>
+	<p id="tel-invalid" class="hide val">Invalid phone number</p>
+	<p id="email-exists" class="hide val">Email already registered</p>
+	<p id="tel-exists" class="hide val">Phone already registered</p>
 </form>
