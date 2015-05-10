@@ -1,96 +1,88 @@
 <form id="signupForm" action="/careers/" method="POST">
 	<h3>Application</h3>
-		<div class="form-group">
+	<div class="group three-columns cf">
+		<div class="field">
 			<label for="fname">First Name*</label>
-			<input type="text" class="form-control" id="fname" placeholder="First name" name="fname" required>
+			<input type="text" class="form-control" id="fname" name="fname" required>
 		</div>
-
-		<div class="form-group">
+		<div class="field">
 			<label for="lname">Last Name*</label>
-			<input type="text" class="form-control" id="lname" placeholder="Last name" name="lname" required>
+			<input type="text" class="form-control" id="lname" name="lname" required>
 		</div>
-
-		<div class="form-group">
+		<div class="field">
 			<label for="email">Email*</label>
-			<input type="email" class="form-control" id="email" placeholder="Enter your email" name="email" required>
+			<input type="email" class="form-control" id="email" name="email" required>
 		</div>
-
-		<div class="form-group">
+		<div class="field">
 			<label for="tel">Mobile Number*</label>
-			<input type="tel" class="form-control" id="tel" placeholder="Enter mobile number" name="tel" required>
+			<input type="tel" class="form-control" id="tel" value="+61 " name="tel" required>
 		</div>
+	</div>
 
-		<p>Tell us a little about yourself</p>
-
-		<div class="form-group">
+	<h4>Tell us a little about yourself</h4>
+	<div class="group">
+		<div class="field">
 			<label for="why-work">Why do you want to work for Mercury Group</label>
 			<textarea id="why-work" class="form-control" name="why-work" rows="8" ></textarea>
 		</div>
-
-		<div class="form-group">
+		<div class="field">
 			<label for="history">Relevant work history</label>
 			<textarea id="history" class="form-control" name="history" rows="8" ></textarea>
 		</div>
+	</div>
 
-		<br><p>Which best describes how you prefer to work</p>
-		<div class="radio">
-			<label>
-				<input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
-				I prefer to work alone
-			</label>
-		</div>
-		<div class="radio">
-			<label>
-				<input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
-				I prefer to work with a mix of both teams and alone
-			</label>
-		</div>
-		<div class="radio">
-			<label>
-				<input type="radio" name="optionsRadios" id="optionsRadios3" value="option3" >
-				I prefer to work with a team
-			</label>
-		</div>
+	<h4>Which best describes how you prefer to work</h4>
+	<p>I prefer to:</p>
+	<ul class="radio-group">
+		<li>
+			<input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+			<label for="optionsRadios1">Work alone</label>
+		</li>
+		<li>
+			<input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+			<label for="optionsRadios2">Work with a mix of both teams and alone</label>
+		</li>
+		<li>
+			<input type="radio" name="optionsRadios" id="optionsRadios3" value="option3" >
+			<label for="optionsRadios3">Work with a team</label>
+		</li>
+	</ul>
 
-		<br><p>Would you describe yourself as ambitious?</p>
-		<div class="radio">
-			<label>
-				<input type="radio" name="optionsRadiosAmbitiousYes" id="optionsRadiosYes" value="option1" checked>
-				Yes
-			</label>
-		</div>
-		<div class="radio">
-			<label>
-				<input type="radio" name="optionsRadiosAmbitiousNo" id="optionsRadiosNo" value="option2">
-				No
-			</label>
-		</div>
+	<h4>Would you describe yourself as ambitious?</h4>
+	<ul class="radio-group">
+		<li>
+			<input type="radio" name="optionsRadiosAmbitiousYes" id="optionsRadiosYes" value="option1" checked>
+			<label for="optionsRadiosYes">Yes</label>
+		</li>
+		<li>
+			<input type="radio" name="optionsRadiosAmbitiousNo" id="optionsRadiosNo" value="option2">
+			<label for="optionsRadiosNo">No</label>
+		</li>
+	</ul>
 
-		<div class="form-group">
-			<label for="animal">If you were an animal what would you be?</label>
-			<textarea id="animal" class="form-control" name="animal" rows="8" ></textarea>
-		</div>
+	<h4>If you were an animal what would you be?</h4>
+	<textarea id="animal" class="form-control" name="animal" cols="45" rows="8" ></textarea>
 
-		<br>
-		<div class="form-group">
-			<label for="exampleInputFile">Upload resume</label>
-			<input type="file" name="resumefile" id="resumeFile" accept=".pdf">
-			<p class="help-block">Please upload resumes in PDF format</p>
-		</div>
+	<h4>Upload resume</h4>
+	<p class="help-block">Please upload resumes in PDF format</p>
+	<input type="file" name="resumefile" id="resumeFile" accept=".pdf">
 
-		<br>
-		<div class="checkbox">
-			<label>
-				<input type="checkbox" required> I am happy to be contacted by Mercury Group about future employment opportunities*
-			</label>
-		</div>
+	<h4>Submit</h4>
+	<ul class="radio-group">
+		<li>
+			<input type="checkbox" required>
+			<label>I am happy to be contacted by Mercury Group about future employment opportunities*</label>
+		</li>
+	</ul>
 
+	<!--Use JS to determine timezone or use a map based selector-->
+	<input id="tz" class="hiddeninput" type="hidden" name="tz">
+
+	<div class="button-group">
 		<button id="submit" class="btn btn-primary btn-lg" type="submit" value="Continue">Submit</button>
+	</div>
 
-		<!--Use JS to determine timezone or use a map based selector-->
-		<input id="tz" class="hiddeninput" type="text" name="tz" hidde>
-
-		<p id="tel-invalid" class="hide val">invalid phone number</p>
-		<p id="email-exists" class="hide val">email already registered</p>
-		<p id="tel-exists" class="hide val">phone already registered</p>
+	<p id="tel-invalid" class="hide val">invalid phone number</p>
+	<p id="email-exists" class="hide val">email already registered</p>
+	<p id="tel-exists" class="hide val">phone already registered</p>
 </form>
