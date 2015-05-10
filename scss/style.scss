@@ -4,7 +4,11 @@
 @import "functional";
 @import "intlTelInput";
 
+*, *:after, *:before {
+	box-sizing: inherit;
+}
 body {
+	box-sizing: border-box;
 	font-size: 15px;
 	font-family: Helvetica, Arial, sans-serif;
 	background: #FFF;
