@@ -1,10 +1,6 @@
-// set timezone based on browser time
-//var date = new Date( );
-//document.getElementById("tz").value = date.getTimezoneOffset( ) / 60;
 
-var tz = jstz.determine(); // Determines the time zone of the browser client
-//tz.name(); // Returns the name of the time zone eg "Europe/Berlin"
-document.getElementById("tz").value = tz.name();
+// Determines the time zone of the browser client
+document.getElementById("tz").value = jstz.determine().name();
 
 // init telephone # validation
 // uses geo-ip to set country.
