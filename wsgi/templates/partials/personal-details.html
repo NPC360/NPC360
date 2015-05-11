@@ -1,20 +1,20 @@
 <div class="group three-columns cf">
 	<div class="field">
 		<label for="fname">First Name*</label>
-		<input type="text" id="fname" name="fname" required>
+		<input type="text" value="{{ fname }}" id="fname" name="fname" required>
 	</div>
 	<div class="field">
 		<label for="lname">Last Name*</label>
-		<input type="text" id="lname" name="lname" required>
+		<input type="text" value="{{ lname }}" id="lname" name="lname" required>
 	</div>
 	<div class="field">
 		<label for="email">Email*</label>
-		<input type="email" id="email" name="email" required>
+		<input type="email" value="{{ email }}" id="email" name="email" required>
 	</div>
 	<div class="field">
 		<label for="tel">Mobile Number*</label>
-		<input type="tel" id="tel" value="+61 " name="tel" required>
+		<input type="tel" value="{{ tel }}" id="tel" value="+61 " name="tel" required>
 	</div>
 </div>
 
-<input id="tz" type="hidden" name="tz">
+<input id="tz" type="hidden" value="{{ tz }}" name="tz">
