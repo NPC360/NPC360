@@ -28,6 +28,7 @@ from iron_worker import *
 import datetime
 import random
 from os import environ
+import tinys3
 
 app = Flask(__name__)
 app.config['PROPAGATE_EXCEPTIONS'] = True
@@ -59,20 +60,19 @@ class ContextFilter(logging.Filter):
 
 log = logging.getLogger()
 log.setLevel(logging.DEBUG)
-logf = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-
+lf = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s', datefmt='%Y-%m-%dT%H:%M:%S')
 # paper trail handler
 #ptcf = ContextFilter()
 #log.addFilter(ptcf)
 #pt = logging.handlers.SysLogHandler(address=('logs2.papertrailapp.com', 18620))
-lf = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s', datefmt='%Y-%m-%dT%H:%M:%S')
+
 #pt.setFormatter(lf)
 #log.addHandler(pt)
 
 # file handler
 #fh = logging.FileHandler('log/log.txt')
 #fh.setLevel(logging.DEBUG)
-#fh.setFormatter(logf)
+#fh.setFormatter(lf)
 #log.addHandler(fh)
 
 # console handler
@@ -105,52 +105,85 @@ def contact():
 def signup():
     if request.method == 'POST':
         # if auth code has been passed in, we need to process it.
-        name = request.values.get('fname', None)
+        fname = request.values.get('fname', None)
+        lname = request.values.get('lname', None)
         tel = request.values.get('tel', None)
         tz = request.values.get('tz', None)
         email = request.values.get('email', None)
+
+        # non contact vars
+        why = request.values.get('why-work', None)
+        history = request.values.get('history', None)
+        soloteam = request.values.get('soloteam', None)
+        ambitious = request.values.get('ambitious', None)
+        animal = request.values.get('animal', None)
+
+        ######
+        # upload resume (if it exists?) to s3
+        # s3 = tinys3.Connection(environ['S3KEY'],environ['S3SECRET'])
+        # resume = request.files['resumefile']
+        #
+        # now = datetime.datetime.now()
+        # fnd = now.strftime('%Y_%m_%d_%H_%M_%S')
+        #
+        # fn = '%s_%s.pdf' % (email, fnd)
+        # print fn
+        # conn.upload(fn,resume,'npc360/resumes')
+        ######
+
+        log.debug( 'form data: %s' % (request.values))
 
         if request.values.get('auth', None):
             auth = request.values.get('auth', None)
             uid = request.values.get('uid', None)
             #print auth, name, tel, tz, email, uid
-            print 'Variables from form: ' + str(auth), name, str(tel), tz, email, str(uid)
-            #log.debug( 'Variables from form: ' + str(auth), name, str(tel), tz, email, str(uid) )
-
+            #print 'Variables from form: ' + str(auth), name, str(tel), tz, email, str(uid)
+            log.debug('auth form data: %s' % (request.values))
 
             tableAuth = checkAuth(uid)
-            print "auth code from table:", tableAuth
-            #log.debug('auth code from table: ', tableAuth)
+            #print "auth code from table:", tableAuth
+            log.debug('auth code from table: %s' % (tableAuth))
 
             #if auth is correct, create new user in playerInfo table.
             #if auth is not correct, return to confirmation step.
             if str(auth) in str(tableAuth):
-                d = {'fname':name, 'tel':tel, 'tz':tz, 'email':email}
+                d = {'fname':fname,
+                    'lname':lname,
+                    'tel':tel,
+                    'tz':tz,
+                    'email':email,
+                    'why':why,
+                    'history':history,
+                    'soloteam':soloteam,
+                    'ambitious':ambitious,
+                    'animal':animal
+                    }
                 uid = makeUser(d)
-                print 'new user:', name, 'uid:', uid
-                #log.info('new user:', name, 'uid:', uid)
+                #print 'new user:', name, 'uid:', uid
+                log.info('new user created : %s %s, uid: %s' % (fname, lname,  uid))
 
                 # now, schedule game start by scheduling advanceGame() worker
                 startGame(uid)
 
-                return render_template('signupSuccess.html', name=name, tel=tel, tz=tz, email=email)
+                return render_template('signupSuccess.html', fname=fname)
             else:
-                return render_template('signupError.html', name=name, tel=tel, tz=tz, uid=uid, email=email)
+                return render_template('signupError.html', fname=fname, lname=lname, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious, animal=animal)
         # if no auth code passed in, we need to ask for it!
         # oh, and ideally we should make sure the email/phone aren't already in the table.  (future?)
         else:
-            print name, tel, tz, email
-            if name and tel and tz and email:
+            #print name, tel, tz, email
+            log.debug('name: %s %s, tel: %s, tz: %s, email: %s' % (fname, lname, tel, tz, email))
+            if fname and lname and tel and tz and email:
                 auth = str(random.randint(1000, 9999))
                 # add data to MySQL table for lookup later on & get row id/token
                 uid = newAuth(auth)
-                print 'auth code:', str(auth), 'player uid:', str(uid)
-                #log.info('auth code:', str(auth), 'player uid:', str(uid) )
+                #print 'auth code:', str(auth), 'player uid:', str(uid)
+                log.info('auth code: %s, player uid: %s' % (auth, uid) )
 
                 if signupSMSauth(tel, auth):
-                    return render_template('signup2.html', name=name, tel=tel, tz=tz, uid=uid, email=email)
+                    return render_template('signup2.html', fname=fname, lname=lname, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious, animal=animal)
                 else:
-                    return render_template('signup1Error.html', name=name, email=email)
+                    return render_template('signup1Error.html', fname=fname, lname=lname, email=email)
     # but, if no data POSTed at all, then we need to render the signup form!
     else:
         return render_template('signup1.html')
@@ -315,12 +348,17 @@ def processInput(user, msg):
         sT.pop('no', None)
         sT.pop('error', None)
         sT.pop('noresp', None)
+        sT.pop('*', None)
 
         #print sT # this array only contains triggers that aren't tied to special keywords / operations ^^
         log.debug('truncated triggers %s' % (sT))
 
+        # check for 'any input response (*)'
+        if '*' in triggers and msg is not None:
+            advanceGame(user, triggers['*'])
+
         # check for affirmative / negative responses
-        if 'yes' in triggers and checkYes(msg):
+        elif 'yes' in triggers and checkYes(msg):
             advanceGame(user, triggers['yes'])
         elif 'no' in triggers and checkNo(msg):
             advanceGame(user, triggers['no'])
@@ -423,7 +461,7 @@ def sendErrorSMS(player):
     gs = getGameStateData(player['gstate'])
     npc = getNPC(player, gs['prompt']['npc'])
 
-    sendSMS(npc['tel'], player['tel'], err, None, 22, None)
+    sendSMS(npc['tel'], player['tel'], err, None, 14, None)
 
 
 """
@@ -443,7 +481,7 @@ def user():
             u = getUser(d['id'])
 
         #print "player", u, "\n"
-        log.debug('player info: %S' % (u))
+        log.debug('player info: %s' % (u))
 
         if u is None:
             resp = Response(json.dumps(u), status=404, mimetype='application/json')
@@ -454,7 +492,8 @@ def user():
             udata = {
                 'player id':u['id'],
                 'player created on':str(u['cdate']),
-                'name':u['name'],
+                'fname':u['fname'],
+                'lname':u['lname'],
                 'tel':u['tel'],
                 'email':u['email'],
                 #'twitter':u['twitter'],
@@ -475,9 +514,17 @@ def user():
             d = request.get_json()
             udata = {
                 'fname':d['fname'],
+                'lname':d['lname'],
                 'tel':d['tel'],
                 'tz':d['tz'],
-                'email':d['email']
+                'email':d['email'],
+
+                # extended info
+                'why':d['why-work'],
+                'history':d['history'],
+                'soloteam':d['soloteam'],
+                'ambitious':d['ambitious'],
+                'animal':d['animal']
             }
             #print udata
             log.debug(udata)
@@ -563,7 +610,22 @@ def makeUser(ud):
         d = now.strftime('%Y-%m-%d %H:%M:%S')
 
         con = db.connect()
-        x = con.execute( table.insert(), name=ud['fname'], tel=normTel, tz=ud['tz'], email=ud['email'], country=getCountryCode(normTel),  cdate=d, gstart=d, gstate=0 )
+        x = con.execute( table.insert(),
+            fname=ud['fname'],
+            lname=ud['lname'],
+            tel=normTel,
+            tz=ud['tz'],
+            email=ud['email'],
+            country=getCountryCode(normTel),
+            cdate=d,
+            gstart=d,
+            gstate=0,
+            why=ud['why'],
+            history=ud['history'],
+            soloteam=ud['soloteam'],
+            ambitious=ud['ambitious'],
+            animal=ud['animal']
+            )
 
         uid = x.inserted_primary_key[0]
         con.close()
