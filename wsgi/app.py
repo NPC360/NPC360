@@ -318,15 +318,15 @@ def signupSMSauth(tel,auth):
         log.debug('worker error ~ probably')
         return False
 
-def processInput(user, msg):
-    gameState = user['gstate']
+def processInput(player, msg):
+    gameState = player['gstate']
     gameStateData = getGameStateData(gameState)
 
     #special reset / debug method
     if "!reset" in msg.lower():
-         #print "MANUAL GAME RESET FOR PLAYER: " + str(user['id'])
-         log.warning('MANUAL GAME RESET FOR PLAYER: %s' % (user['id']))
-         startGame(user['id'])
+         #print "MANUAL GAME RESET FOR PLAYER: " + str(player['id'])
+         log.warning('MANUAL GAME RESET FOR PLAYER: %s' % (player['id']))
+         startGame(player['id'])
 
     elif 'triggers' in gameStateData and gameStateData['triggers'] is not None:
         triggers = gameStateData['triggers']
@@ -345,13 +345,14 @@ def processInput(user, msg):
 
         # check for 'any input response (*)'
         if '*' in triggers and msg is not None:
-            advanceGame(user, triggers['*'])
+            advanceGame(player, triggers['*'])
 
         # check for affirmative / negative responses
         elif 'yes' in triggers and checkYes(msg):
-            advanceGame(user, triggers['yes'])
+            advanceGame(player, triggers['yes'])
+
         elif 'no' in triggers and checkNo(msg):
-            advanceGame(user, triggers['no'])
+            advanceGame(player, triggers['no'])
 
         # check if response is even in the list
         elif msg.lower() in sT:
@@ -361,13 +362,13 @@ def processInput(user, msg):
                 if x in msg.lower():
                     #print x + " is in "+ msg
                     log.debug('%s is in %s' % (x, msg))
-                    advanceGame(user, triggers[x])
+                    advanceGame(player, triggers[x])
                     break
 
         else:
             #print "input does not match any triggers"
             log.warning('input does not match any triggers')
-            sendErrorSMS(user)
+            sendErrorSMS(player)
 
 def getGameStateData(id):
     fb = firebase.FirebaseApplication(environ['FB'], None)
@@ -440,6 +441,25 @@ def advanceGame(player, gsid):
         #print 'jump to game state:', gs['prompt']['goto']
         log.info('jump player %s to game state: %s' % (player['id'], gs['prompt']['goto']))
         advanceGame(player, gs['prompt']['goto'])
+
+    # POTATO HACKS -- these methods are for jumping to db checks & then coming back.
+    if gsid == '126':
+        log.info('player %s hit a potato hack: %s' % (player['id'], gsid))
+        hack_126(player)
+
+    elif gsid == '133':
+        log.info('player %s hit a apotato hack: %s' % (player['id'], gsid))
+        hack_133(player)
+
+    elif gsid == '142':
+        log.info('player %s hit a potato hack: %s' % (player['id'], gsid))
+        hack_142(player)
+
+    elif gsid == '156':
+        log.info('player %s hit a potato hack: %s' % (player['id'], gsid))
+        hack_156(player)
+
+
 
 # THIS METHOD IS NOT COMPLETE
 def sendErrorSMS(player):
@@ -694,8 +714,8 @@ def getCountryCode(tel):
 
 def startGame(uid):
     player = getUser(uid)
-    updateUser(player['id'], {"gstate":1})
-    gs = getGameStateData(1)
+    updateUser(player['id'], {"gstate":101})
+    gs = getGameStateData(101)
     npc = getNPC(player, gs['prompt']['npc'])
 
     #print npc
@@ -727,6 +747,49 @@ def getPlayerVars(player, msg):
             msg = re.sub('%%'+x+'%%', player[x], msg)
             #print msg
     return msg
+
+
+#### Potato hack methods that jump around the game
+
+def hack_126(player):
+    if player['soloteam'] == '0':
+        advanceGame(player, '127')
+
+    elif player['soloteam'] == '1':
+        advanceGame(player, '129')
+
+    elif player['soloteam'] == '2':
+        advanceGame(player, '130')
+
+def hack_133(player):
+    if player['leaving'] == '0':
+        advanceGame(player, '134')
+
+    elif player['leaving'] == '1':
+        advanceGame(player, '137')
+
+    elif player['leaving'] == '2':
+        advanceGame(player, '139')
+
+    elif player['leaving'] == '3':
+        advanceGame(player, '136')
+
+    elif player['leaving'] == '4':
+        advanceGame(player, '138')
+
+def hack_142(player):
+    if player['ambitious'] == '0':
+        advanceGame(player, '144')
+
+    elif player['ambitious'] == '1':
+        advanceGame(player, '143')
+
+def hack_156(player):
+    if player['ambitious'] == '0':
+        advanceGame(player, '158')
+
+    elif player['ambitious'] == '1':
+        advanceGame(player, '157')
 
 
 if __name__ == "__main__":
