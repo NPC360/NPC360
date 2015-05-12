@@ -444,19 +444,19 @@ def advanceGame(player, gsid):
 
     # POTATO HACKS -- these methods are for jumping to db checks & then coming back.
     if gsid == '126':
-        log.info('player %s hit a potato hack: %s' % (player['id'], gsid))
+        log.debug('player %s hit a potato hack: %s' % (player['id'], gsid))
         hack_126(player)
 
     elif gsid == '133':
-        log.info('player %s hit a apotato hack: %s' % (player['id'], gsid))
+        log.debug('player %s hit a apotato hack: %s' % (player['id'], gsid))
         hack_133(player)
 
     elif gsid == '142':
-        log.info('player %s hit a potato hack: %s' % (player['id'], gsid))
+        log.debug('player %s hit a potato hack: %s' % (player['id'], gsid))
         hack_142(player)
 
     elif gsid == '156':
-        log.info('player %s hit a potato hack: %s' % (player['id'], gsid))
+        log.debug('player %s hit a potato hack: %s' % (player['id'], gsid))
         hack_156(player)
 
 
@@ -753,12 +753,15 @@ def getPlayerVars(player, msg):
 
 def hack_126(player):
     if player['soloteam'] == '0':
+        log.debug('player %s warps from 126 to 127' % (player['id'])
         advanceGame(player, '127')
 
     elif player['soloteam'] == '1':
+        log.debug('player %s warps from 126 to 129' % (player['id'])
         advanceGame(player, '129')
 
     elif player['soloteam'] == '2':
+        log.debug('player %s warps from 126 to 120' % (player['id'])
         advanceGame(player, '130')
 
 def hack_133(player):
