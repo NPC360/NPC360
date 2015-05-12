@@ -752,46 +752,63 @@ def getPlayerVars(player, msg):
 #### Potato hack methods that jump around the game
 
 def hack_126(player):
-    if player['soloteam'] == '0':
-        log.debug('player %s warps from 126 to 127' % (player['id']))
+    log.debug('player soloteam enum: %s' % (player['soloteam']))
+
+    if player['soloteam'] == 0:
+        log.debug('player %s warps to 127' % (player['id']))
         advanceGame(player, '127')
 
-    elif player['soloteam'] == '1':
-        log.debug('player %s warps from 126 to 129' % (player['id']))
+    elif player['soloteam'] == 1:
+        log.debug('player %s warps to 129' % (player['id']))
         advanceGame(player, '129')
 
-    elif player['soloteam'] == '2':
-        log.debug('player %s warps from 126 to 120' % (player['id']))
+    elif player['soloteam'] == 2:
+        log.debug('player %s warps to 120' % (player['id']))
         advanceGame(player, '130')
 
 def hack_133(player):
-    if player['leaving'] == '0':
+    log.debug('player leaving enum: %s' % (player['leaving']))
+
+    if player['leaving'] == 0:
+        log.debug('player %s warps to 134' % (player['id']))
         advanceGame(player, '134')
 
-    elif player['leaving'] == '1':
+    elif player['leaving'] == 1:
+        log.debug('player %s warps to 137' % (player['id']))
         advanceGame(player, '137')
 
-    elif player['leaving'] == '2':
+    elif player['leaving'] == 2:
+        log.debug('player %s warps to 139' % (player['id']))
         advanceGame(player, '139')
 
-    elif player['leaving'] == '3':
+    elif player['leaving'] == 3:
+        log.debug('player %s warps to 136' % (player['id']))
         advanceGame(player, '136')
 
-    elif player['leaving'] == '4':
+    elif player['leaving'] == 4:
+        log.debug('player %s warps to 138' % (player['id']))
         advanceGame(player, '138')
 
 def hack_142(player):
-    if player['ambitious'] == '0':
+    log.debug('player ambitious enum: %s' % (player['ambitious']))
+
+    if player['ambitious'] == 0:
+        log.debug('player %s warps to 144' % (player['id']))
         advanceGame(player, '144')
 
-    elif player['ambitious'] == '1':
+    elif player['ambitious'] == 1:
+        log.debug('player %s warps to 143' % (player['id']))
         advanceGame(player, '143')
 
 def hack_156(player):
-    if player['ambitious'] == '0':
+    log.debug('player ambitious enum: %s' % (player['ambitious']))
+
+    if player['ambitious'] == 0:
+        log.debug('player %s warps to 158' % (player['id']))
         advanceGame(player, '158')
 
-    elif player['ambitious'] == '1':
+    elif player['ambitious'] == 1:
+        log.debug('player %s warps to 157' % (player['id']))
         advanceGame(player, '157')
 
 
