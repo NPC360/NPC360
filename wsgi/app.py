@@ -753,15 +753,15 @@ def getPlayerVars(player, msg):
 
 def hack_126(player):
     if player['soloteam'] == '0':
-        log.debug('player %s warps from 126 to 127' % (player['id'])
+        log.debug('player %s warps from 126 to 127' % (player['id']))
         advanceGame(player, '127')
 
     elif player['soloteam'] == '1':
-        log.debug('player %s warps from 126 to 129' % (player['id'])
+        log.debug('player %s warps from 126 to 129' % (player['id']))
         advanceGame(player, '129')
 
     elif player['soloteam'] == '2':
-        log.debug('player %s warps from 126 to 120' % (player['id'])
+        log.debug('player %s warps from 126 to 120' % (player['id']))
         advanceGame(player, '130')
 
 def hack_133(player):
