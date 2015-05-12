@@ -749,7 +749,7 @@ def getPlayerVars(player, msg):
     return msg
 
 
-#### Potato hack methods that jump around the game
+#### Potato hack methods that jump around the game #
 
 def hack_126(player):
     log.debug('player soloteam enum: %s' % (player['soloteam']))
