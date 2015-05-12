@@ -104,6 +104,7 @@ def signup():
         history = request.values.get('history', None)
         soloteam = request.values.get('soloteam', None)
         ambitious = request.values.get('ambitious', None)
+        leaving = request.values.get('leaving', None)
         animal = request.values.get('animal', None)
 
         ######
@@ -144,6 +145,7 @@ def signup():
                     'history':history,
                     'soloteam':soloteam,
                     'ambitious':ambitious,
+                    'leaving':leaving,
                     'animal':animal
                     }
                 uid = makeUser(d)
@@ -155,7 +157,7 @@ def signup():
 
                 return render_template('signupSuccess.html', fname=fname)
             else:
-                return render_template('signupError.html', fname=fname, lname=lname, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious, animal=animal)
+                return render_template('signupError.html', fname=fname, lname=lname, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious, leaving=leaving, animal=animal)
         # if no auth code passed in, we need to ask for it!
         # oh, and ideally we should make sure the email/phone aren't already in the table.  (future?)
         else:
@@ -169,7 +171,7 @@ def signup():
                 log.info('auth code: %s, player uid: %s' % (auth, uid) )
 
                 if signupSMSauth(tel, auth):
-                    return render_template('signup2.html', fname=fname, lname=lname, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious, animal=animal)
+                    return render_template('signup2.html', fname=fname, lname=lname, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious,leaving=leaving, animal=animal)
                 else:
                     return render_template('signup1Error.html', fname=fname, lname=lname, email=email)
     # but, if no data POSTed at all, then we need to render the signup form!
@@ -612,6 +614,7 @@ def makeUser(ud):
             history=ud['history'],
             soloteam=ud['soloteam'],
             ambitious=ud['ambitious'],
+            leaving=ud['leaving'],
             animal=ud['animal']
             )
 
