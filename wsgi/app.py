@@ -355,7 +355,7 @@ def processInput(player, msg):
             advanceGame(player, triggers['no'])
 
         # check if response is even in the list
-        elif msg.lower not in sT:
+    elif msg.lower() not in sT:
             #print "input does not match any triggers"
             log.warning('input does not match any triggers')
             sendErrorSMS(player)
