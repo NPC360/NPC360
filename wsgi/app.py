@@ -364,7 +364,7 @@ def processInput(player, msg):
         else:
             #print "input matches one of the triggers"
             log.debug('input matches one of the triggers')
-            for x.lower() in sT:
+            for x in sT:
                 if x.lower() in msg.lower():
                     #print x + " is in "+ msg
                     log.debug('%s is in %s' % (x, msg))
