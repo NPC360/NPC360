@@ -355,20 +355,26 @@ def processInput(player, msg):
             advanceGame(player, triggers['no'])
 
         # check if response is even in the list
-        elif msg.lower() in sT:
+        elif msg.lower not in sT:
+            #print "input does not match any triggers"
+            log.warning('input does not match any triggers')
+            sendErrorSMS(player)
+
+        # otherwise, run through remaining triggers
+        else:
             #print "input matches one of the triggers"
             log.debug('input matches one of the triggers')
-            for x in sT:
-                if x in msg.lower():
+            for x.lower() in sT:
+                if x.lower() in msg.lower():
                     #print x + " is in "+ msg
                     log.debug('%s is in %s' % (x, msg))
                     advanceGame(player, triggers[x])
                     break
 
-        else:
+        #else:
             #print "input does not match any triggers"
-            log.warning('input does not match any triggers')
-            sendErrorSMS(player)
+            #log.warning('input does not match any triggers')
+            #sendErrorSMS(player)
 
 def getGameStateData(id):
     fb = firebase.FirebaseApplication(environ['FB'], None)

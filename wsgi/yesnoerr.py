@@ -2,4 +2,4 @@ yeslist = ["yes", "yasss", "yea", "yeah", "yep", "yeppers", "sure", "yizzir", "s
 
 nolist = ["no", "never", "absolutely not", "no go", "nein", "nope", "fuck no", "hell no", "nah", "neg", "nep", "noo", "never", "no way", "not at all", "by no means", "nix", "absolutely not", "not", "false", "negatory", "not this time", "I can't", "no thanks", "no thnx", "thanks, but no thanks", "not possible", "If only I could", "not now", "not this time", "NoNo", "Thanks, but no thanks", "Nah", "Eww", "Ick", "no can do", "sorry no", "sorry", "if only", "N to the O", "N O"]
 
-errlist = ["?", "wut?", "that's not really an answer", "uhm", "what?", "???"]
+errlist = ["?", "wut?", "not really an answer", "uhm", "what?", "???"]

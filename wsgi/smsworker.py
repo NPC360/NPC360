@@ -34,7 +34,7 @@ try:
         m = c.messages.create(
         to = pl["tnum"],
         from_ = pl["fnum"],
-        body = pl["msg"]
+        body = str(pl["msg"])
     )
     # if succesful, return true as a 'success flag'
     print m.sid
