@@ -329,7 +329,7 @@ def processInput(player, msg):
     gameStateData = getGameStateData(gameState)
 
     #special reset / debug method
-    if "!reset" in msg.lower():
+    if "magicreset" in msg.lower():
          #print "MANUAL GAME RESET FOR PLAYER: " + str(player['id'])
          log.warning('MANUAL GAME RESET FOR PLAYER: %s' % (player['id']))
          startGame(player['id'])
