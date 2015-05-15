@@ -29,6 +29,7 @@ import datetime
 import random
 from os import environ
 import tinys3
+import string
 
 app = Flask(__name__)
 app.config['PROPAGATE_EXCEPTIONS'] = True
@@ -197,7 +198,7 @@ def smsin():
     u = getUser(phone)
     #print u['id'], 'input', 'sms'
     log.info('user id: %s input via SMS' % (u['id']))
-    processInput(u, msg)
+    processInput(u, stripPunctuation(msg))
 
     resp = Response(json.dumps(request.values), status=200, mimetype='application/json')
     resp.headers['Action'] = 'SMS received: ' + msg + " +, from: " + phone
@@ -387,6 +388,16 @@ def getGameStateData(id):
     #print 'game data:', str(data)
     log.debug('game data: %s' % (data))
     return data
+
+def stripPunctuation(msg):
+  # split string into words & strip punctuation
+  words = [word.strip(string.punctuation) for word in msg.split(" ")]
+
+  # recombine words into sentence
+  s =""
+  for w in words:
+    s = s+" "+w
+  return s
 
 def checkYes(msg):
     if msg.lower() in map(str.lower, yeslist):
