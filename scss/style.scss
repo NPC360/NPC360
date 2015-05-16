@@ -168,19 +168,23 @@ ul.block {
 	}
 }
 
-button {
+.button, button {
+	font-size: 13px;
 	background: $blue;
 	color: #FFF;
-	padding: $pm $pxl;
+	padding: $ps $pxl;
 	display: inline-block;
 	border: 0;
 	text-transform: uppercase;
 	font-weight: bold;
 
 	&:hover, &:active {
+		text-decoration: none;
+		color: #FFF;
 		background: $blue-light;
 	}
 	&:focus {
+		color: #FFF;
 		background: $blue-dark;
 	}
 }
