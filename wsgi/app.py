@@ -116,6 +116,7 @@ def signup():
         history = request.values.get('history', None)
         soloteam = request.values.get('soloteam', None)
         ambitious = request.values.get('ambitious', None)
+        leaving = request.values.get('leaving', None)
         animal = request.values.get('animal', None)
 
         ######
@@ -156,6 +157,7 @@ def signup():
                     'history':history,
                     'soloteam':soloteam,
                     'ambitious':ambitious,
+                    'leaving':leaving,
                     'animal':animal
                     }
                 uid = makeUser(d)
@@ -163,11 +165,16 @@ def signup():
                 log.info('new user created : %s %s, uid: %s' % (fname, lname,  uid))
 
                 # now, schedule game start by scheduling advanceGame() worker
+                log.debug('starting game for player uid: %s' % (uid))
                 startGame(uid)
+
+                # send application acceptence email from HR
+                log.debug('sending HR email for player uid: %s' % (uid))
+                hrEmail(getUser(uid))
 
                 return render_template('signupSuccess.html', fname=fname)
             else:
-                return render_template('signupError.html', fname=fname, lname=lname, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious, animal=animal)
+                return render_template('signupError.html', fname=fname, lname=lname, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious, leaving=leaving, animal=animal)
         # if no auth code passed in, we need to ask for it!
         # oh, and ideally we should make sure the email/phone aren't already in the table.  (future?)
         else:
@@ -181,7 +188,7 @@ def signup():
                 log.info('auth code: %s, player uid: %s' % (auth, uid) )
 
                 if signupSMSauth(tel, auth):
-                    return render_template('signup2.html', fname=fname, lname=lname, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious, animal=animal)
+                    return render_template('signup2.html', fname=fname, lname=lname, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious,leaving=leaving, animal=animal)
                 else:
                     return render_template('signup1Error.html', fname=fname, lname=lname, email=email)
     # but, if no data POSTed at all, then we need to render the signup form!
@@ -328,15 +335,15 @@ def signupSMSauth(tel,auth):
         log.debug('worker error ~ probably')
         return False
 
-def processInput(user, msg):
-    gameState = user['gstate']
+def processInput(player, msg):
+    gameState = player['gstate']
     gameStateData = getGameStateData(gameState)
 
     #special reset / debug method
     if "!reset" in msg.lower():
-         #print "MANUAL GAME RESET FOR PLAYER: " + str(user['id'])
-         log.warning('MANUAL GAME RESET FOR PLAYER: %s' % (user['id']))
-         startGame(user['id'])
+         #print "MANUAL GAME RESET FOR PLAYER: " + str(player['id'])
+         log.warning('MANUAL GAME RESET FOR PLAYER: %s' % (player['id']))
+         startGame(player['id'])
 
     elif 'triggers' in gameStateData and gameStateData['triggers'] is not None:
         triggers = gameStateData['triggers']
@@ -355,29 +362,36 @@ def processInput(user, msg):
 
         # check for 'any input response (*)'
         if '*' in triggers and msg is not None:
-            advanceGame(user, triggers['*'])
+            advanceGame(player, triggers['*'])
 
         # check for affirmative / negative responses
         elif 'yes' in triggers and checkYes(msg):
-            advanceGame(user, triggers['yes'])
+            advanceGame(player, triggers['yes'])
+
         elif 'no' in triggers and checkNo(msg):
-            advanceGame(user, triggers['no'])
+            advanceGame(player, triggers['no'])
 
         # check if response is even in the list
-        elif msg.lower() in sT:
+        elif msg.lower() not in sT:
+            #print "input does not match any triggers"
+            log.warning('input does not match any triggers')
+            sendErrorSMS(player)
+
+        # otherwise, run through remaining triggers
+        else:
             #print "input matches one of the triggers"
             log.debug('input matches one of the triggers')
             for x in sT:
-                if x in msg.lower():
+                if x.lower() in msg.lower():
                     #print x + " is in "+ msg
                     log.debug('%s is in %s' % (x, msg))
-                    advanceGame(user, triggers[x])
+                    advanceGame(player, triggers[x])
                     break
 
-        else:
+        #else:
             #print "input does not match any triggers"
-            log.warning('input does not match any triggers')
-            sendErrorSMS(user)
+            #log.warning('input does not match any triggers')
+            #sendErrorSMS(player)
 
 def getGameStateData(id):
     fb = firebase.FirebaseApplication(environ['FB'], None)
@@ -450,6 +464,25 @@ def advanceGame(player, gsid):
         #print 'jump to game state:', gs['prompt']['goto']
         log.info('jump player %s to game state: %s' % (player['id'], gs['prompt']['goto']))
         advanceGame(player, gs['prompt']['goto'])
+
+    # POTATO HACKS -- these methods are for jumping to db checks & then coming back.
+    if gsid == '126':
+        log.debug('player %s hit a potato hack: %s' % (player['id'], gsid))
+        hack_126(player)
+
+    elif gsid == '133':
+        log.debug('player %s hit a apotato hack: %s' % (player['id'], gsid))
+        hack_133(player)
+
+    elif gsid == '142':
+        log.debug('player %s hit a potato hack: %s' % (player['id'], gsid))
+        hack_142(player)
+
+    elif gsid == '156':
+        log.debug('player %s hit a potato hack: %s' % (player['id'], gsid))
+        hack_156(player)
+
+
 
 # THIS METHOD IS NOT COMPLETE
 def sendErrorSMS(player):
@@ -624,6 +657,7 @@ def makeUser(ud):
             history=ud['history'],
             soloteam=ud['soloteam'],
             ambitious=ud['ambitious'],
+            leaving=ud['leaving'],
             animal=ud['animal']
             )
 
@@ -703,8 +737,8 @@ def getCountryCode(tel):
 
 def startGame(uid):
     player = getUser(uid)
-    updateUser(player['id'], {"gstate":1})
-    gs = getGameStateData(1)
+    updateUser(player['id'], {"gstate":101})
+    gs = getGameStateData(101)
     npc = getNPC(player, gs['prompt']['npc'])
 
     #print npc
@@ -737,6 +771,94 @@ def getPlayerVars(player, msg):
             #print msg
     return msg
 
+
+#### Potato hack methods that jump around the game #
+
+def hack_126(player):
+    log.debug('player soloteam enum: %s' % (player['soloteam']))
+
+    if player['soloteam'] == 0:
+        log.debug('player %s warps to 127' % (player['id']))
+        advanceGame(player, '127')
+
+    elif player['soloteam'] == 1:
+        log.debug('player %s warps to 129' % (player['id']))
+        advanceGame(player, '129')
+
+    elif player['soloteam'] == 2:
+        log.debug('player %s warps to 120' % (player['id']))
+        advanceGame(player, '130')
+
+def hack_133(player):
+    log.debug('player leaving enum: %s' % (player['leaving']))
+
+    if player['leaving'] == 0:
+        log.debug('player %s warps to 134' % (player['id']))
+        advanceGame(player, '134')
+
+    elif player['leaving'] == 1:
+        log.debug('player %s warps to 137' % (player['id']))
+        advanceGame(player, '137')
+
+    elif player['leaving'] == 2:
+        log.debug('player %s warps to 139' % (player['id']))
+        advanceGame(player, '139')
+
+    elif player['leaving'] == 3:
+        log.debug('player %s warps to 136' % (player['id']))
+        advanceGame(player, '136')
+
+    elif player['leaving'] == 4:
+        log.debug('player %s warps to 138' % (player['id']))
+        advanceGame(player, '138')
+
+def hack_142(player):
+    log.debug('player ambitious enum: %s' % (player['ambitious']))
+
+    if player['ambitious'] == 0:
+        log.debug('player %s warps to 144' % (player['id']))
+        advanceGame(player, '144')
+
+    elif player['ambitious'] == 1:
+        log.debug('player %s warps to 143' % (player['id']))
+        advanceGame(player, '143')
+
+def hack_156(player):
+    log.debug('player ambitious enum: %s' % (player['ambitious']))
+
+    if player['ambitious'] == 0:
+        log.debug('player %s warps to 158' % (player['id']))
+        advanceGame(player, '158')
+
+    elif player['ambitious'] == 1:
+        log.debug('player %s warps to 157' % (player['id']))
+        advanceGame(player, '157')
+
+# Application accepted email from HR
+def hrEmail(player):
+
+    # dom - MG domain
+    # key - MG api key
+    # fe - npc email
+    # fn - npc display_name
+    # te - player email
+    # tn - player name
+    # sub - subject line
+    # txt - text version of email
+    # html - html version of email
+
+    sendEmail(
+        "careers@mercury.industries",
+        "Mercury Careers",
+        player['email'],
+        player['fname'] +" "+player['lname'],
+        "Your Mercury Careers application has been accepted",
+
+        "Dear "+player['fname']+",\n\nWe received and are currently reviewing your application for System Administrator-MGSYSAD45056. If your profile meets the position's requirements, a representative from Human Resources may contact you for additional information.\n\nIf you have any questions or require additional support, please contact: careers@mercury.industries\n\nThank you for your interest in Mercury Group.\n\nSincerely\n\nMercury Group Recruitment Team\n\n- - - \n\nPlease do not reply to this message. Replies to this message are undeliverable.\n\n Your rights and responsibilities regarding the information submitted by you and about you to the Mercury Group Career Site (including the recruitment management system and mobility management site and system) are set out in the Terms of Use statement.\n\n Mercury refers to one or more of Mercury Group Limited, a private company limited by guarantee, and its network of member firms, each of which is a legally separate and independent entity. Please see <a href='http://www.mercurygroup.com/about'>www.mercurygroup.com/about</a> for a detailed description of the legal structure of Mercury Group and its member firms.",
+
+        "<p>Dear "+player['fname']+",</p> <p>We received and are currently reviewing your application for System Administrator-MGSYSAD45056. If your profile meets the position's requirements, a representative from Human Resources may contact you for additional information.</p> <p>If you have any questions or require additional support, please contact: careers@mercury.industries</p> <p>Thank you for your interest in Mercury Group.</p> <p>Sincerely</p> <p>Mercury Group Recruitment Team</p> <p style='font-style: italic;'>Please do not reply to this message. Replies to this message are undeliverable.</p> <p style='font-style: italic;'>Your rights and responsibilities regarding the information submitted by you and about you to the Mercury Group Career Site (including the recruitment management system and mobility management site and system) are set out in the Terms of Use statement.</p> <p style='font-style: italic;'>Mercury refers to one or more of Mercury Group Limited, a private company limited by guarantee, and its network of member firms, each of which is a legally separate and independent entity. Please see <a href='http://www.mercurygroup.com/about'>www.mercurygroup.com/about</a> for a detailed description of the legal structure of Mercury Group and its member firms.</p>",
+        None,
+        None)
 
 if __name__ == "__main__":
     app.run(debug=True)
