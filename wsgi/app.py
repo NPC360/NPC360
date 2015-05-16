@@ -11,7 +11,7 @@ https://github.com/NPC360/NPC360/blob/master/schema.md
 
 """
 
-from flask import request, Flask, redirect, render_template, Response, jsonify, url_for
+from flask import request, Flask, render_template, Response
 import forms
 import requests
 import json
@@ -108,7 +108,7 @@ def contact():
     return render_template('contact.html')
 
 
-@app.route("/careers/", methods = ['GET','POST'])
+@app.route("/careers/", methods=['GET', 'POST'])
 def signup():
     form = forms.FullSignup()
 
