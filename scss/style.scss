@@ -211,7 +211,7 @@ input[type="email"] {
 	padding: 0 $pm;
 	margin: $margins;
 
-	input, textarea {
+	input[type="text"], textarea {
 		width: 100%
 	}
 }
@@ -223,19 +223,26 @@ label {
 	font-weight: bold;
 	display: block;
 }
-.radio-group {
-	list-style: none;
-	padding: 0;
-
-	li + li {
-		margin-top: $pxs;
+%inline-input {
+	input, label {
+		display: inline;
 	}
 	label {
 		margin: 0;
-	}
-	label {
-		display: inline-block;
 		text-transform: none;
 		font-weight: normal;
+	}
+}
+.future-employment {
+	@extend %inline-input;
+}
+.input-group {
+	@extend %inline-input;
+	ol, ul {
+		list-style: none;
+		padding: 0;
+	}
+	li + li {
+		margin-top: $pxs;
 	}
 }

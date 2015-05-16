@@ -801,7 +801,7 @@ p:first-child { margin-top: 0; }
 /* line 65, ../../../scss/style.scss */
 .header h1, .header h1 a { width: 350px; height: 100px; }
 /* line 69, ../../../scss/style.scss */
-.header h1 a { display: block; background: url('/static/img/mg.png?1431154897') no-repeat 0 0; background-size: 350px; }
+.header h1 a { display: block; background: url('/static/img/mg.png?1431752014') no-repeat 0 0; background-size: 350px; }
 /* line 74, ../../../scss/style.scss */
 .header h1 a:hover, .header h1 a:active, .header h1 a:focus { opacity: 0.9; }
 /* line 79, ../../../scss/style.scss */
@@ -832,7 +832,7 @@ p:first-child { margin-top: 0; }
 /* line 137, ../../../scss/style.scss */
 .hero p { margin: 0; }
 /* line 140, ../../../scss/style.scss */
-.hero p:after { display: inline-block; content: ""; background: url('/static/img/crane.png?1431154887') no-repeat 0 0; width: 18px; height: 12px; background-size: 18px; margin: 0 0 0 8px; }
+.hero p:after { display: inline-block; content: ""; background: url('/static/img/crane.png?1431752014') no-repeat 0 0; width: 18px; height: 12px; background-size: 18px; margin: 0 0 0 8px; }
 
 /* line 153, ../../../scss/style.scss */
 ul.block { padding: 0; list-style: none; border: solid 1px #969696; }
@@ -863,16 +863,17 @@ textarea, input[type="text"], input[type="email"] { border: solid 1px #969696; p
 /* line 209, ../../../scss/style.scss */
 .field { float: left; padding: 0 16px; margin: 16px 0; }
 /* line 214, ../../../scss/style.scss */
-.field input, .field textarea { width: 100%; }
+.field input[type="text"], .field textarea { width: 100%; }
 
 /* line 218, ../../../scss/style.scss */
 label { margin: 0 0 8px; color: #696969; font-size: 13px; text-transform: uppercase; font-weight: bold; display: block; }
 
-/* line 226, ../../../scss/style.scss */
-.radio-group { list-style: none; padding: 0; }
+/* line 227, ../../../scss/style.scss */
+.future-employment input, .input-group input, .future-employment label, .input-group label { display: inline; }
 /* line 230, ../../../scss/style.scss */
-.radio-group li + li { margin-top: 8px; }
-/* line 233, ../../../scss/style.scss */
-.radio-group label { margin: 0; }
-/* line 236, ../../../scss/style.scss */
-.radio-group label { display: inline-block; text-transform: none; font-weight: normal; }
+.future-employment label, .input-group label { margin: 0; text-transform: none; font-weight: normal; }
+
+/* line 241, ../../../scss/style.scss */
+.input-group ol, .input-group ul { list-style: none; padding: 0; }
+/* line 245, ../../../scss/style.scss */
+.input-group li + li { margin-top: 8px; }

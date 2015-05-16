@@ -12,6 +12,7 @@ https://github.com/NPC360/NPC360/blob/master/schema.md
 """
 
 from flask import request, Flask, redirect, render_template, Response, jsonify, url_for
+from wtforms import Form, StringField, RadioField, TextAreaField, FileField, BooleanField, validators
 import requests
 import json
 import re
@@ -32,6 +33,44 @@ import tinys3
 
 app = Flask(__name__)
 app.config['PROPAGATE_EXCEPTIONS'] = True
+
+
+class SignupForm(Form):
+    first_name = StringField('First Name', [
+        validators.InputRequired(),
+        validators.length(min=2, max=50)
+    ])
+    last_name = StringField('Last Name', [
+        validators.InputRequired(),
+        validators.length(min=2, max=50)
+    ])
+    email = StringField('Email', [
+        validators.InputRequired(),
+        validators.Email()
+    ])
+    mobile_number = StringField('Mobile Number', [
+        validators.InputRequired()
+    ])
+
+
+class FullSignupForm(SignupForm):
+    why_work = TextAreaField('Why do you want to work for Mercury Group', [])
+    work_history = TextAreaField('Relevant work history', [])
+
+    team_work_choices = [
+        (1, "Alone"),
+        (2, "With a mix of both teams and alone"),
+        (3, "With a team")
+    ]
+    team_work = RadioField('Which best describes how you prefer to work', choices=team_work_choices)
+    ambition_choices = [
+        (0, "Yes"),
+        (1, "No")
+    ]
+    ambitious = RadioField('Would you describe yourself as ambitious?', choices=ambition_choices)
+    animal = TextAreaField('If you were an animal what would you be?', [])
+    resume = FileField('Upload resume', [])
+    future_employment = BooleanField('I am happy to be contacted about future opportunities', [])
 
 # API & DB credentials
 #from Keys import *
@@ -103,6 +142,8 @@ def contact():
 
 @app.route("/careers/", methods = ['GET','POST'])
 def signup():
+    form = FullSignupForm()
+
     if request.method == 'POST':
         # if auth code has been passed in, we need to process it.
         fname = request.values.get('fname', None)
@@ -193,7 +234,7 @@ def signup():
                     return render_template('signup1Error.html', fname=fname, lname=lname, email=email)
     # but, if no data POSTed at all, then we need to render the signup form!
     else:
-        return render_template('signup1.html')
+        return render_template('signup1.html', form=form)
 
 """
 SMS IO controller

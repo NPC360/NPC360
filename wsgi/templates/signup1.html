@@ -1,4 +1,22 @@
 {% extends "layout.html" %}
+
+{% macro with_errors(field) %}
+    <div class="field">
+	{{ field.label }}
+    {% if field.errors %}
+    	{% set css_class = 'has_error ' + kwargs.pop('class', '') %}
+        {{ field(class=css_class, **kwargs) }}
+        <ul class="errors">
+        	{% for error in field.errors %}
+        	<li>{{ error|e }}</li>
+        	{% endfor %}
+        </ul>
+    {% else %}
+        {{ field(**kwargs) }}
+    {% endif %}
+    </div>
+{% endmacro %}
+
 {% block title %}Careers{% endblock %}
 {% block body %}
 	<h2>Careers</h2>
@@ -12,10 +30,50 @@
 	</ul>
 
 	{% include 'partials/position-description.html' %}
-	{% include 'partials/register-form.html' %}
+
+	<form id="signupForm" action="/careers/" method="POST">
+		<h3>Application</h3>
+		<div class="group cf">
+			{{ with_errors(form.first_name) }}
+			{{ with_errors(form.last_name) }}
+			{{ with_errors(form.email) }}
+			{{ with_errors(form.mobile_number) }}
+		</div>
+
+		<h4>Tell us a little about yourself</h4>
+		<div class="group cf">
+			{{ with_errors(form.why_work) }}
+			{{ with_errors(form.work_history) }}
+			<div class="field">
+				{{ form.team_work.label }}
+				<p>I prefer to work:</p>
+				<div class="input-group">{{ form.team_work }}</div>
+			</div>
+			<div class="field">
+				{{ form.ambitious.label }}
+				<div class="input-group">{{ form.ambitious }}</div>
+			</div>
+		</div>
+		<div class="group cf">
+			{{ with_errors(form.animal) }}
+		</div>
+		<div class="group cf">
+			{{ with_errors(form.resume) }}
+		</div>
+		<div class="group cf">
+			<div class="field future-employment">
+				{{ form.future_employment }}{{ form.future_employment.label }}
+			</div>
+		</div>
+
+		<div class="button-group">
+			<button id="submit" class="btn btn-primary btn-lg" type="submit" value="Continue">Submit</button>
+		</div>
+	</form>
 {% endblock %}
 {% block scripts %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
 <script src="{{url_for('static', filename='js/intlTelInput.min.js') }}"></script>
 <script src="{{url_for('static', filename='js/signup1.js') }}"></script>
 {% endblock %}
+
