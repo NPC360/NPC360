@@ -124,21 +124,27 @@ log.addHandler(ch)
 landing page / HTML / authorization routes
 
 """
+
+
 @app.route("/")
 def index():
     return render_template('index.html')
+
 
 @app.route("/solutions/")
 def solutions():
     return render_template('solutions.html')
 
+
 @app.route("/case-studies/")
 def case_studies():
     return render_template('case-studies.html')
 
+
 @app.route("/contact/")
 def contact():
     return render_template('contact.html')
+
 
 @app.route("/careers/", methods = ['GET','POST'])
 def signup():
