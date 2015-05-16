@@ -1,6 +1,6 @@
 from wtforms import Form, validators
 from wtforms import StringField, TextAreaField, FileField
-from wtforms import RadioField, BooleanField
+from wtforms import RadioField, BooleanField, HiddenField
 
 
 class Signup(Form):
@@ -19,6 +19,7 @@ class Signup(Form):
     mobile_number = StringField('Mobile Number', [
         validators.InputRequired()
     ])
+    tz = HiddenField([]);
 
 
 class FullSignup(Signup):
