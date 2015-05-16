@@ -12,7 +12,6 @@ https://github.com/NPC360/NPC360/blob/master/schema.md
 """
 
 from flask import request, Flask, redirect, render_template, Response, jsonify, url_for
-from wtforms import Form, StringField, RadioField, TextAreaField, FileField, BooleanField, validators
 import forms
 import requests
 import json
