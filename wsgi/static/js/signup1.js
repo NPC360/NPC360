@@ -12,8 +12,9 @@ var phoneInvalid = document.getElementById("tel-invalid");
 var telExists = document.getElementById("tel-exists");
 var emailExists = document.getElementById("email-exists");
 
-telInput.intlTelInput({
-  utilsScript: "/static/js/intlTelInputUtils.js"
+$("input[type=tel]").intlTelInput({
+  utilsScript: "/static/js/intlTelInputUtils.js",
+  onlyCountries: ['au', 'nz']
 });
 
 // on blur: validate telephone #
