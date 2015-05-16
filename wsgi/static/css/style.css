@@ -851,29 +851,35 @@ button:hover, button:active { background: #4689db; }
 button:focus { background: #276fc6; }
 
 /* line 188, ../../../scss/style.scss */
-textarea, input[type="text"], input[type="email"] { border: solid 1px #969696; padding: 8px 12px; font-family: inherit; font-size: inherit; }
+textarea, input[type="text"], input[type="tel"], input[type="email"] { border: solid 1px #969696; padding: 8px 12px; font-family: inherit; font-size: inherit; }
 
-/* line 197, ../../../scss/style.scss */
+/* line 198, ../../../scss/style.scss */
 .group { margin: 0 -16px; }
-/* line 200, ../../../scss/style.scss */
+/* line 201, ../../../scss/style.scss */
 .group .field { width: 50%; }
-/* line 204, ../../../scss/style.scss */
+/* line 205, ../../../scss/style.scss */
 .group.three-columns .field { width: 33.33333%; }
 
-/* line 209, ../../../scss/style.scss */
+/* line 210, ../../../scss/style.scss */
 .field { float: left; padding: 0 16px; margin: 16px 0; }
-/* line 214, ../../../scss/style.scss */
+/* line 215, ../../../scss/style.scss */
 .field input[type="text"], .field textarea { width: 100%; }
 
-/* line 218, ../../../scss/style.scss */
+/* line 219, ../../../scss/style.scss */
 label { margin: 0 0 8px; color: #696969; font-size: 13px; text-transform: uppercase; font-weight: bold; display: block; }
 
-/* line 227, ../../../scss/style.scss */
+/* line 228, ../../../scss/style.scss */
 .future-employment input, .input-group input, .future-employment label, .input-group label { display: inline; }
-/* line 230, ../../../scss/style.scss */
+/* line 231, ../../../scss/style.scss */
 .future-employment label, .input-group label { margin: 0; text-transform: none; font-weight: normal; }
 
-/* line 241, ../../../scss/style.scss */
+/* line 242, ../../../scss/style.scss */
 .input-group ol, .input-group ul { list-style: none; padding: 0; }
-/* line 245, ../../../scss/style.scss */
+/* line 246, ../../../scss/style.scss */
 .input-group li + li { margin-top: 8px; }
+
+/* line 251, ../../../scss/style.scss */
+input.has-error, textarea.has-error, select.has-error { border-color: #B23D22 !important; }
+
+/* line 255, ../../../scss/style.scss */
+.errors { margin: 6px 0; font-size: 13px; color: #B23D22; }
