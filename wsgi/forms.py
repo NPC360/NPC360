@@ -1,6 +1,7 @@
 from wtforms import Form, validators
 from wtforms import StringField, TextAreaField, FileField
 from wtforms import RadioField, BooleanField, HiddenField
+from wtforms.fields.html5 import TelField
 
 
 class Signup(Form):
@@ -16,7 +17,7 @@ class Signup(Form):
         validators.InputRequired(),
         validators.Email()
     ])
-    mobile_number = StringField('Mobile Number', [
+    mobile_number = TelField('Mobile Number', [
         validators.InputRequired()
     ])
     tz = HiddenField([]);
