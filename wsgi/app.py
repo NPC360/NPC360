@@ -110,9 +110,9 @@ def contact():
 
 @app.route("/careers/", methods=['GET', 'POST'])
 def signup():
-    form = forms.FullSignup()
+    form = forms.FullSignup(request.form)
 
-    if request.method == 'POST':
+    if request.method == 'POST' and form.validate():
         # if auth code has been passed in, we need to process it.
         fname = request.values.get('fname', None)
         lname = request.values.get('lname', None)
