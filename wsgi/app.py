@@ -108,7 +108,17 @@ def contact():
     return render_template('contact.html')
 
 
-@app.route("/careers/", methods=['GET', 'POST'])
+@app.route("/careers/")
+def careers():
+    return render_template('careers.html')
+
+
+@app.route("/careers/job-2342/")
+def careersJob():
+    return render_template('careers-job-description.html')
+
+
+@app.route("/careers/job-2342/apply/", methods=['GET', 'POST'])
 def signup():
     form = forms.FullSignup(request.form)
 
