@@ -246,3 +246,13 @@ label {
 		margin-top: $pxs;
 	}
 }
+input, textarea, select {
+	&.has-error {
+		border-color: #B23D22 !important;
+	}
+}
+.errors {
+	margin: 6px 0;
+	font-size: 13px;
+	color: #B23D22;
+}
