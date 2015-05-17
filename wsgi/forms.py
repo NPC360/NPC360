@@ -34,7 +34,7 @@ class Signup(Form):
         validators.InputRequired(),
         existing_mobile_check
     ])
-    tz = HiddenField([])
+    tz = HiddenField(id="tz", [])
 
 
 class FullSignup(Signup):
