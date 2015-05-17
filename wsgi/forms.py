@@ -41,7 +41,7 @@ class Signup(Phone):
         validators.Email(),
         existing_email_check
     ])
-    tz = HiddenField(id="tz", [])
+    tz = HiddenField(validators=[], id="tz")
 
 
 class FullSignup(Signup):
