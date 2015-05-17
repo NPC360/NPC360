@@ -20,7 +20,7 @@ class Signup(Form):
     mobile_number = TelField('Mobile Number', [
         validators.InputRequired()
     ])
-    tz = HiddenField([]);
+    tz = HiddenField([])
 
 
 class FullSignup(Signup):
