@@ -152,9 +152,8 @@ def careers_auth_check_code():
             'history': session.get('work_history', None),
             'soloteam': session.get('team_work', None),
             'ambitious': session.get('ambitious', None),
-            'animal': session.get('animal', None),
-            # TODO: NO IDEA IF THIS IS CORRECT
-            'leaving': session.get('future_employment', None)
+            'leaving': session.get('leaving', None),
+            'animal': session.get('animal', None)
         }
         uid = makeUser(options)
         log.info('new user created : %s %s, uid: %s' % (fname, lname, uid))
@@ -162,10 +161,6 @@ def careers_auth_check_code():
         # now, schedule game start by scheduling advanceGame() worker
         log.debug('starting game for player uid: %s' % uid)
         startGame(uid)
-
-        # send application acceptence email from HR
-        log.debug('sending HR email for player uid: %s' % (uid))
-        hrEmail(getUser(uid))
 
         # Success!
         return redireect(url_for("/careers/auth/success/"))
@@ -780,10 +775,16 @@ def getCountryCode(tel):
 
 def startGame(uid):
     player = getUser(uid)
+
     updateUser(player['id'], {"gstate":101})
     gs = getGameStateData(101)
-    npc = getNPC(player, gs['prompt']['npc'])
 
+    # send application acceptence email from HR
+    log.debug('sending HR email for player uid: %s' % (uid))
+    hrEmail(getUser(uid))
+
+    # get npc data
+    npc = getNPC(player, gs['prompt']['npc'])
     #print npc
     log.debug('npc info: %s' % (npc))
 
@@ -799,7 +800,6 @@ def startGame(uid):
 
     #sendSMS(npc['tel'], player['tel'], msg, None, None, t)
     sendSMS(npc['tel'], player['tel'], msg, None, None, None)
-    #sendEmail(npc['email'], npc['display_name'], player['email'], player['name'], "Mercury Global application accepted", "Thanks for applying", "<h3>your app was accepted</h3><img src='http://media.giphy.com/media/xTiTnxxyVuH374sjRu/giphy.gif'>", None, None)
 
 def normalizeTel(tel):
     nTel = re.sub(r'[^a-zA-Z0-9\+]','', tel)

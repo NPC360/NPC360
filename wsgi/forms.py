@@ -54,10 +54,10 @@ class FullSignup(Signup):
     # NOTE: Signup1.html does not display errors if validation is
     # added to these fields: team_work, ambitious, future_employment
 
-    why_work = TextAreaField('Why do you want to work for Mercury Group', [])
+    why_work = TextAreaField('Why do you want to work for Mercury Group?', [])
     work_history = TextAreaField('Relevant work history', [])
 
-    s = 'Which best describes how you prefer to work'
+    s = 'Which best describes how you prefer to work?'
     team_work_choices = [
         (1, "Alone"),
         (2, "With a mix of both teams and alone"),
@@ -71,8 +71,19 @@ class FullSignup(Signup):
         (1, "No")
     ]
     ambitious = RadioField(s, choices=ambition_choices)
-    animal = TextAreaField('If you were an animal what would you be?', [])
+
+    s = 'Why did / will you leave your previous position?'
+    leaving_choices = [
+        (0, "Salary"),
+        (1, "Lifestyle"),
+        (2, "Unemployment"),
+        (3, "Management"),
+        (4, "Other")
+    ]
+    leaving = RadioField(s, choices=leaving_choices)
+
+    animal = StringField('If you were an animal what would you be?', [])
     resume = FileField('Upload resume', [])
 
-    s = 'I am happy to be contacted about future opportunities'
+    s = 'Please contact me about future opportunities'
     future_employment = BooleanField(s, [])

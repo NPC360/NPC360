@@ -21,7 +21,7 @@
 {% block body %}
 	<h2>Careers</h2>
 	<form action="/careers/job-2342/apply/" method="POST">
-		<h3>Registration</h3>
+		<h3>Contact information</h3>
 		<div class="group cf">
 			{{ with_errors(form.first_name) }}
 			{{ with_errors(form.last_name) }}
@@ -29,13 +29,13 @@
 			{{ with_errors(form.mobile_number) }}
 		</div>
 
-		<h4>Tell us a little about yourself</h4>
+		<h3>Tell us about yourself</h3>
 		<div class="group cf">
 			{{ with_errors(form.why_work) }}
 			{{ with_errors(form.work_history) }}
 			<div class="field">
 				{{ form.team_work.label }}
-				<p>I prefer to work:</p>
+				<!--<p>I prefer to work:</p>-->
 				<div class="input-group">{{ form.team_work }}</div>
 			</div>
 			<div class="field">
@@ -43,7 +43,13 @@
 				<div class="input-group">{{ form.ambitious }}</div>
 			</div>
 		</div>
+
 		<div class="group cf">
+      <div class="field">
+				{{ form.leaving.label }}
+				<!--<p>I'm seeking new employment because of:</p>-->
+				<div class="input-group">{{ form.leaving }}</div>
+			</div>
 			{{ with_errors(form.animal) }}
 		</div>
 		<div class="group cf">
@@ -67,4 +73,3 @@
 <script src="{{url_for('static', filename='js/intlTelInput.min.js') }}"></script>
 <script src="{{url_for('static', filename='js/signup1.js') }}"></script>
 {% endblock %}
-
