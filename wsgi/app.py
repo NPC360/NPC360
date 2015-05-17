@@ -11,7 +11,7 @@ https://github.com/NPC360/NPC360/blob/master/schema.md
 
 """
 
-from flask import request, session, Flask, render_template, Response, redirect
+from flask import request, session, Flask, render_template, Response, redirect, url_for
 import forms
 import requests
 import json
