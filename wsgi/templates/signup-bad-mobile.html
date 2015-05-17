@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% macro with_errors(field) %}
+    <div class="field">
+	{{ field.label }}
+    {% if field.errors %}
+    	{% set css_class = 'has-error ' + kwargs.pop('class', '') %}
+        {{ field(class=css_class, **kwargs) }}
+        <ul class="errors">
+        	{% for error in field.errors %}
+        	<li>{{ error|e }}</li>
+        	{% endfor %}
+        </ul>
+    {% else %}
+        {{ field(**kwargs) }}
+    {% endif %}
+    </div>
+{% endmacro %}
+
+{% block title %}Careers{% endblock %}
+{% block body %}
+	<h2>Registration error</h2>
+	<p>We were unable to contact your mobile numebr, please check your number and try again.</p>
+
+	<form action="/careers/job-2342/apply/" method="POST">
+		<div class="group cf">
+			{{ with_errors(form.mobile_number) }}
+		</div>
+
+		<div class="button-group">
+			<button type="submit">Submit</button>
+		</div>
+	</form>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
+<script src="{{url_for('static', filename='js/intlTelInput.min.js') }}"></script>
+<script src="{{url_for('static', filename='js/signup1.js') }}"></script>
+{% endblock %}

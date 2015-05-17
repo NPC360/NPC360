@@ -116,31 +116,107 @@ def careers():
 
 
 @app.route("/careers/job-2342/")
-def careersJob():
+def careers_job():
     return render_template('careers-job-description.html')
+
+
+@app.route("/careers/auth/success/")
+def careers_auth_success():
+    return render_template('signup-success.html')
+
+
+@app.route("/careers/auth/2/")
+def careers_auth_check_code():
+    # Check that the user is awaiting an auth SMS, if they're
+    # not, redireect them to the registration page
+    if session.get('awaiting_auth', False) is not True:
+        return redirect(url_for("/careers/job-2342/apply/"))
+
+    # If the SMS hasn't been sent, jump back a step
+    if session.get('sent_sms', False) is not True:
+        return redireect(url_for("/careers/auth/"))
+
+    form = forms.SMSAuth(response.form)
+
+    if request.method == 'POST' and form.validate():
+        # Create the user
+        fname = session.get('first_name', None)
+        lname = session.get('last_name', None)
+        options = {
+            'fname': fname,
+            'lname': lname,
+            'tel': session.get('mobile_number', None),
+            'tz': session.get('tz', None),
+            'email': session.get('email', None),
+            'why': session.get('why_work', None),
+            'history': session.get('work_history', None),
+            'soloteam': session.get('team_work', None),
+            'ambitious': session.get('ambitious', None),
+            'animal': session.get('animal', None),
+            # TODO: NO IDEA IF THIS IS CORRECT
+            'leaving': session.get('future_employment', None)
+        }
+        uid = makeUser(options)
+        log.info('new user created : %s %s, uid: %s' % (fname, lname, uid))
+
+        # now, schedule game start by scheduling advanceGame() worker
+        log.debug('starting game for player uid: %s' % uid)
+        startGame(uid)
+
+        # send application acceptence email from HR
+        log.debug('sending HR email for player uid: %s' % (uid))
+        hrEmail(getUser(uid))
+
+        # Success!
+        return redireect(url_for("/careers/auth/success/"))
+    else:
+        return render_template('signup-auth.html', form=form, name=session.get("name"))
+
+
+@app.route("/careers/auth/")
+def careers_auth_send_sms():
+    # Check that the user is awaiting an auth SMS, if they're
+    # not, redireect them to the registration page
+    if session.get('awaiting_auth', False) is not True:
+        return redirect(url_for("/careers/job-2342/apply/"))
+
+    # If the SMS hasn't been sent, jump back a step
+    if session.get('sent_sms', False) is True:
+        return redireect(url_for("/careers/auth/2/"))
+
+    # Create the form instance
+    form = forms.FullSignup(request.form)
+
+    # Send Auth SMS
+    # add data to table for lookup later on & get row id/token
+    if request.method == 'GET' or request.method == 'POST' and form.validate():
+        auth = str(random.randint(1000, 9999))
+        uid = newAuth(auth)
+        log.info('auth code: %s, player uid: %s' % (auth, uid))
+        session['auth_sms_sent'] = signupSMSauth(session['mobile_number'], auth)
+
+    if session.get('auth_sms_sent') is True:
+        return redireect(url_for("/careers/auth/2/"))
+    else:
+        return render_template('signup-bad-mobile.html', form=form)
 
 
 @app.route("/careers/job-2342/apply/", methods=['GET', 'POST'])
 def signup():
+    # If the user has already signed up and is awaiting an auth
+    # SMS to come in, redirect them to the auth page
+    if (session.get('awaiting_auth') is True):
+        return redirect(url_for("/careers/auth/"))
+
+    # Create the form instance
     form = forms.FullSignup(request.form)
 
+    # Validate form
     if request.method == 'POST' and form.validate():
-        # if auth code has been passed in, we need to process it.
-        fname = request.values.get('fname', None)
-        lname = request.values.get('lname', None)
-        tel = request.values.get('tel', None)
-        tz = request.values.get('tz', None)
-        email = request.values.get('email', None)
 
-        # non contact vars
-        why = request.values.get('why-work', None)
-        history = request.values.get('history', None)
-        soloteam = request.values.get('soloteam', None)
-        ambitious = request.values.get('ambitious', None)
-        leaving = request.values.get('leaving', None)
-        animal = request.values.get('animal', None)
+        # Save form data in a session
+        session.update(form.data)
 
-        ######
         # upload resume (if it exists?) to s3
         # s3 = tinys3.Connection(environ['S3KEY'],environ['S3SECRET'])
         # resume = request.files['resumefile']
@@ -151,70 +227,16 @@ def signup():
         # fn = '%s_%s.pdf' % (email, fnd)
         # print fn
         # conn.upload(fn,resume,'npc360/resumes')
-        ######
 
-        log.debug( 'form data: %s' % (request.values))
+        # Indicate that the user is attempting
+        # to authenticate their phone number
+        session['awaiting_auth'] = True
 
-        if request.values.get('auth', None):
-            auth = request.values.get('auth', None)
-            uid = request.values.get('uid', None)
-            #print auth, name, tel, tz, email, uid
-            #print 'Variables from form: ' + str(auth), name, str(tel), tz, email, str(uid)
-            log.debug('auth form data: %s' % (request.values))
-
-            tableAuth = checkAuth(uid)
-            #print "auth code from table:", tableAuth
-            log.debug('auth code from table: %s' % (tableAuth))
-
-            #if auth is correct, create new user in playerInfo table.
-            #if auth is not correct, return to confirmation step.
-            if str(auth) in str(tableAuth):
-                d = {'fname':fname,
-                    'lname':lname,
-                    'tel':tel,
-                    'tz':tz,
-                    'email':email,
-                    'why':why,
-                    'history':history,
-                    'soloteam':soloteam,
-                    'ambitious':ambitious,
-                    'leaving':leaving,
-                    'animal':animal
-                    }
-                uid = makeUser(d)
-                #print 'new user:', name, 'uid:', uid
-                log.info('new user created : %s %s, uid: %s' % (fname, lname,  uid))
-
-                # now, schedule game start by scheduling advanceGame() worker
-                log.debug('starting game for player uid: %s' % (uid))
-                startGame(uid)
-
-                # send application acceptence email from HR
-                log.debug('sending HR email for player uid: %s' % (uid))
-                hrEmail(getUser(uid))
-
-                return render_template('signupSuccess.html', fname=fname)
-            else:
-                return render_template('signupError.html', fname=fname, lname=lname, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious, leaving=leaving, animal=animal)
-        # if no auth code passed in, we need to ask for it!
-        # oh, and ideally we should make sure the email/phone aren't already in the table.  (future?)
-        else:
-            #print name, tel, tz, email
-            log.debug('name: %s %s, tel: %s, tz: %s, email: %s' % (fname, lname, tel, tz, email))
-            if fname and lname and tel and tz and email:
-                auth = str(random.randint(1000, 9999))
-                # add data to MySQL table for lookup later on & get row id/token
-                uid = newAuth(auth)
-                #print 'auth code:', str(auth), 'player uid:', str(uid)
-                log.info('auth code: %s, player uid: %s' % (auth, uid) )
-
-                if signupSMSauth(tel, auth):
-                    return render_template('signup2.html', fname=fname, lname=lname, tel=tel, tz=tz, uid=uid, email=email, why=why, history=history, soloteam=soloteam, ambitious=ambitious,leaving=leaving, animal=animal)
-                else:
-                    return render_template('signup1Error.html', fname=fname, lname=lname, email=email)
-    # but, if no data POSTed at all, then we need to render the signup form!
+        # Redirect to SMS auth page
+        return redirect(url_for("/careers/auth/"))
     else:
-        return render_template('signup1.html', form=form)
+        return render_template('signup-form.html', form=form)
+
 
 """
 SMS IO controller
@@ -747,7 +769,7 @@ def checkAuth(uid):
     table = Table('tokenAuth', md, autoload=True)
     con = db.connect()
     x = con.execute( table.select(table.c.auth).where(table.c.uid == uid) )
-    a = x.fetchone()['auth']
+    a = x.fetchone().get('auth', None)
     con.close()
     return a
 
