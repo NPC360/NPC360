@@ -7,5 +7,5 @@ $("#tz").each(function() {
 // uses geo-ip to set country.
 $("input[type=tel]").intlTelInput({
   utilsScript: "/static/js/intlTelInputUtils.js",
-  onlyCountries: ['au', 'nz']
+  onlyCountries: ['au', 'nz', 'us', 'ca']
 });
