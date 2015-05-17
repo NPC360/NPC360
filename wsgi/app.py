@@ -11,7 +11,7 @@ https://github.com/NPC360/NPC360/blob/master/schema.md
 
 """
 
-from flask import request, Flask, render_template, Response
+from flask import request, session, Flask, render_template, Response
 import forms
 import requests
 import json
@@ -31,11 +31,13 @@ import random
 from os import environ
 import tinys3
 
+# API & DB credentials
+from Keys import *
+
+# Initialise the Flask app
 app = Flask(__name__)
 app.config['PROPAGATE_EXCEPTIONS'] = True
-
-# API & DB credentials
-#from Keys import *
+app.secret_key = SecretSessionKey
 
 # YES/No/Error phrases
 from yesnoerr import *
