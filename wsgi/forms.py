@@ -1,10 +1,22 @@
+from app import getUser
 from wtforms import Form, validators
 from wtforms import StringField, TextAreaField, FileField
 from wtforms import RadioField, BooleanField, HiddenField
 from wtforms.fields.html5 import TelField
+from wtforms.validators import StopValidation
 
 
 class Signup(Form):
+    def existing_email_check(self, field):
+        user = getUser(field.data)
+        if user is None:
+            raise StopValidation('Your email address is already in use.')
+
+    def existing_mobile_check(self, field):
+        user = getUser(field.data)
+        if user is None:
+            raise StopValidation('Your mobile number is already in use.')
+
     first_name = StringField('First Name', [
         validators.InputRequired(),
         validators.length(min=2, max=50)
@@ -15,10 +27,12 @@ class Signup(Form):
     ])
     email = StringField('Email', [
         validators.InputRequired(),
-        validators.Email()
+        validators.Email(),
+        existing_email_check
     ])
     mobile_number = TelField('Mobile Number', [
-        validators.InputRequired()
+        validators.InputRequired(),
+        existing_mobile_check
     ])
     tz = HiddenField([])
 
