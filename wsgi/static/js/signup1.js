@@ -6,6 +6,6 @@ $("#tz").each(function() {
 // init telephone # validation
 // uses geo-ip to set country.
 $("input[type=tel]").intlTelInput({
-  utilsScript: "/static/js/intlTelInputUtils.js",
+  utilsScript: "http://npc360a-nealrs.rhcloud.com/static/js/intlTelInputUtils.js",
   onlyCountries: ['au', 'nz', 'us', 'ca']
 });
