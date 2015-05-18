@@ -32,12 +32,12 @@ from os import environ
 import tinys3
 
 # API & DB credentials
-from Keys import *
+#from Keys import *
 
 # Initialise the Flask app
 app = Flask(__name__)
 app.config['PROPAGATE_EXCEPTIONS'] = True
-app.secret_key = SecretSessionKey
+app.secret_key = environ['SecretSessionKey']
 
 # YES/No/Error phrases
 from yesnoerr import *
