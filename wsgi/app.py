@@ -125,6 +125,75 @@ def careers_auth_success():
     return render_template('signup-success.html')
 
 
+@app.route("/careers/auth/2/")
+def careers_auth_check_code():
+    # Check that the user is awaiting an auth SMS, if they're
+    # not, redireect them to the registration page
+    if session.get('awaiting_auth', False) is not True:
+        return redirect(url_for("/careers/job-2342/apply/"))
+
+    # If the SMS hasn't been sent, jump back a step
+    if session.get('sent_sms', False) is not True:
+        return redireect(url_for("/careers/auth/"))
+
+    form = forms.SMSAuth(response.form)
+
+    if request.method == 'POST' and form.validate():
+        # Create the user
+        fname = session.get('first_name', None)
+        lname = session.get('last_name', None)
+        options = {
+            'fname': fname,
+            'lname': lname,
+            'tel': session.get('mobile_number', None),
+            'tz': session.get('tz', None),
+            'email': session.get('email', None),
+            'why': session.get('why_work', None),
+            'history': session.get('work_history', None),
+            'soloteam': session.get('team_work', None),
+            'ambitious': session.get('ambitious', None),
+            'leaving': session.get('leaving', None),
+            'animal': session.get('animal', None)
+        }
+        uid = makeUser(options)
+        log.info('new user created : %s %s, uid: %s' % (fname, lname, uid))
+
+        # now, schedule game start by scheduling advanceGame() worker
+        log.debug('starting game for player uid: %s' % uid)
+        startGame(uid)
+
+        # Success!
+        return redireect(url_for("/careers/auth/success/"))
+    else:
+        return render_template('signup-auth.html', form=form, name=session.get("name"))
+
+
+@app.route("/careers/auth/")
+def careers_auth_send_sms():
+    # Check that the user is awaiting an auth SMS, if they're
+    # not, redireect them to the registration page
+    if session.get('awaiting_auth', False) is not True:
+        return redirect(url_for("/careers/job-2342/apply/"))
+
+    # If the SMS hasn't been sent, jump back a step
+    if session.get('sent_sms', False) is True:
+        return redireect(url_for("/careers/auth/2/"))
+
+    # Create the form instance
+    form = forms.FullSignup(request.form)
+
+    # Send Auth SMS
+    # add data to table for lookup later on & get row id/token
+    if request.method == 'GET' or request.method == 'POST' and form.validate():
+        auth = str(random.randint(1000, 9999))
+        uid = newAuth(auth)
+        log.info('auth code: %s, player uid: %s' % (auth, uid))
+        session['auth_sms_sent'] = signupSMSauth(session['mobile_number'], auth)
+
+    if session.get('auth_sms_sent') is True:
+        return redireect(url_for("/careers/auth/2/"))
+    else:
+        return render_template('signup-bad-mobile.html', form=form)
 
 
 @app.route("/careers/job-2342/apply/", methods=['GET', 'POST'])
@@ -703,81 +772,6 @@ def getCountryCode(tel):
     tel = normalizeTel(tel)
     lookup = TwilioLookupsClient(environ['TSID'], environ['TTOKEN'])
     return lookup.phone_numbers.get(tel).country_code
-
-
-#### moved some form methods down...
-@app.route("/careers/auth/2/")
-def careers_auth_check_code():
-    # Check that the user is awaiting an auth SMS, if they're
-    # not, redireect them to the registration page
-    if session.get('awaiting_auth', False) is not True:
-        return redirect(url_for("/careers/job-2342/apply/"))
-
-    # If the SMS hasn't been sent, jump back a step
-    if session.get('sent_sms', False) is not True:
-        return redireect(url_for("/careers/auth/"))
-
-    form = forms.SMSAuth(response.form)
-
-    if request.method == 'POST' and form.validate():
-        # Create the user
-        fname = session.get('first_name', None)
-        lname = session.get('last_name', None)
-        options = {
-            'fname': fname,
-            'lname': lname,
-            'tel': session.get('mobile_number', None),
-            'tz': session.get('tz', None),
-            'email': session.get('email', None),
-            'why': session.get('why_work', None),
-            'history': session.get('work_history', None),
-            'soloteam': session.get('team_work', None),
-            'ambitious': session.get('ambitious', None),
-            'leaving': session.get('leaving', None),
-            'animal': session.get('animal', None)
-        }
-        uid = makeUser(options)
-        log.info('new user created : %s %s, uid: %s' % (fname, lname, uid))
-
-        # now, schedule game start by scheduling advanceGame() worker
-        log.debug('starting game for player uid: %s' % uid)
-        startGame(uid)
-
-        # Success!
-        return redireect(url_for("/careers/auth/success/"))
-    else:
-        return render_template('signup-auth.html', form=form, name=session.get("name"))
-
-
-@app.route("/careers/auth/")
-def careers_auth_send_sms():
-    # Check that the user is awaiting an auth SMS, if they're
-    # not, redireect them to the registration page
-    if session.get('awaiting_auth', False) is not True:
-        return redirect(url_for("/careers/job-2342/apply/"))
-
-    # If the SMS hasn't been sent, jump back a step
-    if session.get('sent_sms', False) is True:
-        return redireect(url_for("/careers/auth/2/"))
-
-    # Create the form instance
-    form = forms.FullSignup(request.form)
-
-    # Send Auth SMS
-    # add data to table for lookup later on & get row id/token
-    if request.method == 'GET' or request.method == 'POST' and form.validate():
-        auth = str(random.randint(1000, 9999))
-        uid = newAuth(auth)
-        log.info('auth code: %s, player uid: %s' % (auth, uid))
-        session['auth_sms_sent'] = signupSMSauth(session['mobile_number'], auth)
-
-    if session.get('auth_sms_sent') is True:
-        return redireect(url_for("/careers/auth/2/"))
-    else:
-        return render_template('signup-bad-mobile.html', form=form)
-
-
-
 
 def startGame(uid):
     player = getUser(uid)
