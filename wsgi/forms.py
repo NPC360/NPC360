@@ -1,6 +1,6 @@
 from flask import session
 
-from app import *
+#from app import *
 #from app import getUser, checkAuth
 
 from wtforms import Form, validators
@@ -11,7 +11,7 @@ from wtforms.fields.html5 import TelField
 
 class SMSAuth(Form):
     def valid_auth_code(self, field):
-        if field.data != checkAuth(session.get('uid')):
+        if field.data != app.checkAuth(session.get('uid')):
             raise validators.ValidationError('Sorry, this is not the authentication code,')
 
     auth = IntegerField('Authentication Code', [
@@ -23,7 +23,7 @@ class SMSAuth(Form):
 
 class Phone(Form):
     def existing_mobile_check(self, field):
-        if getUser(field.data) is None:
+        if app.getUser(field.data) is None:
             raise validators.StopValidation('Your mobile number is already in use.')
 
     mobile_number = TelField('Mobile Number', [
@@ -34,7 +34,7 @@ class Phone(Form):
 
 class Signup(Phone):
     def existing_email_check(self, field):
-        if getUser(field.data) is None:
+        if app.getUser(field.data) is None:
             raise validators.StopValidation('Your email address is already in use.')
 
     first_name = StringField('First Name', [
