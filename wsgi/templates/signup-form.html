@@ -21,7 +21,7 @@
 {% block body %}
 	<h2>Careers</h2>
 	<form action="/careers/job-2342/apply/" method="POST">
-		<h3>Contact information</h3>
+		<h3>New Application: Junior System Administrator</h3>
 		<div class="group cf">
 			{{ with_errors(form.first_name) }}
 			{{ with_errors(form.last_name) }}
@@ -29,7 +29,6 @@
 			{{ with_errors(form.mobile_number) }}
 		</div>
 
-		<h3>Tell us about yourself</h3>
 		<div class="group cf">
 			{{ with_errors(form.why_work) }}
 			{{ with_errors(form.work_history) }}
