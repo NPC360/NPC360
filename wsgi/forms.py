@@ -1,5 +1,5 @@
 from flask import session
-#from app import getUser, checkAuth
+from app import getUser, checkAuth
 from wtforms import Form, validators
 from wtforms import StringField, TextAreaField, FileField, IntegerField
 from wtforms import RadioField, BooleanField, HiddenField
