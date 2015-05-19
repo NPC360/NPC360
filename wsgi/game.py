@@ -1,13 +1,12 @@
 """
 Gameplay methods
 """
-from gameio import sendEmail
 from os import environ
 from sqlalchemy import *
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import CompileError
 import re
-from gameio import sendSMS, sendErrorSMS
+from gameio import sendSMS, sendErrorSMS, sendEmail
 from user import *
 from firebase import firebase
 import arrow
