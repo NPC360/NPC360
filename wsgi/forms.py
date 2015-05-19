@@ -1,8 +1,7 @@
 from flask import session
 
-#from app import *
-#from app import getUser, checkAuth
-#import app
+from user import getUser
+from gameio import checkAuth
 
 from wtforms import Form, validators
 from wtforms import StringField, TextAreaField, FileField, IntegerField
