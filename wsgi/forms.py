@@ -6,7 +6,7 @@ from wtforms.fields.html5 import TelField
 
 from user import getUser
 from auth import checkAuth
-import telUtil
+from telUtil import *
 
 class SMSAuth(Form):
     def valid_auth_code(self, field):
