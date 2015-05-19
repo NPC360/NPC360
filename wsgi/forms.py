@@ -6,6 +6,7 @@ from wtforms.fields.html5 import TelField
 
 from user import getUser
 from auth import checkAuth
+import telUtil
 
 class SMSAuth(Form):
     def valid_auth_code(self, field):
@@ -21,7 +22,7 @@ class SMSAuth(Form):
 
 class Phone(Form):
     def existing_mobile_check(self, field):
-        if getUser(field.data) is None:
+        if getUser(normalizeTel(field.data)) is None:
             raise validators.StopValidation('Your mobile number is already in use.')
 
     mobile_number = TelField('Mobile Number', [
@@ -35,19 +36,22 @@ class Signup(Phone):
         if getUser(field.data) is None:
             raise validators.StopValidation('Your email address is already in use.')
 
-    first_name = StringField('First Name', [
-        validators.InputRequired(),
-        validators.length(min=2, max=50)
-    ])
-    last_name = StringField('Last Name', [
-        validators.InputRequired(),
-        validators.length(min=2, max=50)
-    ])
     email = StringField('Email', [
         validators.InputRequired(),
         validators.Email(),
         existing_email_check
     ])
+
+    first_name = StringField('First Name', [
+        validators.InputRequired(),
+        validators.length(min=2, max=50)
+    ])
+
+    last_name = StringField('Last Name', [
+        validators.InputRequired(),
+        validators.length(min=2, max=50)
+    ])
+
     tz = HiddenField(validators=[], id="tz")
 
 
