@@ -1,18 +1,13 @@
 """
 INPUT / OUTPUT (SMS, signup auth, eail, etc.)
 """
-import re
-import twilio
-import twilio.rest
-from twilio.rest.lookups import TwilioLookupsClient
-import twilio.twiml
 from os import environ
 from sqlalchemy import *
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import CompileError
 from game import getNPC, getGameStateData
 from iron_worker import *
-import normalizeTel
+from telUtil import *
 
 #This method is 'dumb'. All it does is accept data, build a payload, and schedule a job. If the job is queued successfully, it returns a task/job id. It doesen't know it's sending an SMS!!!
 def sendSMS(f,t,m,u,d,st):
@@ -99,25 +94,6 @@ def sendEmail(fe, fn, te, tn, sub, txt, html, d, st):
     #print response
     return response.id
 
-def signupSMSauth(tel,auth):
-    # lookup admin NPC # for the user's country (this of course, assumes we have one)
-    fnum = getNPC({ "country": getCountryCode(tel) }, 'admin')['tel']
-    #msg = "code: " + str(auth) +" "+ u"\U0001F6A8"
-    msg = "--Mercury Group HR system--\nThank you for your application.\nYour 4 digit identification code is: " + str(auth)
-
-    # send auth SMS
-    workerStatus = sendSMS(fnum,tel,msg,None,0,None) #no media, 0s delay, no sendTime
-    #print workerStatus
-
-    if workerStatus is not None:
-        #print "worker id", workerStatus
-        log.info('worker id %s' % (workerStatus))
-        return True
-    else:
-        #print "worker error - probably"
-        log.debug('worker error ~ probably')
-        return False
-
 # THIS METHOD IS NOT COMPLETE
 def sendErrorSMS(player):
     # send random error phrase from list to user
@@ -129,41 +105,3 @@ def sendErrorSMS(player):
     npc = getNPC(player, gs['prompt']['npc'])
 
     sendSMS(npc['tel'], player['tel'], err, None, 14, None)
-
-# SMS auth - store token
-def newAuth(a):
-    db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=False)
-    #db = create_engine(Mdb, convert_unicode=True, echo=False)
-    md = MetaData(bind=db)
-    table = Table('tokenAuth', md, autoload=True)
-    con = db.connect()
-
-    now = datetime.datetime.now()
-    d = now.strftime('%Y-%m-%d %H:%M:%S')
-
-    x = con.execute( table.insert(), auth=a, date=d)
-    uid = x.inserted_primary_key[0]
-    con.close()
-    return uid
-
-# SMS auth - return auth based on token
-def checkAuth(uid):
-    db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=False)
-    #db = create_engine(Mdb, convert_unicode=True, echo=False)
-    md = MetaData(bind=db)
-    table = Table('tokenAuth', md, autoload=True)
-    con = db.connect()
-    x = con.execute( table.select(table.c.auth).where(table.c.uid == uid) )
-    a = x.fetchone().get('auth', None)
-    con.close()
-    return a
-
-def getCountryCode(tel):
-    tel = normalizeTel(tel)
-    lookup = TwilioLookupsClient(environ['TSID'], environ['TTOKEN'])
-    return lookup.phone_numbers.get(tel).country_code
-
-
-#def normalizeTel(tel):
-    #nTel = re.sub(r'[^a-zA-Z0-9\+]','', tel)
-    #return nTel
