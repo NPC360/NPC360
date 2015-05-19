@@ -7,7 +7,6 @@ from sqlalchemy import *
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import CompileError
 import telUtil
-#from gameio import normalizeTel, sendSMS, sendErrorSMS, sendEmail
 
 # lookup user from datastore using a provided 'id' - could be uid, phone / email / twitter handle, etc. (should be medium agnostic)
 def getUser(uid):

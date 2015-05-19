@@ -9,8 +9,7 @@ from iron_worker import *
 import datetime
 
 from telUtil import *
-from game import getNPC, getGameStateData
-
+from game import getNPC
 
 def signupSMSauth(tel,auth):
     # lookup admin NPC # for the user's country (this of course, assumes we have one)
