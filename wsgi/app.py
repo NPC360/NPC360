@@ -184,6 +184,7 @@ def signup():
     else:
         return render_template('signup-form.html', form=form)
 
+
 @app.route("/smsin", methods = ['GET','POST'])
 def smsin():
     #print "sms in"
@@ -200,6 +201,7 @@ def smsin():
     resp = Response(json.dumps(request.values), status=200, mimetype='application/json')
     resp.headers['Action'] = 'SMS received: ' + msg + " +, from: " + phone
     return resp
+
 
 # SO TOTALLY NOT WRITTEN YET.
 @app.route("/smsout", methods =['POST'])
