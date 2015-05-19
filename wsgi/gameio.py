@@ -53,7 +53,6 @@ def sendEmail(fe, fn, te, tn, sub, txt, html, d, st):
     # txt - text version of email
     # html - html version of email
 
-    #worker = IronWorker()
     worker = IronWorker(project_id=environ['IID2'], token=environ['ITOKEN2'])
 
     task = Task(code_name="emailworker", scheduled=True)

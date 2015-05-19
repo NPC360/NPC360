@@ -1,10 +1,15 @@
 """
 User MySQL DB methods
 """
+
+from sqlalchemy import *
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import CompileError
+
+
 # lookup user from datastore using a provided 'id' - could be uid, phone / email / twitter handle, etc. (should be medium agnostic)
 def getUser(uid):
     db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=False)
-    #db = create_engine(Mdb, convert_unicode=True, echo=False)
     md = MetaData(bind=db)
     table = Table('playerInfo', md, autoload=True)
     con = db.connect()
@@ -19,7 +24,6 @@ def getUser(uid):
 def makeUser(ud):
     try:
         db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=False)
-        #db = create_engine(Mdb, convert_unicode=True, echo=False)
         md = MetaData(bind=db)
         table = Table('playerInfo', md, autoload=True)
 
@@ -64,7 +68,6 @@ def makeUser(ud):
 def updateUser(uid, data):
     try:
         db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=False)
-        #db = create_engine(Mdb, convert_unicode=True, echo=False)
         md = MetaData(bind=db)
         table = Table('playerInfo', md, autoload=True)
         con = db.connect()
