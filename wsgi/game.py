@@ -2,6 +2,18 @@
 Gameplay methods
 """
 
+from gameio import sendEmail
+from os import environ
+from sqlalchemy import *
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import CompileError
+import re
+from gameio import sendSMS, sendErrorSMS
+from user import *
+from firebase import firebase
+import arrow
+
+
 def startGame(uid):
     player = getUser(uid)
 

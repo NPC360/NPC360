@@ -1,6 +1,17 @@
 """
 INPUT / OUTPUT (SMS, signup auth, eail, etc.)
 """
+import re
+import twilio
+import twilio.rest
+from twilio.rest.lookups import TwilioLookupsClient
+import twilio.twiml
+from os import environ
+from sqlalchemy import *
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import CompileError
+from game import getNPC, getGameStateData
+from iron_worker import *
 
 #This method is 'dumb'. All it does is accept data, build a payload, and schedule a job. If the job is queued successfully, it returns a task/job id. It doesen't know it's sending an SMS!!!
 def sendSMS(f,t,m,u,d,st):
