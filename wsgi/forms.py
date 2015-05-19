@@ -1,13 +1,11 @@
 from flask import session
-
-from user import getUser
-from auth import checkAuth
-
 from wtforms import Form, validators
 from wtforms import StringField, TextAreaField, FileField, IntegerField
 from wtforms import RadioField, BooleanField, HiddenField
 from wtforms.fields.html5 import TelField
 
+from user import getUser
+from auth import checkAuth
 
 class SMSAuth(Form):
     def valid_auth_code(self, field):
