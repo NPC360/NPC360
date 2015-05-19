@@ -1,7 +1,6 @@
 """
 Gameplay methods
 """
-
 from gameio import sendEmail
 from os import environ
 from sqlalchemy import *

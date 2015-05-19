@@ -16,17 +16,6 @@ import forms
 import requests
 import json
 import re
-import twilio
-import twilio.rest
-from twilio.rest.lookups import TwilioLookupsClient
-import twilio.twiml
-from sqlalchemy import *
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.exc import CompileError
-import arrow
-from firebase import firebase
-from iron_worker import *
-import datetime
 import random
 from os import environ
 import tinys3
@@ -36,9 +25,6 @@ from user import *
 from game import *
 from gameio import *
 from yesnoerr import *
-
-# API & DB credentials
-#from Keys import *
 
 # Initialise the Flask app
 app = Flask(__name__)

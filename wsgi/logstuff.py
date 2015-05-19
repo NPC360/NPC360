@@ -1,4 +1,6 @@
-# SETUP BASIC LOGGING
+"""
+SETUP BASIC LOGGING
+"""
 # papertrail stuff from http://help.papertrailapp.com/kb/configuration/configuring-centralized-logging-from-python-apps/
 import logging
 import socket

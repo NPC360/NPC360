@@ -1,7 +1,6 @@
 """
 User MySQL DB methods
 """
-
 import datetime
 from os import environ
 from sqlalchemy import *
