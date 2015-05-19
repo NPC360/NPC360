@@ -12,6 +12,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import CompileError
 from game import getNPC, getGameStateData
 from iron_worker import *
+import normalizeTel
 
 #This method is 'dumb'. All it does is accept data, build a payload, and schedule a job. If the job is queued successfully, it returns a task/job id. It doesen't know it's sending an SMS!!!
 def sendSMS(f,t,m,u,d,st):
@@ -162,6 +163,7 @@ def getCountryCode(tel):
     lookup = TwilioLookupsClient(environ['TSID'], environ['TTOKEN'])
     return lookup.phone_numbers.get(tel).country_code
 
-def normalizeTel(tel):
-    nTel = re.sub(r'[^a-zA-Z0-9\+]','', tel)
-    return nTel
+
+#def normalizeTel(tel):
+    #nTel = re.sub(r'[^a-zA-Z0-9\+]','', tel)
+    #return nTel
