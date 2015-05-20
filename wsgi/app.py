@@ -31,7 +31,7 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 app.secret_key = environ['SecretSessionKey']
 
 # start logging?
-import logstuff
+from logstuff import *
 
 """
 landing page / HTML / authorization routes
