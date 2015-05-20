@@ -140,7 +140,7 @@ def careers_auth_send_sms():
         auth = str(random.randint(1000, 9999))
         uid = newAuth(auth)
         log.info('auth code: %s, player uid: %s' % (auth, uid))
-        session.set('sent_sms') = signupSMSauth(session['mobile_number'], auth)
+        session['sent_sms'] = signupSMSauth(session['mobile_number'], auth)
 
     if session.get('sent_sms') is True:
         log.debug('sent_sms, redirecting to /careers/auth2/')
