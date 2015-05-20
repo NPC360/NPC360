@@ -78,11 +78,13 @@ def careers_auth_check_code():
     # Check that the user is awaiting an auth SMS, if they're
     # not, redireect them to the registration page
     if session.get('awaiting_auth', False) is not True:
+        log.debug('awaiting_auth === True, redirecting to /careers/job-2342/apply/')
         return redirect(url_for("/careers/job-2342/apply/"))
 
     # If the SMS hasn't been sent, jump back a step
     if session.get('sent_sms', False) is not True:
-        return redireect(url_for("/careers/auth/"))
+        log.debug('sent_sms == False, so redirect to /auth')
+        return redirect(url_for("/careers/auth/"))
 
     form = forms.SMSAuth(response.form)
 
@@ -138,7 +140,7 @@ def careers_auth_send_sms():
         auth = str(random.randint(1000, 9999))
         uid = newAuth(auth)
         log.info('auth code: %s, player uid: %s' % (auth, uid))
-        session['sent_sms'] = signupSMSauth(session['mobile_number'], auth)
+        session.set('sent_sms') = signupSMSauth(session['mobile_number'], auth)
 
     if session.get('sent_sms') is True:
         log.debug('sent_sms, redirecting to /careers/auth2/')
