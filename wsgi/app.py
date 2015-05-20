@@ -147,9 +147,6 @@ def careers_auth_send_sms():
         return render_template('signup-bad-mobile.html', form=form)
 
 
-"""
-SMS routes
-"""
 @app.route("/careers/job-2342/apply/", methods=['GET', 'POST'])
 def signup():
     # If the user has already signed up and is awaiting an auth
