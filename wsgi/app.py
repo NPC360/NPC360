@@ -121,11 +121,13 @@ def careers_auth_send_sms():
     # Check that the user is awaiting an auth SMS, if they're
     # not, redireect them to the registration page
     if session.get('awaiting_auth', False) is not True:
+        log.debug('awaiting_auth = false, redirecting to /careers/job-2342/apply/')
         return redirect(url_for("/careers/job-2342/apply/"))
 
     # If the SMS hasn't been sent, jump back a step
     if session.get('sent_sms', False) is True:
-        return redireect(url_for("/careers/auth/2/"))
+        log.debug('auth sms not sent, redirecting to /careers/auth/2/')
+        return redirect(url_for("/careers/auth/2/"))
 
     # Create the form instance
     form = forms.FullSignup(request.form)
@@ -136,10 +138,11 @@ def careers_auth_send_sms():
         auth = str(random.randint(1000, 9999))
         uid = newAuth(auth)
         log.info('auth code: %s, player uid: %s' % (auth, uid))
-        session['auth_sms_sent'] = signupSMSauth(session['mobile_number'], auth)
+        session['sent_sms'] = signupSMSauth(session['mobile_number'], auth)
 
-    if session.get('auth_sms_sent') is True:
-        return redireect(url_for("/careers/auth/2/"))
+    if session.get('sent_sms') is True:
+        log.debug('sent_sms, redirecting to /careers/auth2/')
+        return redirect(url_for("/careers/auth/2/"))
     else:
         return render_template('signup-bad-mobile.html', form=form)
 
@@ -152,6 +155,7 @@ def signup():
     # If the user has already signed up and is awaiting an auth
     # SMS to come in, redirect them to the auth page
     if (session.get('awaiting_auth') is True):
+        log.debug('redirecting to /careers/auth')
         return redirect(url_for("/careers/auth/"))
 
     # Create the form instance
@@ -162,23 +166,15 @@ def signup():
 
         # Save form data in a session
         session.update(form.data)
-
-        # upload resume (if it exists?) to s3
-        # s3 = tinys3.Connection(environ['S3KEY'],environ['S3SECRET'])
-        # resume = request.files['resumefile']
-        #
-        # now = datetime.datetime.now()
-        # fnd = now.strftime('%Y_%m_%d_%H_%M_%S')
-        #
-        # fn = '%s_%s.pdf' % (email, fnd)
-        # print fn
-        # conn.upload(fn,resume,'npc360/resumes')
+        log.debug('form data: %s' % (form.data))
 
         # Indicate that the user is attempting
         # to authenticate their phone number
+        log.debug('setting awaiting_auth = True')
         session['awaiting_auth'] = True
 
         # Redirect to SMS auth page
+        log.debug('redirecting to /careers/auth')
         return redirect(url_for("/careers/auth/"))
     else:
         return render_template('signup-form.html', form=form)
