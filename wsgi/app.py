@@ -156,8 +156,14 @@ def signup():
 
     # Validate form
 
+    #### DEBUG
     log.debug('request method: %s' % (request.method))
     log.debug('form validate: %s' % ( form.validate() ))
+
+    for fieldName, errorMessages in form.errors.iteritems():
+        for err in errorMessages:
+            print log.debug('form errors: %s, %s' % (fieldName, err))
+    ####
 
     if request.method == 'POST' and form.validate():
 
