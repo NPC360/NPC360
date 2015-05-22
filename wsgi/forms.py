@@ -64,22 +64,22 @@ class FullSignup(Signup):
     why_work = TextAreaField('Why do you want to work for Mercury Group?', [])
     work_history = TextAreaField('Relevant work history', [])
 
-    s = 'Which best describes how you prefer to work?'
+    r1 = 'Which best describes how you prefer to work?'
     team_work_choices = [
-        (1, "Alone"),
-        (2, "With a mix of both teams and alone"),
-        (3, "With a team")
+        (0, "Alone"),
+        (1, "With a mix of both teams and alone"),
+        (2, "With a team")
     ]
-    team_work = RadioField(s, choices=team_work_choices)
+    team_work = RadioField(r1, choices=team_work_choices, validators=[validators.Required()])
 
-    s = 'Would you describe yourself as ambitious?'
+    r2 = 'Would you describe yourself as ambitious?'
     ambition_choices = [
         (0, "Yes"),
         (1, "No")
     ]
-    ambitious = RadioField(s, choices=ambition_choices)
+    ambitious = RadioField(r2, choices=ambition_choices, validators=[validators.Required()])
 
-    s = 'Why did / will you leave your previous position?'
+    r3 = 'Why did / will you leave your previous position?'
     leaving_choices = [
         (0, "Salary"),
         (1, "Lifestyle"),
@@ -87,7 +87,7 @@ class FullSignup(Signup):
         (3, "Management"),
         (4, "Other")
     ]
-    leaving = RadioField(s, choices=leaving_choices)
+    leaving = RadioField(r3, choices=leaving_choices, validators=[validators.Required()])
 
     animal = StringField('If you were an animal what would you be?', [])
     resume = FileField('Upload resume', [])
