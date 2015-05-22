@@ -1,7 +1,7 @@
 """
 tel utils
 """
-
+from os import environ
 import twilio
 import twilio.rest
 from twilio.rest.lookups import TwilioLookupsClient

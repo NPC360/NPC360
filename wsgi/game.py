@@ -12,7 +12,7 @@ from iron_worker import *
 
 from user import *
 from telUtil import *
-
+from logstuff import *
 
 def startGame(uid):
     player = getUser(uid)

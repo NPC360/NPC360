@@ -7,10 +7,12 @@ from wtforms.fields.html5 import TelField
 from user import getUser
 from auth import checkAuth
 from telUtil import *
+from logstuff import *
 
 class SMSAuth(Form):
     def valid_auth_code(self, field):
         if field.data != checkAuth(session.get('uid')):
+            log.debug('that is not a valid auth code.')
             raise validators.ValidationError('Sorry, this is not the authentication code,')
 
     auth = IntegerField('Authentication Code', [
@@ -66,28 +68,28 @@ class FullSignup(Signup):
 
     r1 = 'Which best describes how you prefer to work?'
     team_work_choices = [
-        (0, "Alone"),
-        (1, "With a mix of both teams and alone"),
-        (2, "With a team")
+        ('0', "Alone"),
+        ('1', "With a mix of both teams and alone"),
+        ('2', "With a team")
     ]
-    team_work = RadioField(r1, choices=team_work_choices, validators=[validators.Required()])
+    team_work = RadioField(r1, choices=team_work_choices, default=0)
 
     r2 = 'Would you describe yourself as ambitious?'
     ambition_choices = [
-        (0, "Yes"),
-        (1, "No")
+        ('0', "Yes"),
+        ('1', "No")
     ]
-    ambitious = RadioField(r2, choices=ambition_choices, validators=[validators.Required()])
+    ambitious = RadioField(r2, choices=ambition_choices, default=0)
 
     r3 = 'Why did / will you leave your previous position?'
     leaving_choices = [
-        (0, "Salary"),
-        (1, "Lifestyle"),
-        (2, "Unemployment"),
-        (3, "Management"),
-        (4, "Other")
+        ('0', "Salary"),
+        ('1', "Lifestyle"),
+        ('2', "Unemployment"),
+        ('3', "Management"),
+        ('4', "Other")
     ]
-    leaving = RadioField(r3, choices=leaving_choices, validators=[validators.Required()])
+    leaving = RadioField(r3, choices=leaving_choices, default=0)
 
     animal = StringField('If you were an animal what would you be?', [])
     resume = FileField('Upload resume', [])
