@@ -20,7 +20,7 @@
 {% block title %}Careers{% endblock %}
 {% block body %}
 	<h2>Authentication</h2>
-	<p>Okay {{ name }}, we're going to text you a four-digit authorization code. Please enter it below:</p>
+	<p>Okay {{ session.first_name }}, we're going to text you a four-digit authorization code. Please enter it below:</p>
 
 	<form action="/careers/job-2342/apply/" method="POST">
 		<div class="group cf">
