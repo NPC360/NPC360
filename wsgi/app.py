@@ -1,13 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-NPC360 API
-
-API routes:
-https://github.com/NPC360/NPC360/blob/master/endpoints.md
-
-datastore schema:
-https://github.com/NPC360/NPC360/blob/master/schema.md
+NPC360 Engine - for more info, check out the wiki @ https://github.com/NPC360/NPC360
 
 """
 
@@ -161,21 +155,25 @@ def signup():
     form = forms.FullSignup(request.form)
 
     # Validate form
+
+    log.debug('request method: %s' % (request.method))
+    log.debug('form validate: %s' % ( form.validate() ))
+
     if request.method == 'POST' and form.validate():
 
         # Save form data in a session
         session.update(form.data)
         log.debug('form data: %s' % (form.data))
 
-        # Indicate that the user is attempting
-        # to authenticate their phone number
+        # Set flag to indicate user should be @ SMS authentication step
         log.debug('setting awaiting_auth = True')
         session['awaiting_auth'] = True
-
         # Redirect to SMS auth page
         log.debug('redirecting to /careers/auth')
         return redirect(url_for("/careers/auth/"))
+
     else:
+        log.debug('ELSE -- redirecting to application again')
         return render_template('signup-form.html', form=form)
 
 

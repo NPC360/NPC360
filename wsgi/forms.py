@@ -23,6 +23,7 @@ class SMSAuth(Form):
 class Phone(Form):
     def existing_mobile_check(self, field):
         if getUser(normalizeTel(field.data)) is not None:
+            log.debug('that mobile # is already in use')
             raise validators.StopValidation('Your mobile number is already in use.')
 
     mobile_number = TelField('Mobile Number', [
@@ -34,6 +35,7 @@ class Phone(Form):
 class Signup(Phone):
     def existing_email_check(self, field):
         if getUser(field.data) is not None:
+            log.debug('that email is already in use')
             raise validators.StopValidation('Your email address is already in use.')
 
     email = StringField('Email', [
