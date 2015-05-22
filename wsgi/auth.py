@@ -33,7 +33,6 @@ def signupSMSauth(tel,auth):
 # SMS auth - store token
 def newAuth(a):
     db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=False)
-    #db = create_engine(Mdb, convert_unicode=True, echo=False)
     md = MetaData(bind=db)
     table = Table('tokenAuth', md, autoload=True)
     con = db.connect()
@@ -49,7 +48,6 @@ def newAuth(a):
 # SMS auth - return auth based on token
 def checkAuth(uid):
     db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=False)
-    #db = create_engine(Mdb, convert_unicode=True, echo=False)
     md = MetaData(bind=db)
     table = Table('tokenAuth', md, autoload=True)
     con = db.connect()

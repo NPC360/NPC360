@@ -201,7 +201,6 @@ def getPlayerVars(player, msg):
 # get NPC info & tel by matching NPC number and the country code of player.
 def getNPC(playerInfo, npcName):
     db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=False)
-    #db = create_engine(Mdb, convert_unicode=True, echo=False)
     md = MetaData(bind=db)
     table = Table('npcInfo', md, autoload=True)
     con = db.connect()
@@ -315,9 +314,7 @@ def sendSMS(f,t,m,u,d,st):
     # st - absolute send time
     #print "####"
 
-    #worker = IronWorker()
     worker = IronWorker(project_id=environ['IID2'], token=environ['ITOKEN2'])
-    #worker = IronWorker(project_id=ironInfo['project_id'], token=ironInfo['token'])
     #print worker
 
     task = Task(code_name="smsworker", scheduled=True)
