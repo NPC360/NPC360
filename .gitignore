@@ -5,3 +5,4 @@ wsgi/iron.json
 wsgi/e.py
 *.egg-info
 .sass-cache
+.env
