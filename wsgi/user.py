@@ -6,7 +6,7 @@ from os import environ
 from sqlalchemy import *
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import CompileError
-import telUtil
+from telUtil import *
 from logstuff import *
 
 # lookup user from datastore using a provided 'id' - could be uid, phone / email / twitter handle, etc. (should be medium agnostic)

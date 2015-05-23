@@ -11,14 +11,14 @@ from logstuff import *
 
 class SMSAuth(Form):
     def valid_auth_code(self, field):
-        if field.data != checkAuth(session.get('uid')):
+        if field.data is not checkAuth(session.get('uid')):
             log.debug('that is not a valid auth code.')
             raise validators.ValidationError('Sorry, this is not the authentication code,')
 
-    auth = IntegerField('Authentication Code', [
-        validators.InputRequired(),
-        validators.NumberRange(min=1000, max=9999, message="Not a valid authentication code."),
-        valid_auth_code
+    auth = StringField('Authentication Code', [
+        validators.InputRequired()#,
+        #validators.NumberRange(min=1000, max=9999, message="Not a valid authentication code."),
+        #valid_auth_code
     ])
 
 
