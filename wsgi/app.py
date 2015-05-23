@@ -91,8 +91,9 @@ def careers_signup():
         log.debug('form data: %s' % (session['form']))
 
         auth = str(random.randint(1000, 9999))
-        uid = newAuth(auth)
-        log.info('auth code: %s, player uid: %s' % (auth, uid))
+        #uid = newAuth(auth)
+        session['form']['uid'] = newAuth(auth)
+        log.info('auth code: %s, player uid: %s' % (auth, session['form']['uid']))
         session['sent_sms'] = signupSMSauth(session['form']['mobile_number'], auth)
 
         if session['sent_sms'] is True:

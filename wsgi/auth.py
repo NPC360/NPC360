@@ -48,11 +48,18 @@ def newAuth(a):
 
 # SMS auth - return auth based on token
 def checkAuth(uid):
-    db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=False)
-    md = MetaData(bind=db)
-    table = Table('tokenAuth', md, autoload=True)
-    con = db.connect()
-    x = con.execute( table.select(table.c.auth).where(table.c.uid == uid) )
-    a = x.fetchone().get('auth', None)
-    con.close()
-    return a
+    try:
+        db = create_engine(environ['OPENSHIFT_MYSQL_DB_URL'] + environ['OPENSHIFT_APP_NAME'], convert_unicode=True, echo=False)
+        md = MetaData(bind=db)
+        table = Table('tokenAuth', md, autoload=True)
+        con = db.connect()
+        x = con.execute( table.select(table.c.auth).where(table.c.uid == uid) )
+
+        a = x.fetchone().auth
+        #log.debug('row: %s' % (a))
+
+        con.close()
+        return a
+    except AttributeError as e:
+        log.debug('error: %s' % (e))
+        return 'ERRR'

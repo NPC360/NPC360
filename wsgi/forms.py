@@ -11,14 +11,16 @@ from logstuff import *
 
 class SMSAuth(Form):
     def valid_auth_code(self, field):
-        if field.data is not checkAuth(session.get('uid')):
-            log.debug('that is not a valid auth code.')
-            raise validators.ValidationError('Sorry, this is not the authentication code,')
+
+        #log.debug('field data: %s, auth from db: %s' % ( field.data, checkAuth(session['form']['uid']) ))
+        if field.data != checkAuth(session['form']['uid']):
+            log.debug('incorrect auth code.')
+            raise validators.ValidationError('Incorrect code, please check your phone again.')
 
     auth = StringField('Authentication Code', [
-        validators.InputRequired()#,
-        #validators.NumberRange(min=1000, max=9999, message="Not a valid authentication code."),
-        #valid_auth_code
+        validators.InputRequired(),
+        validators.NumberRange(min=1000, max=9999, message="Invalid authorization code, please try again."),
+        valid_auth_code
     ])
 
 
@@ -26,7 +28,7 @@ class Phone(Form):
     def existing_mobile_check(self, field):
         if getUser(normalizeTel(field.data)) is not None:
             log.debug('that mobile # is already in use')
-            raise validators.StopValidation('Your mobile number is already in use.')
+            raise validators.StopValidation('Mobile number is already in use.')
 
     mobile_number = TelField('Mobile Number', [
         validators.InputRequired(),
@@ -38,7 +40,7 @@ class Signup(Phone):
     def existing_email_check(self, field):
         if getUser(field.data) is not None:
             log.debug('that email is already in use')
-            raise validators.StopValidation('Your email address is already in use.')
+            raise validators.StopValidation('Email address is already in use.')
 
     email = StringField('Email', [
         validators.InputRequired(),
@@ -64,9 +66,9 @@ class FullSignup(Signup):
     # added to these fields: team_work, ambitious, future_employment
 
     why_work = TextAreaField('Why do you want to work for Mercury Group?', [validators.InputRequired(),
-    validators.length(min=10, max=10000)])
+    validators.length(min=10, max=1000)])
     work_history = TextAreaField('Relevant work history', [validators.InputRequired(),
-    validators.length(min=10, max=10000)])
+    validators.length(min=10, max=1000)])
 
     r1 = 'Which best describes how you prefer to work?'
     team_work_choices = [
