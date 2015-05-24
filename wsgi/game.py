@@ -9,6 +9,7 @@ from sqlalchemy import *
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import CompileError
 from iron_worker import *
+import string
 
 from user import *
 from telUtil import *
@@ -47,7 +48,7 @@ def processInput(player, msg):
     gameStateData = getGameStateData(gameState)
 
     #special reset / debug method
-    if "!reset" in msg.lower():
+    if "magicreset" in msg.lower():
          #print "MANUAL GAME RESET FOR PLAYER: " + str(player['id'])
          log.warning('MANUAL GAME RESET FOR PLAYER: %s' % (player['id']))
          startGame(player['id'])
@@ -107,6 +108,15 @@ def getGameStateData(id):
     log.debug('game data: %s' % (data))
     return data
 
+def stripPunctuation(msg):
+    # split string into words & strip punctuation
+    words = [word.strip(string.punctuation) for word in msg.split(" ")]
+    # recombine words into sentence
+    s =""
+    for w in words:
+        s = s+" "+w
+    return s
+
 def checkYes(msg):
     if msg.lower() in map(str.lower, yeslist):
         return True
@@ -143,7 +153,6 @@ def advanceGame(player, gsid):
     updateUser(player['id'], {"gstate":gsid})
     gs = getGameStateData(gsid)
     npc = getNPC(player, gs['prompt']['npc'])
-    #msg = gs['prompt']['msg']
     #### Fill in variables like %%fname%% <- use data from player dict.
     msg = getPlayerVars(player, gs['prompt']['msg'])
 
