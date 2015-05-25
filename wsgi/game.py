@@ -80,7 +80,6 @@ def processInput(player, msg):
             if checkYes(msg) is True:
                 log.debug('input matches term from yeslist')
                 advanceGame(player, triggers['yes'])
-                break
             else:
                 log.debug('input did not match term from yeslist')
 
@@ -89,7 +88,6 @@ def processInput(player, msg):
             if checkNo(msg) is True:
                 log.debug('input matches term from nolist')
                 advanceGame(player, triggers['no'])
-                break
             else:
                 log.debug('input did not match term from nolist')
 
