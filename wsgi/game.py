@@ -75,9 +75,10 @@ def processInput(player, msg):
             advanceGame(player, triggers['*'])
 
         # check for affirmative / negative responses
-        elif 'yes' in triggers and checkYes(msg) is True:
+        elif 'yes' in triggers:
             log.debug('running a yeslist check')
-            advanceGame(player, triggers['yes'])
+            if checkYes(msg) is True:
+                advanceGame(player, triggers['yes'])
 
         elif 'no' in triggers and checkNo(msg) is True:
             log.debug('running a nolist check')
