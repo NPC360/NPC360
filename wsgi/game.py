@@ -199,19 +199,18 @@ def advanceGame(player, gsid):
         dbfield = gs['dbcheck']['field']
         paths = gs['dbcheck']['paths']
         log.debug('player enum for -%s- is: %s' % (dbfield, player[dbfield]))
-
         log.debug( 'paths: %s' % (paths))
 
-        for p in paths:
-            log.debug('p: %s' % (p) )
+        for k in paths:
+            log.debug('k: %s, v: %s' % (k, paths[k]) )
 
             #log.debug('p: %s, paths[p]: %s' % (p, paths[p]) )
 
-            log.debug('now checking path: %s against player[%s]: %s' % (p, dbfield, player[dbfield]))
+            log.debug('now checking path: %s against player[%s]: %s' % (paths[k], dbfield, player[dbfield]))
 
-            if player[dbfield] == p:
-                log.debug('jumping player %s to game state:' % (player['id'], paths[p]))
-                advanceGame(player, paths[p])
+            if player[dbfield] == paths[k]:
+                log.debug('jumping player %s to game state:' % (player['id'],k))
+                advanceGame(player, k)
 
     """
     # POTATO HACKS -- these methods are for jumping to db checks & then coming back.
