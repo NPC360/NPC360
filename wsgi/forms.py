@@ -13,13 +13,16 @@ class SMSAuth(Form):
     def valid_auth_code(self, field):
 
         log.debug('field data: %s, auth from db: %s' % ( field.data, checkAuth(session['form']['uid']) ))
-        if str(field.data) is not str(checkAuth(session['form']['uid'])):
+
+        log debug('type for field data: %s, type for db data: %s' % ( type(field.data), type(checkAuth(session['form']['uid'])) ))
+
+        if field.data is not checkAuth(session['form']['uid']):
             log.debug('incorrect auth code.')
             raise validators.ValidationError('Incorrect code, please check your phone again.')
 
     auth = StringField('Authentication Code', [
         validators.InputRequired(),
-        validators.NumberRange(min=1000, max=9999, message="Invalid authorization code, please try again."),
+        #validators.NumberRange(min=1000, max=9999, message="Invalid authorization code, please try again."),
         valid_auth_code
     ])
 
