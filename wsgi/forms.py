@@ -14,7 +14,7 @@ class SMSAuth(Form):
 
         log.debug('field data: %s, auth from db: %s' % ( field.data, checkAuth(session['form']['uid']) ))
 
-        log.debug('type for field data: %s, type for db data: %s' % ( type(field.data), type(checkAuth(session['form']['uid'])) ))
+        #log.debug('type for field data: %s, type for db data: %s' % ( type(field.data), type(checkAuth(session['form']['uid'])) ))
 
         if field.data != checkAuth(session['form']['uid']):
             log.debug('incorrect auth code.')

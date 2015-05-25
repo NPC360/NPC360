@@ -46,7 +46,7 @@ def startGame(uid):
     sendSMS(npc['tel'], player['tel'], msg, None, None, None)
 
 def processInput(player, msg):
-    log.debug('processing input: %s' % (msg))
+    log.debug('processing input: %s, type: %s' % (msg, type(msg)))
 
     gameState = player['gstate']
     gameStateData = getGameStateData(gameState)
