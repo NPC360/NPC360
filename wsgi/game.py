@@ -178,16 +178,32 @@ def advanceGame(player, gsid):
     # after sending prompt, if there's a goto statement, we can jump forward in the game. this is for sequential msg prompts.
     if 'goto' in gs['prompt']:
         #print 'jump to game state:', gs['prompt']['goto']
-        log.info('jump player %s to game state: %s' % (player['id'], gs['prompt']['goto']))
+        log.info('jumping player %s to game state: %s' % (player['id'], gs['prompt']['goto']))
         advanceGame(player, gs['prompt']['goto'])
 
+
+    # 'potato hacks' / dbchecks -- or more accurately, using player data to control gameflow between states (not just personalizing outgoing messages)
+    if 'dbcheck' in gs and gs['dbcheck'] is not None:
+        log.debug('player %s hit a dbcheck @ %s' % (player['id'], gsid))
+
+        # get name of db field & extract path tree to own subvariable
+        dbfield = gs['dbcheck']['field']
+        paths = gs['dbcheck']['paths']
+        log.debug('player enum for -%s- is: %s' % (dbfield, player[dbfield]))
+
+        for p in paths:
+            if p == player[dbfield]:
+                log.debug('jumping player %s to game state:' % (player['id'], paths[p]))
+                advanceGame(player, paths[p])
+
+    """
     # POTATO HACKS -- these methods are for jumping to db checks & then coming back.
     if gsid == '126':
         log.debug('player %s hit a potato hack: %s' % (player['id'], gsid))
         hack_126(player)
 
     elif gsid == '133':
-        log.debug('player %s hit a apotato hack: %s' % (player['id'], gsid))
+        log.debug('player %s hit a potato hack: %s' % (player['id'], gsid))
         hack_133(player)
 
     elif gsid == '142':
@@ -197,6 +213,7 @@ def advanceGame(player, gsid):
     elif gsid == '156':
         log.debug('player %s hit a potato hack: %s' % (player['id'], gsid))
         hack_156(player)
+    """
 
 def getPlayerVars(player, msg):
     merge = re.findall(r'%%([^%%]*)%%', msg)
