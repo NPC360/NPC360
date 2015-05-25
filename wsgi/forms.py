@@ -16,7 +16,7 @@ class SMSAuth(Form):
 
         log.debug('type for field data: %s, type for db data: %s' % ( type(field.data), type(checkAuth(session['form']['uid'])) ))
 
-        if field.data is not checkAuth(session['form']['uid']):
+        if field.data != checkAuth(session['form']['uid']):
             log.debug('incorrect auth code.')
             raise validators.ValidationError('Incorrect code, please check your phone again.')
 
