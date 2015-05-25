@@ -46,6 +46,8 @@ def startGame(uid):
     sendSMS(npc['tel'], player['tel'], msg, None, None, None)
 
 def processInput(player, msg):
+    log.debug('processing input: %s' % (msg))
+
     gameState = player['gstate']
     gameStateData = getGameStateData(gameState)
 
@@ -78,7 +80,10 @@ def processInput(player, msg):
         elif 'yes' in triggers:
             log.debug('running a yeslist check')
             if checkYes(msg) is True:
+                log.debug('input matches term from yeslist')
                 advanceGame(player, triggers['yes'])
+            else:
+                log.debug('input did not match term from yeslist')
 
         elif 'no' in triggers and checkNo(msg) is True:
             log.debug('running a nolist check')
