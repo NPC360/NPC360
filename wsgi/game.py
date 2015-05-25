@@ -198,7 +198,8 @@ def advanceGame(player, gsid):
         log.debug('player enum for -%s- is: %s' % (dbfield, player[dbfield]))
 
         for p in paths:
-            if p == player[dbfield]:
+            log.debug('now checking path: %s against player[%s]: %s' % (p, dbfield, player[dbfield]))
+            if player[dbfield] == p:
                 log.debug('jumping player %s to game state:' % (player['id'], paths[p]))
                 advanceGame(player, paths[p])
 
