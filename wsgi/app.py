@@ -162,6 +162,7 @@ def careers_sms_auth():
         # Success!
         return redirect(url_for("careers_auth_success"))
     else:
+        log.info('form validation error *probably*')
         return render_template('signup-auth.html', form=form)
 
 
