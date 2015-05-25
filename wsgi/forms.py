@@ -20,9 +20,9 @@ class SMSAuth(Form):
             log.debug('incorrect auth code.')
             raise validators.ValidationError('Incorrect code, please check your phone again.')
 
-    auth = StringField('Authentication Code', [
+    auth = IntegerField('Authentication Code', [
         validators.InputRequired(),
-        #validators.NumberRange(min=1000, max=9999, message="Invalid authorization code, please try again."),
+        validators.NumberRange(min=1000, max=9999, message="Invalid authorization code, please try again."),
         valid_auth_code
     ])
 
