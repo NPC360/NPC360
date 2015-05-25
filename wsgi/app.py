@@ -176,7 +176,7 @@ def smsin():
     u = getUser(phone)
     #print u['id'], 'input', 'sms'
     log.info('user id: %s input via SMS' % (u['id']))
-    processInput(u, stripPunctuation(msg))
+    processInput(u, stripPunctuation( msg.lower() ))
 
     resp = Response(json.dumps(request.values), status=200, mimetype='application/json')
     resp.headers['Action'] = 'SMS received: ' + msg + " +, from: " + phone
