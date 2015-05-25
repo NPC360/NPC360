@@ -75,7 +75,7 @@ def processInput(player, msg):
             advanceGame(player, triggers['*'])
 
         # check for affirmative / negative responses
-        elif 'yes' in triggers:
+        if 'yes' in triggers:
             log.debug('running a yeslist check')
             if checkYes(msg) is True:
                 log.debug('input matches term from yeslist')
@@ -83,9 +83,13 @@ def processInput(player, msg):
             else:
                 log.debug('input did not match term from yeslist')
 
-        elif 'no' in triggers and checkNo(msg) is True:
+        if 'no' in triggers:
             log.debug('running a nolist check')
-            advanceGame(player, triggers['no'])
+            if checkNo(msg) is True:
+                log.debug('input matches term from nolist')
+                advanceGame(player, triggers['no'])
+            else:
+                log.debug('input did not match term from nolist')
 
         # check if response is even in the list
         elif msg.lower() not in sT:
@@ -124,12 +128,6 @@ def checkYes(msg):
         return True
     else:
         return False
-    """
-    if str(msg.lower()) in map(str.lower, yeslist):
-        return True
-    else:
-        return False
-    """
 
 def checkNo(msg):
 
@@ -137,12 +135,6 @@ def checkNo(msg):
         return True
     else:
         return False
-    """
-    if msg.lower() in map(str.lower, nolist):
-        return True
-    else:
-        return False
-    """
 
 # deprecated method.
 def checkErr(msg, sT):
