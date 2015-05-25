@@ -209,7 +209,7 @@ def advanceGame(player, gsid):
             log.debug('now checking path: %s vs. player[%s]: %s' % (paths[k], dbfield, player[dbfield]))
 
             if str(paths[k]) == str(player[dbfield]):
-                log.debug('jumping player %s to game state:' % (player['id'],k))
+                log.debug('jumping player %s to game state: %s' % (player['id'],k))
                 advanceGame(player, k)
 
     """
