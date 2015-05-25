@@ -17,7 +17,6 @@ import tinys3
 # external method libraries.
 from user import *
 from game import *
-from yesnoerr import *
 from auth import *
 
 # Initialise the Flask app
