@@ -200,9 +200,13 @@ def advanceGame(player, gsid):
         paths = gs['dbcheck']['paths']
         log.debug('player enum for -%s- is: %s' % (dbfield, player[dbfield]))
 
+        log.debug( 'paths: %s' % (paths))
+
         for p in paths:
-            log.debug('p: %s, paths[p]: %s' % (p, paths[p]) )
-            
+            log.debug('p: %s' % (p) )
+
+            #log.debug('p: %s, paths[p]: %s' % (p, paths[p]) )
+
             log.debug('now checking path: %s against player[%s]: %s' % (p, dbfield, player[dbfield]))
 
             if player[dbfield] == p:
