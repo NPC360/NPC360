@@ -53,13 +53,11 @@ def processInput(player, msg):
 
     #special reset / debug method
     if "magicreset" in msg.lower():
-         #print "MANUAL GAME RESET FOR PLAYER: " + str(player['id'])
          log.warning('MANUAL GAME RESET FOR PLAYER: %s' % (player['id']))
          startGame(player['id'])
 
     elif 'triggers' in gameStateData and gameStateData['triggers'] is not None:
         triggers = gameStateData['triggers']
-        #print triggers
         log.debug('triggers %s' % (triggers))
 
         sT = triggers.copy()
@@ -69,7 +67,7 @@ def processInput(player, msg):
         sT.pop('noresp', None)
         sT.pop('*', None)
 
-        #print sT # this array only contains triggers that aren't tied to special keywords / operations ^^
+        # this array only contains triggers that aren't tied to special keywords / operations ^^
         log.debug('truncated triggers %s' % (sT))
 
         # check for 'any input response (*)'
@@ -91,26 +89,18 @@ def processInput(player, msg):
 
         # check if response is even in the list
         elif msg.lower() not in sT:
-            #print "input does not match any triggers"
             log.debug('running a check for OTHER triggers (not *, yes, or no)')
             log.warning('input does not match any triggers')
             sendErrorSMS(player)
 
         # otherwise, run through remaining triggers
         else:
-            #print "input matches one of the triggers"
             log.debug('input matches one of the triggers')
             for x in sT:
                 if x.lower() in msg.lower():
-                    #print x + " is in "+ msg
                     log.debug('%s is in %s' % (x, msg))
                     advanceGame(player, triggers[x])
                     break
-
-        #else:
-            #print "input does not match any triggers"
-            #log.warning('input does not match any triggers')
-            #sendErrorSMS(player)
 
 def getGameStateData(id):
     fb = firebase.FirebaseApplication(environ['FB'], None)
@@ -129,16 +119,30 @@ def stripPunctuation(msg):
     return s
 
 def checkYes(msg):
+
+    if any(y.lower() in msg for y in yeslist):
+        return True
+    else:
+        return False
+    """
     if str(msg.lower()) in map(str.lower, yeslist):
         return True
     else:
         return False
+    """
 
 def checkNo(msg):
+
+    if any(n.lower() in msg for n in nolist):
+        return True
+    else:
+        return False
+    """
     if msg.lower() in map(str.lower, nolist):
         return True
     else:
         return False
+    """
 
 # deprecated method.
 def checkErr(msg, sT):
