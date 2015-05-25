@@ -2,6 +2,7 @@
 Gameplay methods
 """
 import re
+import random
 from firebase import firebase
 import arrow
 from os import environ
