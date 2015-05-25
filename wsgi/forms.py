@@ -12,7 +12,7 @@ from logstuff import *
 class SMSAuth(Form):
     def valid_auth_code(self, field):
 
-        #log.debug('field data: %s, auth from db: %s' % ( field.data, checkAuth(session['form']['uid']) ))
+        log.debug('field data: %s, auth from db: %s' % ( field.data, checkAuth(session['form']['uid']) ))
         if field.data != checkAuth(session['form']['uid']):
             log.debug('incorrect auth code.')
             raise validators.ValidationError('Incorrect code, please check your phone again.')
