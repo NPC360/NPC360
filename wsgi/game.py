@@ -129,7 +129,7 @@ def stripPunctuation(msg):
     return s
 
 def checkYes(msg):
-    if msg.lower() in map(str.lower, yeslist):
+    if str(msg.lower()) in map(str.lower, yeslist):
         return True
     else:
         return False
