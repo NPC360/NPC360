@@ -80,6 +80,7 @@ def processInput(player, msg):
             if checkYes(msg) is True:
                 log.debug('input matches term from yeslist')
                 advanceGame(player, triggers['yes'])
+                break
             else:
                 log.debug('input did not match term from yeslist')
 
@@ -88,6 +89,7 @@ def processInput(player, msg):
             if checkNo(msg) is True:
                 log.debug('input matches term from nolist')
                 advanceGame(player, triggers['no'])
+                break
             else:
                 log.debug('input did not match term from nolist')
 
@@ -188,6 +190,7 @@ def advanceGame(player, gsid):
         advanceGame(player, gs['prompt']['goto'])
 
 
+
     # 'potato hacks' / dbchecks -- or more accurately, using player data to control gameflow between states (not just personalizing outgoing messages)
     if 'dbcheck' in gs and gs['dbcheck'] is not None:
         log.debug('player %s hit a dbcheck @ %s' % (player['id'], gsid))
@@ -197,11 +200,13 @@ def advanceGame(player, gsid):
         paths = gs['dbcheck']['paths']
         log.debug('player enum for -%s- is: %s' % (dbfield, player[dbfield]))
 
-        for p in paths:
-            log.debug('now checking path: %s against player[%s]: %s' % (p, dbfield, player[dbfield]))
-            if player[dbfield] == p:
-                log.debug('jumping player %s to game state:' % (player['id'], paths[p]))
-                advanceGame(player, paths[p])
+        for k,v in paths:
+            log.debug('k: %s, v: %s' % (k, v) )
+            log.debug('now checking path: %s against player[%s]: %s' % (k, dbfield, player[dbfield]))
+
+            if player[dbfield] == k:
+                log.debug('jumping player %s to game state:' % (player['id'],v))
+                advanceGame(player, v)
 
     """
     # POTATO HACKS -- these methods are for jumping to db checks & then coming back.
