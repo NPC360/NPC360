@@ -189,8 +189,6 @@ def advanceGame(player, gsid):
         log.info('jumping player %s to game state: %s' % (player['id'], gs['prompt']['goto']))
         advanceGame(player, gs['prompt']['goto'])
 
-
-
     # 'potato hacks' / dbchecks -- or more accurately, using player data to control gameflow between states (not just personalizing outgoing messages)
     if 'dbcheck' in gs and gs['dbcheck'] is not None:
         log.debug('player %s hit a dbcheck @ %s' % (player['id'], gsid))
@@ -253,6 +251,7 @@ def getNPC(playerInfo, npcName):
     con.close()
     return row
 
+"""
 #### Potato hack methods that jump around the game #
 def hack_126(player):
     log.debug('player soloteam enum: %s' % (player['soloteam']))
@@ -313,6 +312,7 @@ def hack_156(player):
     elif player['ambitious'] == 1:
         log.debug('player %s warps to 157' % (player['id']))
         advanceGame(player, '157')
+"""
 
 # Application accepted email from HR
 def hrEmail(player):

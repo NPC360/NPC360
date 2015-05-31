@@ -8,5 +8,5 @@ setup(name='NPC360',
       url='http://npc360a-nealrs.rhcloud.com',
       install_requires=['Flask>=0.7.2', 'WTForms', 'requests', 'twilio',
                         'sqlalchemy', 'iron_worker', 'python-firebase',
-                        'arrow', 'MySQL-python', 'logbook', 'tinys3']
+                        'arrow', 'MySQL-python', 'logbook', 'tinys3', 'nltk']
       )
