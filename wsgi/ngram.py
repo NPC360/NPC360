@@ -136,8 +136,3 @@ checkTriggers('kennywood up in this!', tr) #pass
 checkTriggers('i don\'t care for this', tr) #pass
 checkTriggers('who? is going to that thing?', tr) #pass
 checkTriggers('what are you even talking about?', tr) # does not pass
-
-
-#checkYes('')
-#checkYes('')
-#checkYes('')
