@@ -168,25 +168,30 @@ ul.block {
 	}
 }
 
-button {
+.button, button {
+	font-size: 13px;
 	background: $blue;
 	color: #FFF;
-	padding: $pm $pxl;
+	padding: $ps $pxl;
 	display: inline-block;
 	border: 0;
 	text-transform: uppercase;
 	font-weight: bold;
 
 	&:hover, &:active {
+		text-decoration: none;
+		color: #FFF;
 		background: $blue-light;
 	}
 	&:focus {
+		color: #FFF;
 		background: $blue-dark;
 	}
 }
 
 textarea,
 input[type="text"],
+input[type="tel"],
 input[type="email"] {
 	border: solid 1px $light-grey;
 	padding: $pxs $ps;
@@ -199,6 +204,10 @@ input[type="email"] {
 
 	.field {
 		width: (100% / 2);
+
+		&:nth-child(odd) {
+			clear: left;
+		}
 	}
 	&.three-columns {
 		.field {
@@ -211,8 +220,9 @@ input[type="email"] {
 	padding: 0 $pm;
 	margin: $margins;
 
-	input, textarea {
-		width: 100%
+	input[type="text"], textarea {
+		width: 100%;
+		max-width: 100%;
 	}
 }
 label {
@@ -223,19 +233,36 @@ label {
 	font-weight: bold;
 	display: block;
 }
-.radio-group {
-	list-style: none;
-	padding: 0;
-
-	li + li {
-		margin-top: $pxs;
+%inline-input {
+	input, label {
+		display: inline;
 	}
 	label {
 		margin: 0;
-	}
-	label {
-		display: inline-block;
 		text-transform: none;
 		font-weight: normal;
 	}
+}
+.future-employment {
+	@extend %inline-input;
+}
+.input-group {
+	@extend %inline-input;
+	ol, ul {
+		list-style: none;
+		padding: 0;
+	}
+	li + li {
+		margin-top: $pxs;
+	}
+}
+input, textarea, select {
+	&.has-error {
+		border-color: #B23D22 !important;
+	}
+}
+.errors {
+	margin: 6px 0;
+	font-size: 13px;
+	color: #B23D22;
 }
