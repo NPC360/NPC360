@@ -29,7 +29,6 @@ def startGame(uid):
 
     # get npc data
     npc = getNPC(player, gs['prompt']['npc'])
-    #print npc
     log.debug('npc info: %s' % (npc))
 
     ### Fill in variables like %%fname%% <- use data from player dict.
@@ -47,19 +46,19 @@ def startGame(uid):
 
 def processInput(player, msg):
     log.debug('processing input: %s, type: %s' % (msg, type(msg)))
-
     gameState = player['gstate']
     gameStateData = getGameStateData(gameState)
 
     #special reset / debug method
     if "magicreset" in msg.lower():
-         log.warning('MANUAL GAME RESET FOR PLAYER: %s' % (player['id']))
-         startGame(player['id'])
+        log.warning('MANUAL GAME RESET FOR PLAYER: %s' % (player['id']))
+        startGame(player['id'])
 
     elif 'triggers' in gameStateData and gameStateData['triggers'] is not None:
         triggers = gameStateData['triggers']
         log.debug('triggers %s' % (triggers))
 
+        # create a copy of the trigger list and pop off any non-gamestate specific triggers.
         sT = triggers.copy()
         sT.pop('yes', None)
         sT.pop('no', None)
@@ -67,92 +66,65 @@ def processInput(player, msg):
         sT.pop('noresp', None)
         sT.pop('*', None)
 
-        # this array only contains triggers that aren't tied to special keywords / operations ^^
+        # ^^^this array only contains triggers that aren't tied to special keywords / operations
         log.debug('truncated triggers %s' % (sT))
 
         # check for 'any input response (*)'
         if '*' in triggers and msg is not None:
+            log.debug('`any input` trigger')
             advanceGame(player, triggers['*'])
 
         # check for affirmative / negative responses
-        if 'yes' in triggers:
-            log.debug('running a yeslist check')
-            if checkYes(msg) is True:
-                log.debug('input matches term from yeslist')
+        elif 'yes' in triggers or 'no' in triggers:
+            log.debug('checking yes/no list')
+            if searchText(msg, yeslist) is not None:
+                log.debug('input matches yeslist')
                 advanceGame(player, triggers['yes'])
-
-            else:
-                log.debug('input did not match term from yeslist')
-
-        if 'no' in triggers:
-            log.debug('running a nolist check')
-            if checkNo(msg) is True:
-                log.debug('input matches term from nolist')
+            elif searchText(msg, nolist) is not None:
+                log.debug('input matches nolist')
                 advanceGame(player, triggers['no'])
-
             else:
-                log.debug('input did not match term from nolist')
+                log.debug('input does not match yes/no list')
 
-        # check if response is even in the list
-        #elif msg.lower() not in sT:
-        elif any(y.lower() in msg for y in sT):
-            log.debug('running a check for OTHER triggers (not *, yes, or no)')
-            for x in sT:
-                if x.lower() in msg.lower():
-                    log.debug('%s is in %s' % (x, msg))
-                    advanceGame(player, triggers[x])
-                    break
+        # ok, now run through remaining triggers.
         else:
-            log.warning('input does not match any triggers')
-            sendErrorSMS(player)
-
+            trig = searchText(msg, sT)
+            if trig is None:
+                log.warning('input does not match triggers, sending error SMS')
+                sendErrorSMS(player)
+            else:
+                log.debug('input matches trigger: %s, advancing to gs: %s' % (trig, triggers[trig]) )
+                advanceGame(player, triggers[trig])
 
 def getGameStateData(id):
     fb = firebase.FirebaseApplication(environ['FB'], None)
     data = fb.get('/gameData/'+ str(id), None)
-    #print 'game data:', str(data)
     log.debug('game data: %s' % (data))
     return data
 
 def stripPunctuation(msg):
-    # split string into words & strip punctuation
     words = [word.strip(string.punctuation) for word in msg.split(" ")]
-    # recombine words into sentence
-    s =""
-    for w in words:
-        s = s+" "+w
+    s = " ".join(words)
     return s
 
-def checkYes(msg):
+# search for text within trigger array
+def searchText(msg, array):
+    text = stripPunctuation(msg)
+    log.debug("checking: %s" % (text))
+    match = searchIter(text, array)
 
-    if any(y.lower() in msg for y in yeslist):
-        return True
+    if match is None:
+        log.debug("no match found")
+        return None
     else:
-        return False
+        log.debug("match found: %s" % match)
+        return match
 
-def checkNo(msg):
-
-    if any(n.lower() in msg for n in nolist):
-        return True
-    else:
-        return False
-
-# deprecated method.
-def checkErr(msg, sT):
-
-    #print msg.lower()
-    #print sT.keys()
-    log.debug('msg: %s' % (msg.lower()))
-    log.debug('keys: %s' % (sT.keys()))
-
-    if msg.lower() in sT:
-        #print "input matches triggers!"
-        log.debug('input matches triggers!')
-        return True
-    else:
-        #print "input not found in `triggers`"
-        log.debug('input not found in `triggers`')
-        return False
+def searchIter(text, array):
+    for t in array:
+        s = re.search(r'\b(%s)\b' % t, text, re.I|re.M)
+        if s is not None:
+            return s.group(1)
 
 #THIS METHOD IS NOT COMPLETE
 def advanceGame(player, gsid):
@@ -163,6 +135,7 @@ def advanceGame(player, gsid):
     npc = getNPC(player, gs['prompt']['npc'])
     #### Fill in variables like %%fname%% <- use data from player dict.
     msg = getPlayerVars(player, gs['prompt']['msg'])
+    log.debug('msg w/ player vars: %s' % msg)
 
     if 'url' in gs['prompt']:
         url = gs['prompt']['url']
@@ -180,12 +153,11 @@ def advanceGame(player, gsid):
         st = None
 
     smsResp = sendSMS(npc['tel'], player['tel'], msg, url, d, st)
-    print smsResp
-    print 'gamestate info from advanceGame method', gs['prompt']
+    log.debug('%s' % smsResp)
+    log.debug('gamestate info from advanceGame method: %s' % gs['prompt'])
 
     # after sending prompt, if there's a goto statement, we can jump forward in the game. this is for sequential msg prompts.
     if 'goto' in gs['prompt']:
-        #print 'jump to game state:', gs['prompt']['goto']
         log.info('jumping player %s to game state: %s' % (player['id'], gs['prompt']['goto']))
         advanceGame(player, gs['prompt']['goto'])
 
@@ -201,41 +173,17 @@ def advanceGame(player, gsid):
 
         for k in paths:
             log.debug('k: %s, v: %s' % (k, paths[k]) )
-
-            #log.debug('p: %s, paths[p]: %s' % (p, paths[p]) )
-
             log.debug('now checking path: %s vs. player[%s]: %s' % (paths[k], dbfield, player[dbfield]))
 
             if str(paths[k]) == str(player[dbfield]):
                 log.debug('jumping player %s to game state: %s' % (player['id'],k))
                 advanceGame(player, k)
 
-    """
-    # POTATO HACKS -- these methods are for jumping to db checks & then coming back.
-    if gsid == '126':
-        log.debug('player %s hit a potato hack: %s' % (player['id'], gsid))
-        hack_126(player)
-
-    elif gsid == '133':
-        log.debug('player %s hit a potato hack: %s' % (player['id'], gsid))
-        hack_133(player)
-
-    elif gsid == '142':
-        log.debug('player %s hit a potato hack: %s' % (player['id'], gsid))
-        hack_142(player)
-
-    elif gsid == '156':
-        log.debug('player %s hit a potato hack: %s' % (player['id'], gsid))
-        hack_156(player)
-    """
-
 def getPlayerVars(player, msg):
     merge = re.findall(r'%%([^%%]*)%%', msg)
     for x in merge:
-        #print x
         if player[x.lower()]:
             msg = re.sub('%%'+x+'%%', player[x], msg)
-            #print msg
     return msg
 
 # get NPC info & tel by matching NPC number and the country code of player.
@@ -250,69 +198,6 @@ def getNPC(playerInfo, npcName):
     row = x.fetchone()
     con.close()
     return row
-
-"""
-#### Potato hack methods that jump around the game #
-def hack_126(player):
-    log.debug('player soloteam enum: %s' % (player['soloteam']))
-
-    if player['soloteam'] == 0:
-        log.debug('player %s warps to 127' % (player['id']))
-        advanceGame(player, '127')
-
-    elif player['soloteam'] == 1:
-        log.debug('player %s warps to 129' % (player['id']))
-        advanceGame(player, '129')
-
-    elif player['soloteam'] == 2:
-        log.debug('player %s warps to 120' % (player['id']))
-        advanceGame(player, '130')
-
-def hack_133(player):
-    log.debug('player leaving enum: %s' % (player['leaving']))
-
-    if player['leaving'] == 0:
-        log.debug('player %s warps to 134' % (player['id']))
-        advanceGame(player, '134')
-
-    elif player['leaving'] == 1:
-        log.debug('player %s warps to 137' % (player['id']))
-        advanceGame(player, '137')
-
-    elif player['leaving'] == 2:
-        log.debug('player %s warps to 139' % (player['id']))
-        advanceGame(player, '139')
-
-    elif player['leaving'] == 3:
-        log.debug('player %s warps to 136' % (player['id']))
-        advanceGame(player, '136')
-
-    elif player['leaving'] == 4:
-        log.debug('player %s warps to 138' % (player['id']))
-        advanceGame(player, '138')
-
-def hack_142(player):
-    log.debug('player ambitious enum: %s' % (player['ambitious']))
-
-    if player['ambitious'] == 0:
-        log.debug('player %s warps to 144' % (player['id']))
-        advanceGame(player, '144')
-
-    elif player['ambitious'] == 1:
-        log.debug('player %s warps to 143' % (player['id']))
-        advanceGame(player, '143')
-
-def hack_156(player):
-    log.debug('player ambitious enum: %s' % (player['ambitious']))
-
-    if player['ambitious'] == 0:
-        log.debug('player %s warps to 158' % (player['id']))
-        advanceGame(player, '158')
-
-    elif player['ambitious'] == 1:
-        log.debug('player %s warps to 157' % (player['id']))
-        advanceGame(player, '157')
-"""
 
 # Application accepted email from HR
 def hrEmail(player):
@@ -354,34 +239,25 @@ def sendSMS(f,t,m,u,d,st):
     # u - url
     # d - delay
     # st - absolute send time
-    #print "####"
 
     worker = IronWorker(project_id=environ['IID2'], token=environ['ITOKEN2'])
-    #print worker
-
     task = Task(code_name="smsworker", scheduled=True)
-    #print task
 
     task.payload = {"keys": {"auth": environ['TSID'], "token": environ['TTOKEN']}, "fnum": f, "tnum": t, "msg": m, "url": u}
-    #print task.payload
 
     # scheduling conditions
     if d is not None:
         task.delay = d
-        #print "sending SMS after", d, "second delay"
         log.info('sending sms after %s second delay' % (d) )
     elif st is not None:
         task.start_at = st # desired `send @ playertime` converted to servertime
-        #print "sending SMS at:", st
         log.info('sending sms at %s' % (st))
     else:
         task.delay = 0
-        #print "sending SMS right away"
         log.info('sending sms right away')
 
     # now queue the damn thing & get a response.
     response = worker.queue(task)
-    #print response
     return response.id
 
 def sendEmail(fe, fn, te, tn, sub, txt, html, d, st):
@@ -396,7 +272,6 @@ def sendEmail(fe, fn, te, tn, sub, txt, html, d, st):
     # html - html version of email
 
     worker = IronWorker(project_id=environ['IID2'], token=environ['ITOKEN2'])
-
     task = Task(code_name="emailworker", scheduled=True)
     task.payload = {
         "dom": environ['MGDOM'],
@@ -413,20 +288,16 @@ def sendEmail(fe, fn, te, tn, sub, txt, html, d, st):
     # scheduling conditions
     if d is not None:
         task.delay = d
-        #print "sending email after", d, "second delay"
         log.info('sending email after %s second delay' % (d) )
     elif st is not None:
         task.start_at = st # desired `send @ playertime` converted to servertime
-        #print "sending email at:", st
         log.info('sending email at %s' % (st))
     else:
         task.delay = 0
-        #print "sending email right away"
         log.info('sending email right away')
 
     # now queue the damn thing & get a response.
     response = worker.queue(task)
-    #print response
     return response.id
 
 # THIS METHOD IS NOT COMPLETE
