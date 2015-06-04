@@ -15,8 +15,10 @@ def searchText(msg, triggers):
 
     if match is None:
         print "no match found"
+        return None
     else:
         print "match found: %s" % match
+        return match
 
 def searchIter(text, triggers):
     for t in triggers:
@@ -55,6 +57,8 @@ tr = {
     "kennywood":"d",
     "don\'t":"e"
     }
+
+#tr = {}
 
 searchText('who?', tr) #pass
 searchText('who is this?', tr) #pass

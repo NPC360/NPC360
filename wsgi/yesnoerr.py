@@ -35,6 +35,7 @@ yeslist = [
     "sure thing",
     "true",
     "okay",
+    "ok",
     "gd",
     "amen",
     "affirmative",
@@ -68,6 +69,7 @@ yeslist = [
     "yaaasss",
     "yah",
     "ye",
+    "yeah"
     "yeh",
     "yes",
     "yessum",
@@ -105,6 +107,7 @@ nolist = [
     "naw",
     "nah", "na",
     "n o",
+    "prefer not to",
     "if only",
     "ick",
     "i can't",
