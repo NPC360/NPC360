@@ -1,0 +1,268 @@
+@import "compass";
+
+@import "variables";
+@import "functional";
+@import "intlTelInput";
+
+*, *:after, *:before {
+	box-sizing: inherit;
+}
+body {
+	box-sizing: border-box;
+	font-size: 15px;
+	font-family: Helvetica, Arial, sans-serif;
+	background: #FFF;
+	font-weight: 400;
+	margin: 0;
+}
+.content-layout {
+	width: $page-max-width;
+	margin: 0 auto;
+	padding: 0 $pl;
+}
+h2, h3, h4 {
+	margin: $margins;
+}
+h2 {
+	font-family: Georgia, serif;
+	color: $grey;
+	font-size: 32px;
+	font-weight: 100;
+}
+a {
+	@include transition-property(color, background, border, opacity);
+	@include transition-duration;
+	color: $blue;
+	text-decoration: none;
+
+	&:hover, &:active {
+		text-decoration: underline;
+		color: $blue-light;
+	}
+	&:focus {
+		color: $blue-dark;
+	}
+}
+ul {
+	list-style: square;
+	margin: $margins;
+	padding: 0 $pl;
+}
+li + li {
+	margin-top: $pxs;
+}
+p {
+	margin: $margins;
+	line-height: 1.5;
+}
+p:first-child {
+	margin-top: 0;
+}
+.header {
+	h1 {
+		margin: 0;
+
+		&, a {
+			width: $logo-width;
+			height: $logo-height;
+		}
+		a {
+			display: block;
+			background: image-url($logo-image) no-repeat 0 0;
+			background-size: $logo-width;
+
+			&:hover, &:active, &:focus {
+				opacity: 0.9;
+			}
+		}
+	}
+	nav {
+		display: block;
+		text-transform: uppercase;
+		margin: $pxxl 0;
+		font-size: 13px;
+		font-weight: bold;
+
+		ul {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: block;
+		}
+		li {
+			float: left;
+		}
+		li + li {
+			margin: 0 0 0 $pl;
+		}
+		a {
+			display: block;
+			padding: $pxs 0;
+			text-decoration: none;
+			color: $black;
+
+			&:hover, &:focus {
+				color: $blue-light;
+			}
+			&:active {
+				color: $blue-dark;
+			}
+			&.active {
+				color: $light-grey;
+			}
+		}
+	}
+}
+
+.footer {
+	text-transform: uppercase;
+	font-size: 12px;
+	color: $light-grey;
+	border-top: solid 1px $light-grey;
+	margin: $pl 0 0;
+	padding: $ps 0 0;
+}
+
+.main {
+	min-height: 200px;
+}
+
+.hero {
+	margin: $pxxl 0;
+	font-family: Georgia, serif;
+	font-size: 28px;
+	line-height: 1.5;
+	color: $grey;
+
+	p {
+		margin: 0;
+
+		&:after {
+			$image: "crane.png";
+			display: inline-block;
+			content: "";
+			background: image-url($image) no-repeat 0 0;
+			width: floor(image-width($image) / 2);
+			height: floor(image-height($image) / 2);
+			background-size: floor(image-width($image) / 2);
+			margin: 0 0 0 $pxs;
+		}
+	}
+}
+
+ul.block {
+	padding: 0;
+	list-style: none;
+	border: solid 1px $light-grey;
+
+	li + li {
+		margin: 0;
+		border-top: solid 1px $light-grey;
+	}
+	li > span, li > a {
+		display: block;
+		padding: $ps $pm;
+	}
+	li > span {
+		color: $grey;
+	}
+}
+
+.button, button {
+	font-size: 13px;
+	background: $blue;
+	color: #FFF;
+	padding: $ps $pxl;
+	display: inline-block;
+	border: 0;
+	text-transform: uppercase;
+	font-weight: bold;
+
+	&:hover, &:active {
+		text-decoration: none;
+		color: #FFF;
+		background: $blue-light;
+	}
+	&:focus {
+		color: #FFF;
+		background: $blue-dark;
+	}
+}
+
+textarea,
+input[type="text"],
+input[type="tel"],
+input[type="email"] {
+	border: solid 1px $light-grey;
+	padding: $pxs $ps;
+	font-family: inherit;
+	font-size: inherit;
+}
+
+.group {
+	margin: 0 (-$pm);
+
+	.field {
+		width: (100% / 2);
+
+		&:nth-child(odd) {
+			clear: left;
+		}
+	}
+	&.three-columns {
+		.field {
+			width: (100% / 3);
+		}
+	}
+}
+.field {
+	float: left;
+	padding: 0 $pm;
+	margin: $margins;
+
+	input[type="text"], textarea {
+		width: 100%;
+		max-width: 100%;
+	}
+}
+label {
+	margin: 0 0 $pxs;
+	color: $grey;
+	font-size: 13px;
+	text-transform: uppercase;
+	font-weight: bold;
+	display: block;
+}
+%inline-input {
+	input, label {
+		display: inline;
+	}
+	label {
+		margin: 0;
+		text-transform: none;
+		font-weight: normal;
+	}
+}
+.future-employment {
+	@extend %inline-input;
+}
+.input-group {
+	@extend %inline-input;
+	ol, ul {
+		list-style: none;
+		padding: 0;
+	}
+	li + li {
+		margin-top: $pxs;
+	}
+}
+input, textarea, select {
+	&.has-error {
+		border-color: #B23D22 !important;
+	}
+}
+.errors {
+	margin: 6px 0;
+	font-size: 13px;
+	color: #B23D22;
+}

@@ -1,0 +1,12 @@
+<div class="header">
+	<h1 class="logo"><a href="/"><span class="vh">Mercury Group</span></a></h1>
+	<nav>
+		<ul class="cf">
+			<li><a {% if request.path == "/solutions/" %}class="active"{% endif %} href="/solutions/">Solutions</a></li>
+			<li><a {% if request.path == "/case-studies/" %}class="active"{% endif %} href="/case-studies/">Case Studies</a></li>
+			<li><a {% if request.path == "/contact/" %}class="active"{% endif %} href="/contact/">Contact</a></li>
+			<li><a {% if request.path == "/careers/" %}class="active"{% endif %} href="/careers/">Careers</a></li>
+		</ul>
+	</nav>
+</div>
+
