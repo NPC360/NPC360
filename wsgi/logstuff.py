@@ -18,13 +18,13 @@ class ContextFilter(logging.Filter):
 log = logging.getLogger()
 log.setLevel(logging.DEBUG)
 lf = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s', datefmt='%Y-%m-%dT%H:%M:%S')
-# paper trail handler
-#ptcf = ContextFilter()
-#log.addFilter(ptcf)
-#pt = logging.handlers.SysLogHandler(address=('logs2.papertrailapp.com', 18620))
 
-#pt.setFormatter(lf)
-#log.addHandler(pt)
+# paper trail handler
+ptcf = ContextFilter()
+log.addFilter(ptcf)
+pt = logging.handlers.SysLogHandler(address=('logs2.papertrailapp.com', 18620))
+pt.setFormatter(lf)
+log.addHandler(pt)
 
 # file handler
 #fh = logging.FileHandler('log/log.txt')
