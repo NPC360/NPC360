@@ -15,6 +15,7 @@ yeslist = [
     "hell yea",
     "hell yes",
     "ok",
+    "a little",
     "good",
     "great",
     "of course",
