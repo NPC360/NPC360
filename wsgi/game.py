@@ -156,7 +156,7 @@ def advanceGame(player, gsid):
     log.debug('%s' % smsResp)
     log.debug('gamestate info from advanceGame method: %s' % gs['prompt'])
 
-    # This is a total hack for now, but once we hit GS 166, send the job acceptance email
+    # This is a hack for now, but when we hit gamestate 166, send job acceptance email.
     if 'gsid' is "166":
         log.info('sending job offer email')
         jobOfferEmail(player)
