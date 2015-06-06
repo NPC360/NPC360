@@ -156,6 +156,11 @@ def advanceGame(player, gsid):
     log.debug('%s' % smsResp)
     log.debug('gamestate info from advanceGame method: %s' % gs['prompt'])
 
+    # This is a total hack for now, but once we hit GS 166, send the job acceptance email
+    if 'gsid' is "166":
+        log.info('sending job offer email')
+        jobOfferEmail(player)
+
     # after sending prompt, if there's a goto statement, we can jump forward in the game. this is for sequential msg prompts.
     if 'goto' in gs['prompt']:
         log.info('jumping player %s to game state: %s' % (player['id'], gs['prompt']['goto']))
@@ -219,9 +224,38 @@ def hrEmail(player):
         player['fname'] +" "+player['lname'],
         "Your Mercury Careers application has been accepted",
 
-        "Dear "+player['fname']+",\n\nWe received and are currently reviewing your application for System Administrator-MGSYSAD45056. If your profile meets the position's requirements, a representative from Human Resources may contact you for additional information.\n\nIf you have any questions or require additional support, please contact: careers@mercury.industries\n\nThank you for your interest in Mercury Group.\n\nSincerely\n\nMercury Group Recruitment Team\n\n- - - \n\nPlease do not reply to this message. Replies to this message are undeliverable.\n\n Your rights and responsibilities regarding the information submitted by you and about you to the Mercury Group Career Site (including the recruitment management system and mobility management site and system) are set out in the Terms of Use statement.\n\n Mercury refers to one or more of Mercury Group Limited, a private company limited by guarantee, and its network of member firms, each of which is a legally separate and independent entity. Please see <a href='http://www.mercurygroup.com/about'>www.mercurygroup.com/about</a> for a detailed description of the legal structure of Mercury Group and its member firms.",
+        "Dear "+player['fname']+",\n\nWe have received and are currently reviewing your application for System Administrator-MGSYSAD45056. If your profile meets the position's requirements, a representative from Human Resources may contact you for additional information.\n\nIf you have any questions or require additional support, please contact: careers@mercury.industries.\n\nThank you for your interest in Mercury Group.\n\nSincerely\n\nMercury Group Recruitment Team\n\n- - - \n\nPlease do not reply to this message. Replies to this message are undeliverable.\n\n Your rights and responsibilities regarding the information submitted by you and about you to the Mercury Group Career Site (including the recruitment management system and mobility management site and system) are set out in the Terms of Use statement.\n\n Mercury refers to one or more of Mercury Group Limited, a private company limited by guarantee, and its network of member firms, each of which is a legally separate and independent entity. Please see <a href='http://www.mercurygroup.com/about'>www.mercurygroup.com/about</a> for a detailed description of the legal structure of Mercury Group and its member firms.",
 
-        "<p>Dear "+player['fname']+",</p> <p>We received and are currently reviewing your application for System Administrator-MGSYSAD45056. If your profile meets the position's requirements, a representative from Human Resources may contact you for additional information.</p> <p>If you have any questions or require additional support, please contact: careers@mercury.industries</p> <p>Thank you for your interest in Mercury Group.</p> <p>Sincerely</p> <p>Mercury Group Recruitment Team</p> <p style='font-style: italic;'>Please do not reply to this message. Replies to this message are undeliverable.</p> <p style='font-style: italic;'>Your rights and responsibilities regarding the information submitted by you and about you to the Mercury Group Career Site (including the recruitment management system and mobility management site and system) are set out in the Terms of Use statement.</p> <p style='font-style: italic;'>Mercury refers to one or more of Mercury Group Limited, a private company limited by guarantee, and its network of member firms, each of which is a legally separate and independent entity. Please see <a href='http://www.mercurygroup.com/about'>www.mercurygroup.com/about</a> for a detailed description of the legal structure of Mercury Group and its member firms.</p>",
+        "<p>Dear "+player['fname']+",</p> <p>We have received and are currently reviewing your application for System Administrator-MGSYSAD45056. If your profile meets the position's requirements, a representative from Human Resources may contact you for additional information.</p> <p>If you have any questions or require additional support, please contact: <a href=\"mailto:careers@mercury.industries\">careers@mercury.industries</a>.</p> <p>Thank you for your interest in Mercury Group.</p> <p>Sincerely</p> <p>Mercury Group Recruitment Team</p> <p>- - -</p> <p style='font-style: italic;'>Please do not reply to this message. Replies to this message are undeliverable.</p> <p style='font-style: italic;'>Your rights and responsibilities regarding the information submitted by you and about you to the Mercury Group Career Site (including the recruitment management system and mobility management site and system) are set out in the Terms of Use statement.</p> <p style='font-style: italic;'>Mercury refers to one or more of Mercury Group Limited, a private company limited by guarantee, and its network of member firms, each of which is a legally separate and independent entity. Please see <a href='http://www.mercurygroup.com/about'>www.mercurygroup.com/about</a> for a detailed description of the legal structure of Mercury Group and its member firms.</p>",
+        None,
+        None)
+
+# Job offer email @ end of Block A
+def jobOfferEmail(player):
+
+    # dom - MG domain
+    # key - MG api key
+    # fe - npc email
+    # fn - npc display_name
+    # te - player email
+    # tn - player name
+    # sub - subject line
+    # txt - text version of email
+    # html - html version of email
+
+    # establish start date 5 days from today (in player time) - but this could fall on a weekend right now.
+    startdate = arrow.get(pt.year, pt.month, pt.day+5, 0, 0, 0, 0, player['tz']).format('dddd, MMMM D, YYYY')
+
+    sendEmail(
+        "careers@mercury.industries",
+        "Mercury Careers",
+        player['email'],
+        player['fname'] +" "+player['lname'],
+        "Congratulations! | Mercury Group",
+
+        "Dear "+player['fname']+" "+player['lname']+",\n\nWe're very pleased to extend to you an offer for fulltime employment as a System Administrator within Mercury Group's Digital Special Projects team. Congratulations on making it through the recruitment process!\n\nThis role is focused around system administration and may also involve other activities into the future. Over time, there is ample room for growth and diversification, and it is our hope that you will be able to help build our business, learn new products and solutions and contribute to high levels of customer satisfaction.\n\nA copy of our contract is attached, with a high level role description. While the role is based at a physical address, we primarily work as an international team, and travel may be required from time to time.\n\nWe'd like you to start on "+startdate+". Your first six months will be a probationary period.\n\nWe are very excited to bring you aboard and will do everything we can to make the transition smooth. If you have any questions, please don't hesitate to reach out.\n\nWe look forward to hearing from you soon!\n\n\n\nSincerely\n\nMercury Group Recruitment Team\n\n- - - \n\nPlease do not reply to this message. Replies to this message are undeliverable.\n\n Your rights and responsibilities regarding the information submitted by you and about you to the Mercury Group Career Site (including the recruitment management system and mobility management site and system) are set out in the Terms of Use statement.\n\n Mercury refers to one or more of Mercury Group Limited, a private company limited by guarantee, and its network of member firms, each of which is a legally separate and independent entity. Please see <a href='http://www.mercurygroup.com/about'>www.mercurygroup.com/about</a> for a detailed description of the legal structure of Mercury Group and its member firms.",
+
+        "<p>Dear "+player['fname']+",</p> <p>We're very pleased to extend to you an offer for fulltime employment as a System Administrator within Mercury Group's Digital Special Projects team. Congratulations on making it through the recruitment process!</p><p>This role is focused around system administration and may also involve other activities into the future. Over time, there is ample room for growth and diversification, and it is our hope that you will be able to help build our business, learn new products and solutions and contribute to high levels of customer satisfaction.</p><p>A copy of our contract is attached, with a high level role description. While the role is based at a physical address, we primarily work as an international team, and travel may be required from time to time.</p><p>We'd like you to start on "+startdate+". Your first six months will be a probationary period.</p><p>We are very excited to bring you aboard and will do everything we can to make the transition smooth. If you have any questions, please don't hesitate to reach out.</p><p>We look forward to hearing from you soon!</p> <p>Sincerely</p> <p>Mercury Group Recruitment Team</p> <p>- - -</p> <p style='font-style: italic;'>Please do not reply to this message. Replies to this message are undeliverable.</p> <p style='font-style: italic;'>Your rights and responsibilities regarding the information submitted by you and about you to the Mercury Group Career Site (including the recruitment management system and mobility management site and system) are set out in the Terms of Use statement.</p> <p style='font-style: italic;'>Mercury refers to one or more of Mercury Group Limited, a private company limited by guarantee, and its network of member firms, each of which is a legally separate and independent entity. Please see <a href='http://www.mercurygroup.com/about'>www.mercurygroup.com/about</a> for a detailed description of the legal structure of Mercury Group and its member firms.</p>",
         None,
         None)
 
