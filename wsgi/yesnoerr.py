@@ -122,6 +122,7 @@ nolist = [
     "deny",
     "decline",
     "certainly not",
+    "not really",
     "cancel",
     "by no means",
     "absolutely not"]
