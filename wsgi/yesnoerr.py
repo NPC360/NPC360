@@ -89,6 +89,7 @@ nolist = [
     "not possible",
     "not now",
     "not at all",
+    "not at the moment",
     "nope",
     "no",
     "no never",
