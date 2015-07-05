@@ -801,7 +801,7 @@ p:first-child { margin-top: 0; }
 /* line 65, ../../../scss/style.scss */
 .header h1, .header h1 a { width: 350px; height: 100px; }
 /* line 69, ../../../scss/style.scss */
-.header h1 a { display: block; background: url('/static/img/mg.png?1431752014') no-repeat 0 0; background-size: 350px; }
+.header h1 a { display: block; background: url('/static/img/mg.png?1435669001') no-repeat 0 0; background-size: 350px; }
 /* line 74, ../../../scss/style.scss */
 .header h1 a:hover, .header h1 a:active, .header h1 a:focus { opacity: 0.9; }
 /* line 79, ../../../scss/style.scss */
@@ -822,7 +822,7 @@ p:first-child { margin-top: 0; }
 .header nav a.active { color: #969696; }
 
 /* line 117, ../../../scss/style.scss */
-.footer { text-transform: uppercase; font-size: 12px; color: #969696; border-top: solid 1px #969696; margin: 22px 0 0; padding: 12px 0 0; }
+.footer { text-transform: uppercase; font-size: 12px; color: #969696; border-top: solid 1px #969696; margin-top: 22px; padding-top: 12px; }
 
 /* line 126, ../../../scss/style.scss */
 .main { min-height: 200px; }
@@ -832,7 +832,7 @@ p:first-child { margin-top: 0; }
 /* line 137, ../../../scss/style.scss */
 .hero p { margin: 0; }
 /* line 140, ../../../scss/style.scss */
-.hero p:after { display: inline-block; content: ""; background: url('/static/img/crane.png?1431752014') no-repeat 0 0; width: 18px; height: 12px; background-size: 18px; margin: 0 0 0 8px; }
+.hero p:after { display: inline-block; content: ""; background: url('/static/img/crane.png?1435669001') no-repeat 0 0; width: 18px; height: 12px; background-size: 18px; margin: 0 0 0 8px; }
 
 /* line 153, ../../../scss/style.scss */
 ul.block { padding: 0; list-style: none; border: solid 1px #969696; }

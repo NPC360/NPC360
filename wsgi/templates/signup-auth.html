@@ -19,6 +19,7 @@
 
 {% block title %}Careers{% endblock %}
 {% block body %}
+<div class="content-layout">
 	<h2>Careers</h2>
 	<h3>Thank you for submitting your application {{ session.form.first_name }}. You should receive a four-digit code via SMS in 1&ndash;5 minutes. Please enter it below to confirm your application:</h3>
 
@@ -31,4 +32,5 @@
 			<button type="submit">Submit</button>
 		</div>
 	</form>
+</div>
 {% endblock %}
