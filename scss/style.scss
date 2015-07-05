@@ -266,3 +266,11 @@ input, textarea, select {
 	font-size: 13px;
 	color: #B23D22;
 }
+
+.careers-hero {
+	background: #407FC7 image-url('careers-cover.jpg') no-repeat center center;
+	background-size: contain;
+	height: 420px;
+	margin: 0 0 $pl;
+}
+
