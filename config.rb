@@ -6,6 +6,7 @@ css_path         = "wsgi/static/css"
 images_path      = "wsgi/static/img"
 javascripts_path = "wsgi/static/js"
 fonts_path       = "wsgi/static/fonts"
+line_comments = false
 output_style    = :compact
 relative_assets = false
 
