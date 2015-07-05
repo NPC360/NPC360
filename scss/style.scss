@@ -22,13 +22,18 @@ body {
 }
 h2, h3, h4 {
 	margin: $margins;
-}
-h2 {
 	font-family: Georgia, serif;
 	color: $grey;
+}
+h2 {
 	font-size: 32px;
 	font-weight: 100;
 }
+h3 {
+	font-size: 20px;
+	font-weight: 100;
+}
+
 a {
 	@include transition-property(color, background, border, opacity);
 	@include transition-duration;
@@ -273,4 +278,51 @@ input, textarea, select {
 	height: 420px;
 	margin: 0 0 $pl;
 }
+.tc {
+	text-align: center;
+}
+h2.tc {
+	margin: $pl * 2 0 $pl;
+}
+p.tc {
+	color: $grey;
+}
 
+.careers-join,
+.career-perks {
+	border-top: solid 1px $light-grey;
+	padding: $pl 0 0;
+	margin: $pl 0 0;
+}
+
+.career-perks {
+	h3 {
+		text-align: center;
+	}
+	h4 {
+		font-size: 0.8em;
+		text-transform: uppercase;
+		font-family: inherit;
+		color: $black;
+		margin: 0 0 $pxs;
+	}
+	p {
+		margin: 0;
+	}
+	ul {
+		margin: 0 (-$pm);
+		padding: 0;
+		list-style: none;
+	}
+	li {
+		font-size: 0.9em;
+		line-height: 1.5;
+		width: 50%;
+		margin: 0;
+		padding: $pm;
+		float: left;
+	}
+	li + li {
+		margin-top: 0;
+	}
+}
