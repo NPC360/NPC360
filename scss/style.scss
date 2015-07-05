@@ -4,11 +4,13 @@
 @import "functional";
 @import "intlTelInput";
 
+html {
+	box-sizing: border-box;
+}
 *, *:after, *:before {
 	box-sizing: inherit;
 }
 body {
-	box-sizing: border-box;
 	font-size: 15px;
 	font-family: Helvetica, Arial, sans-serif;
 	background: #FFF;
@@ -282,7 +284,7 @@ input, textarea, select {
 	text-align: center;
 }
 h2.tc {
-	margin: $pl * 2 0 $pl;
+	margin: 64px 0 $pl;
 }
 p.tc {
 	color: $grey;
@@ -292,7 +294,7 @@ p.tc {
 .career-perks {
 	border-top: solid 1px $faint-grey;
 	padding: $pl 0 0;
-	margin: $pl 0 0;
+	margin: 64px 0 0;
 }
 
 .career-perks {
@@ -324,5 +326,15 @@ p.tc {
 	}
 	li + li {
 		margin-top: 0;
+	}
+}
+
+.careers-set {
+	margin: $pxxl 0 0;
+
+	img {
+		width: (100% / 3);
+		float: left;
+		border: solid 3px #FFF;
 	}
 }
